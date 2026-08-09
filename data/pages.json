@@ -1,0 +1,326 @@
+{
+  "_note": "Content pages, carried over from stefsotra.md. The Russian text is the original as published on the Shopify store; the Romanian and English versions are translations of it. Every factual claim here (delivery price, warranty length, return window, cut-to-size service, deferred payment, GOST conformity, the industries served) comes from stefsotra.md -- nothing is invented. Legal wording (returns, warranty) should be reviewed by Stefsotra before it is relied on.",
+  "_contact": {
+    "phone": "+373 (22) 55-39-54",
+    "phone_href": "+37322553954",
+    "email": "stefsotra@mail.ru",
+    "address": "",
+    "address_note": "No street address is published anywhere on stefsotra.md, so none is invented here. Fill in `address` and the contact page will show it, along with a map link.",
+    "hours": ""
+  },
+
+  "about": {
+    "ro": {
+      "title": "Despre companie",
+      "lead": "Stefsotra este unul dintre cei mai mari furnizori de articole tehnice din cauciuc din Republica Moldova.",
+      "stats": [
+        { "v": "15+", "l": "ani pe piața din Moldova" },
+        { "v": "4", "l": "industrii deservite" },
+        { "v": "0 lei", "l": "pentru tăierea la dimensiune" }
+      ],
+      "body": [
+        "Activitatea principală a companiei Stefsotra este comercializarea articolelor tehnice din cauciuc pentru cele mai diverse domenii: construcții (furtunuri pentru șantier), vinificație (furtunuri alimentare), agricultură (furtunuri de irigare) și industria auto (furtunuri auto). Astăzi suntem cel mai mare furnizor de articole tehnice din cauciuc și ne-am confirmat pe piața din Moldova printr-un nivel ridicat de calitate a produselor.",
+        "Compania Stefsotra comercializează de asemenea materiale de construcție, mai exact plăci din marmură și granit. Vindem plăci din piatră naturală, marmură și granit — un material apreciat pentru calitatea sa, folosit la trepte în case și scări de bloc, ca material de finisaj rezistent la clima Moldovei, precum și pentru blaturi și panouri de bucătărie.",
+        "În cei peste 15 ani pe piața din Moldova ne-am câștigat reputația de furnizor de încredere, cu prețuri accesibile. Vă răspundem cu plăcere la orice întrebare și vă servim cu respect."
+      ],
+      "cardsTitle": "Domeniile pe care le deservim",
+      "cards": [
+        { "t": "Construcții", "p": "Furtunuri pentru șantier, furtunuri de înaltă presiune, furtunuri pentru ciment și tencuială." },
+        { "t": "Vinificație și industrie alimentară", "p": "Furtunuri alimentare de aspirație și presiune, potrivite pentru contact cu produse alimentare." },
+        { "t": "Agricultură", "p": "Furtunuri de irigare, furtunuri pentru stropitoare și piese pentru instalațiile Fregat." },
+        { "t": "Industria auto", "p": "Furtunuri din silicon, furtunuri de combustibil și ulei, piese pentru Mercedes Sprinter, KAMAZ și MAZ." }
+      ]
+    },
+    "ru": {
+      "title": "О нас",
+      "lead": "Stefsotra — один из крупнейших поставщиков резинотехнических изделий в Молдове.",
+      "stats": [
+        { "v": "15+", "l": "лет на рынке Молдовы" },
+        { "v": "4", "l": "отрасли обслуживания" },
+        { "v": "0 лей", "l": "за резку по размеру" }
+      ],
+      "body": [
+        "Основной сферой деятельности Stefsotra является продажа резинотехнических изделий для нужд самых разных отраслей: строительство (строительные шланги), виноделие (пищевые шланги), агрокультура (поливочные шланги), автомобильная отрасль (автомобильные шланги). На сегодняшний день мы являемся крупнейшим поставщиком резинотехнических изделий и зарекомендовали высокий уровень качества нашей продукции на рынке Молдовы.",
+        "Также компания Stefsotra занимается продажей строительных материалов, а именно слябов из мрамора и гранита. Мы продаём слябы из натурального камня, мрамора и гранита. Этот материал зарекомендовал себя высоким качеством: из слябов делают ступеньки в домах и подъездах, используют как отделочный материал, так как камень хорошо себя показал в условиях молдавского климата. Такой же камень используется для кухонных столешниц и фартуков.",
+        "За 15 лет на рынке Молдовы мы зарекомендовали себя как надёжный поставщик, а также предлагаем низкие цены. Мы рады ответить на все ваши вопросы и обслужить вас с уважением."
+      ],
+      "cardsTitle": "Отрасли, которые мы обслуживаем",
+      "cards": [
+        { "t": "Строительство", "p": "Строительные шланги, рукава высокого давления, шланги для цемента и штукатурки." },
+        { "t": "Виноделие и пищевая промышленность", "p": "Пищевые напорно-всасывающие рукава, пригодные для контакта с продуктами." },
+        { "t": "Агрокультура", "p": "Поливочные шланги, рукава для опрыскивателей и детали для установок «Фрегат»." },
+        { "t": "Автомобильная отрасль", "p": "Силиконовые шланги, топливные и масляные рукава, детали для Mercedes Sprinter, КАМАЗ и МАЗ." }
+      ]
+    },
+    "en": {
+      "title": "About the company",
+      "lead": "Stefsotra is one of the largest suppliers of technical rubber goods in Moldova.",
+      "stats": [
+        { "v": "15+", "l": "years on the Moldovan market" },
+        { "v": "4", "l": "industries served" },
+        { "v": "free", "l": "cutting to your length" }
+      ],
+      "body": [
+        "Stefsotra's main business is the sale of technical rubber goods for a wide range of industries: construction (site hoses), winemaking (food-grade hoses), agriculture (irrigation hoses) and the automotive trade (vehicle hoses). Today we are the largest supplier of technical rubber goods in the country, with a reputation on the Moldovan market built on the quality of our products.",
+        "Stefsotra also sells building materials, specifically marble and granite slabs. We supply slabs of natural stone, marble and granite — a material valued for its quality and used for steps in houses and stairwells, as a finishing material that stands up to the Moldovan climate, and for kitchen worktops and splashbacks.",
+        "In over 15 years on the Moldovan market we have established ourselves as a reliable supplier with competitive prices. We are glad to answer any question and to serve you with respect."
+      ],
+      "cardsTitle": "The industries we serve",
+      "cards": [
+        { "t": "Construction", "p": "Site hoses, high-pressure hoses, cement discharge and plastering hoses." },
+        { "t": "Winemaking and food", "p": "Food-grade pressure and suction hoses suitable for contact with foodstuffs." },
+        { "t": "Agriculture", "p": "Irrigation hoses, sprayer hoses and parts for Fregat irrigation machines." },
+        { "t": "Automotive", "p": "Silicone hoses, fuel and oil-resistant hoses, parts for Mercedes Sprinter, KAMAZ and MAZ." }
+      ]
+    }
+  },
+
+  "delivery": {
+    "ro": {
+      "title": "Livrare",
+      "lead": "Livrăm în Chișinău și în toate regiunile Moldovei.",
+      "cardsTitle": "Opțiuni de livrare",
+      "cards": [
+        { "t": "Curier în Chișinău", "p": "200 lei, indiferent de mărimea comenzii." },
+        { "t": "Poștă în regiuni", "p": "Pentru colete sub 5 kg. Tariful depinde de adresa de livrare." },
+        { "t": "Livrare la obiect", "p": "Pentru comenzi mari sau livrare direct pe șantier, contactați-ne și stabilim condițiile împreună." },
+        { "t": "Ridicare personală", "p": "Puteți ridica marfa de la noi. Sunați înainte ca să pregătim comanda." }
+      ],
+      "body": [
+        "Tăiem furtunul la dimensiunea cerută, fără cost suplimentar — spuneți-ne lungimea de care aveți nevoie când trimiteți cererea.",
+        "Comanda de pe acest site este o cerere de ofertă, nu o plată. Vă contactăm pentru a confirma disponibilitatea, prețul final și termenul de livrare înainte de a expedia ceva."
+      ],
+      "faqTitle": "Întrebări frecvente",
+      "faq": [
+        { "q": "Cât durează livrarea?", "a": "Confirmăm termenul când răspundem la cerere. Depinde de disponibilitatea în stoc și de adresa de livrare." },
+        { "q": "Pot plăti online?", "a": "Nu. Acest site nu procesează plăți. Comanda este o cerere de ofertă, iar plata se stabilește direct cu managerul." },
+        { "q": "Livrați și în afara Moldovei?", "a": "Contactați-ne pentru a discuta condițiile." }
+      ]
+    },
+    "ru": {
+      "title": "Доставка",
+      "lead": "Доставляем по Кишинёву и регионам Молдовы.",
+      "cardsTitle": "Варианты доставки",
+      "cards": [
+        { "t": "Курьер по Кишинёву", "p": "200 лей, независимо от размера заказа." },
+        { "t": "Почта в регионы", "p": "Для посылок весом менее 5 кг. Стоимость зависит от адреса доставки." },
+        { "t": "Доставка на объект", "p": "Для крупных заказов или доставки прямо на объект свяжитесь с нами — условия обсуждаются отдельно." },
+        { "t": "Самовывоз", "p": "Можно забрать товар у нас. Позвоните заранее, чтобы мы подготовили заказ." }
+      ],
+      "body": [
+        "Режем шланг по индивидуальным размерам без доплаты — укажите нужную длину при отправке заявки.",
+        "Заказ на этом сайте — это заявка на расчёт, а не оплата. Мы свяжемся с вами, чтобы подтвердить наличие, окончательную цену и срок поставки до отправки товара."
+      ],
+      "faqTitle": "Частые вопросы",
+      "faq": [
+        { "q": "Сколько идёт доставка?", "a": "Срок подтверждаем при ответе на заявку. Он зависит от наличия на складе и адреса доставки." },
+        { "q": "Можно оплатить онлайн?", "a": "Нет. Сайт не принимает оплату. Заказ — это заявка на расчёт, оплата обсуждается напрямую с менеджером." },
+        { "q": "Доставляете за пределы Молдовы?", "a": "Свяжитесь с нами, чтобы обсудить условия." }
+      ]
+    },
+    "en": {
+      "title": "Delivery",
+      "lead": "We deliver in Chișinău and across the regions of Moldova.",
+      "cardsTitle": "Delivery options",
+      "cards": [
+        { "t": "Courier in Chișinău", "p": "200 lei, whatever the size of the order." },
+        { "t": "Post to the regions", "p": "For parcels under 5 kg. The cost depends on the delivery address." },
+        { "t": "Delivery to site", "p": "For large orders or delivery directly to a site, contact us and we will agree the terms." },
+        { "t": "Collection", "p": "You are welcome to collect. Call ahead so we can have the order ready." }
+      ],
+      "body": [
+        "We cut hose to your required length at no extra charge — tell us the length you need when you send the request.",
+        "An order on this site is a request for a quotation, not a payment. We contact you to confirm availability, the final price and the delivery time before anything is dispatched."
+      ],
+      "faqTitle": "Common questions",
+      "faq": [
+        { "q": "How long does delivery take?", "a": "We confirm the time when we answer your request. It depends on stock and on the delivery address." },
+        { "q": "Can I pay online?", "a": "No. This site does not take payment. An order is a request for a quotation and payment is arranged directly with your manager." },
+        { "q": "Do you deliver outside Moldova?", "a": "Contact us to discuss the terms." }
+      ]
+    }
+  },
+
+  "partners": {
+    "ro": {
+      "title": "Parteneri",
+      "lead": "Stefsotra invită partenerii să adere la un cod de colaborare bazat pe bună practică și standarde clare de business.",
+      "body": [
+        "Colaborând cu Stefsotra beneficiați de comision, reduceri de partener consistente, servicii de calitate și respectarea exactă a termenelor de livrare."
+      ],
+      "listTitle": "Avantajele noastre",
+      "list": [
+        "Sistem clar de prețuri și de reduceri",
+        "Produse de calitate, conforme standardelor GOST",
+        "Plată amânată — detalii la managerul de cont",
+        "Expediere rapidă și la timp",
+        "Tăierea furtunului la dimensiuni individuale",
+        "Logistică pusă la punct — livrare la obiect în Chișinău și în alte orașe din Moldova",
+        "Manageri cu experiență și o companie în creștere"
+      ],
+      "cta": "Pentru a deveni partener, scrieți-ne sau contactați-ne."
+    },
+    "ru": {
+      "title": "Партнёры",
+      "lead": "Stefsotra приглашает партнёров присоединиться к кодексу взаимодействия, нормам добросовестной практики и стандартам ведения бизнеса.",
+      "body": [
+        "Сотрудничая с компанией Stefsotra, вы получаете комиссионное вознаграждение, отличные партнёрские скидки, высокое качество обслуживания и точное соблюдение сроков поставки."
+      ],
+      "listTitle": "Наши преимущества",
+      "list": [
+        "Прозрачная система ценообразования и предоставления скидок",
+        "Продукция высокого качества, соответствующая ГОСТу",
+        "Отсрочка платежа — уточните у менеджера",
+        "Своевременная и быстрая отгрузка",
+        "Возможность резки шланга по индивидуальным размерам",
+        "Отлаженная логистика — доставка по объектам в Кишинёве и в другие города Молдовы",
+        "Высокая квалификация менеджеров, развивающаяся компания"
+      ],
+      "cta": "Чтобы стать нашим партнёром, достаточно написать нам или связаться с нами."
+    },
+    "en": {
+      "title": "Partners",
+      "lead": "Stefsotra invites partners to join a code of cooperation built on fair practice and clear business standards.",
+      "body": [
+        "Working with Stefsotra you receive commission, substantial partner discounts, a high standard of service and delivery dates that are kept."
+      ],
+      "listTitle": "Our advantages",
+      "list": [
+        "A transparent pricing and discount structure",
+        "High-quality products conforming to GOST standards",
+        "Deferred payment — ask your account manager",
+        "Prompt and reliable dispatch",
+        "Hose cut to your own dimensions",
+        "Established logistics — delivery to site in Chișinău and to other Moldovan cities",
+        "Experienced managers and a growing company"
+      ],
+      "cta": "To become a partner, write to us or get in touch."
+    }
+  },
+
+  "returns": {
+    "ro": {
+      "title": "Politica de retur",
+      "lead": "Puteți returna produsul în termen de 30 de zile de la livrare, pentru rambursare sau schimb.",
+      "stepsTitle": "Cum se face returul",
+      "steps": [
+        { "t": "Scrieți-ne", "p": "Contactați serviciul clienți la stefsotra@mail.ru. Echipa vă ghidează prin proces și, dacă este cazul, vă transmite eticheta de retur." },
+        { "t": "Trimiteți produsul", "p": "Produsul trebuie să fie nefolosit, în aceeași stare în care l-ați primit și în ambalajul original." },
+        { "t": "Verificăm", "p": "După ce primim produsul, îl verificăm pentru a confirma că îndeplinește condițiile politicii de retur." },
+        { "t": "Primiți banii", "p": "Dacă totul este în regulă, procesăm rambursarea sau schimbul în termen de 10 zile lucrătoare." }
+      ],
+      "body": [
+        "La Stefsotra ne dorim ca fiecare client să fie mulțumit de achiziție. Dacă nu sunteți pe deplin mulțumit, puteți returna produsul în termen de 30 de zile de la data livrării."
+      ],
+      "faqTitle": "Detalii",
+      "faq": [
+        { "q": "Se rambursează costul livrării?", "a": "Nu. Dacă produsul a fost expediat gratuit, costul inițial al livrării se scade din suma rambursată." },
+        { "q": "Am primit un produs deteriorat sau defect.", "a": "Contactați-ne imediat. Rezolvăm problema împreună cu dumneavoastră și, dacă este necesar, vă oferim un înlocuitor." },
+        { "q": "Am cumpărat de la alt magazin.", "a": "Politica de retur se aplică doar produselor cumpărate direct de la Stefsotra. Pentru produsele cumpărate de la un revânzător, consultați politica acestuia." }
+      ]
+    },
+    "ru": {
+      "title": "Политика возврата",
+      "lead": "Вы можете вернуть товар в течение 30 дней с даты доставки для возврата денег или обмена.",
+      "stepsTitle": "Как оформить возврат",
+      "steps": [
+        { "t": "Напишите нам", "p": "Свяжитесь с нашей службой поддержки по адресу stefsotra@mail.ru. Наша команда проведёт вас через процесс и при необходимости предоставит этикетку возврата." },
+        { "t": "Отправьте товар", "p": "Товар должен быть неиспользованным, в том же состоянии, в котором вы его получили, и в оригинальной упаковке." },
+        { "t": "Мы проверяем", "p": "Как только мы получим товар, мы проверим его на соответствие требованиям политики возврата." },
+        { "t": "Возврат средств", "p": "Если всё подтвердится, мы обработаем возврат или обмен в течение 10 рабочих дней." }
+      ],
+      "body": [
+        "В Stefsotra мы стремимся предоставить нашим клиентам наилучшие впечатления от покупок. Если вы не полностью удовлетворены покупкой, вы можете вернуть её в течение 30 дней с даты доставки."
+      ],
+      "faqTitle": "Подробности",
+      "faq": [
+        { "q": "Возвращается ли стоимость доставки?", "a": "Нет. Если товар был отправлен бесплатно, стоимость первоначальной доставки вычитается из суммы возмещения." },
+        { "q": "Товар пришёл повреждённым или бракованным.", "a": "Немедленно свяжитесь с нами. Мы вместе решим проблему и при необходимости предоставим замену." },
+        { "q": "Я купил у другого продавца.", "a": "Политика возврата распространяется только на товары, приобретённые непосредственно у Stefsotra. Если вы приобрели наш продукт у стороннего продавца, ознакомьтесь с его политикой возврата." }
+      ]
+    },
+    "en": {
+      "title": "Return policy",
+      "lead": "You may return a product within 30 days of delivery for a refund or an exchange.",
+      "stepsTitle": "How a return works",
+      "steps": [
+        { "t": "Write to us", "p": "Contact customer service at stefsotra@mail.ru. Our team will guide you through the process and provide a return label where needed." },
+        { "t": "Send the item back", "p": "The item must be unused, in the same condition in which you received it, and in its original packaging." },
+        { "t": "We inspect it", "p": "Once we receive the returned item we inspect it to confirm that it meets the conditions of this policy." },
+        { "t": "You are refunded", "p": "If everything is in order we process the refund or exchange within 10 working days." }
+      ],
+      "body": [
+        "At Stefsotra we aim to give our customers the best possible buying experience. If you are not fully satisfied with your purchase, you may return it within 30 days of the delivery date."
+      ],
+      "faqTitle": "Details",
+      "faq": [
+        { "q": "Are shipping costs refunded?", "a": "No. If the item was shipped free of charge, the original shipping cost is deducted from the refund." },
+        { "q": "My item arrived damaged or defective.", "a": "Contact us immediately. We will resolve the problem with you and provide a replacement if required." },
+        { "q": "I bought from another retailer.", "a": "This policy applies only to products bought directly from Stefsotra. If you bought our product from a third-party retailer, please refer to their return policy." }
+      ]
+    }
+  },
+
+  "warranty": {
+    "ro": {
+      "title": "Politica de garanție",
+      "lead": "Garanție de un an de la data cumpărării pentru defecte de material sau de fabricație.",
+      "stats": [
+        { "v": "12", "l": "luni de garanție" },
+        { "v": "30", "l": "zile pentru retur" },
+        { "v": "0 lei", "l": "reparație sau înlocuire în garanție" }
+      ],
+      "body": [
+        "Stefsotra oferă garanție pentru toate produsele vândute clienților. Garanția acoperă orice defect de material sau de fabricație, timp de un an de la data cumpărării.",
+        "Dacă în perioada de garanție apare un defect acoperit, clientul poate returna produsul la Stefsotra pentru reparație sau înlocuire. Stefsotra stabilește dacă defectul este acoperit de garanție și, în caz afirmativ, repară sau înlocuiește produsul fără costuri pentru client.",
+        "Pentru a depune o cerere în garanție, clientul trebuie să prezinte dovada cumpărării și să contacteze serviciul clienți Stefsotra pentru instrucțiuni privind returnarea produsului."
+      ],
+      "faqTitle": "Ce nu este acoperit",
+      "faq": [
+        { "q": "Utilizare incorectă și uzură normală", "a": "Garanția nu acoperă deteriorările cauzate de utilizare incorectă, neglijență sau uzură normală." },
+        { "q": "Daune indirecte", "a": "Stefsotra nu răspunde pentru daune directe sau indirecte rezultate din utilizarea sau imposibilitatea utilizării produsului." },
+        { "q": "Alte garanții", "a": "Aceasta este singura garanție oferită de Stefsotra și înlocuiește orice altă garanție, scrisă sau implicită. Stefsotra își rezervă dreptul de a modifica sau de a înceta această garanție oricând, fără notificare prealabilă." }
+      ]
+    },
+    "ru": {
+      "title": "Гарантийная политика",
+      "lead": "Гарантия один год с даты покупки на дефекты материалов и изготовления.",
+      "stats": [
+        { "v": "12", "l": "месяцев гарантии" },
+        { "v": "30", "l": "дней на возврат" },
+        { "v": "0 лей", "l": "ремонт или замена по гарантии" }
+      ],
+      "body": [
+        "Stefsotra предлагает гарантию на всю продукцию, продаваемую клиентам. Данная гарантия распространяется на любые дефекты материалов или изготовления сроком на один год с даты покупки.",
+        "Если в течение гарантийного срока обнаружен дефект, на который распространяется данная гарантия, клиент может вернуть продукт в компанию Stefsotra для ремонта или замены. Компания Stefsotra определит, покрывается ли дефект гарантией, и, если да, отремонтирует или заменит изделие бесплатно для покупателя.",
+        "Чтобы подать претензию по настоящей гарантии, клиент должен предоставить доказательство покупки и связаться со службой поддержки Stefsotra, чтобы получить инструкции по возврату продукта."
+      ],
+      "faqTitle": "Что не покрывается",
+      "faq": [
+        { "q": "Неправильное использование и естественный износ", "a": "Гарантия не распространяется на повреждения, вызванные неправильным использованием, небрежностью или естественным износом." },
+        { "q": "Косвенный ущерб", "a": "Stefsotra не несёт ответственности за любой ущерб, прямой или косвенный, возникший в результате использования или невозможности использования продукта." },
+        { "q": "Другие гарантии", "a": "Данная гарантия является единственной гарантией, предлагаемой Stefsotra, и заменяет все другие гарантии, письменные или подразумеваемые. Stefsotra оставляет за собой право изменить или прекратить действие настоящей гарантии в любое время без предварительного уведомления." }
+      ]
+    },
+    "en": {
+      "title": "Warranty policy",
+      "lead": "One year from the date of purchase against defects in materials or workmanship.",
+      "stats": [
+        { "v": "12", "l": "months of warranty" },
+        { "v": "30", "l": "days to return" },
+        { "v": "free", "l": "repair or replacement under warranty" }
+      ],
+      "body": [
+        "Stefsotra offers a warranty on all products sold to customers. This warranty covers any defect in materials or workmanship for one year from the date of purchase.",
+        "If a defect covered by this warranty appears during the warranty period, the customer may return the product to Stefsotra for repair or replacement. Stefsotra will determine whether the defect is covered and, if so, will repair or replace the item at no cost to the customer.",
+        "To make a claim under this warranty the customer must provide proof of purchase and contact Stefsotra customer service for instructions on returning the product."
+      ],
+      "faqTitle": "What is not covered",
+      "faq": [
+        { "q": "Misuse and normal wear", "a": "This warranty does not cover damage caused by misuse, negligence or normal wear and tear." },
+        { "q": "Indirect damage", "a": "Stefsotra is not liable for any damage, direct or indirect, arising from the use of or inability to use the product." },
+        { "q": "Other warranties", "a": "This warranty is the only warranty offered by Stefsotra and replaces all other warranties, written or implied. Stefsotra reserves the right to change or discontinue this warranty at any time without prior notice." }
+      ]
+    }
+  }
+}

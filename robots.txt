@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /cart.html
+Disallow: /*?q=
+
+Sitemap: https://stefsotra.md/sitemap.xml

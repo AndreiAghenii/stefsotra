@@ -1,0 +1,16 @@
+{
+  "_note": "Published customer reviews, keyed by product handle. This file starts empty on purpose: the star ratings on this site show real reviews from real customers and nothing else. Invented reviews are illegal to publish in the EU under the Omnibus Directive and are prohibited under Moldovan consumer-protection law, and a customer who buys a 200-lei hose on the strength of a fake five-star review is exactly the harm those rules exist to prevent.",
+  "_howto": "The review form on each product page posts to the Netlify form 'product-review'. Read new submissions at Netlify -> Forms -> product-review, then paste the ones you want to publish into 'products' below, in the shape shown in _example. The product page picks them up on the next load. Nothing is published until you put it here.",
+  "_example": {
+    "some-product-handle": [
+      {
+        "name": "Ion C.",
+        "rating": 5,
+        "date": "2026-03-14",
+        "lang": "ro",
+        "text": "Furtunul s-a potrivit exact, livrare rapidă."
+      }
+    ]
+  },
+  "products": {}
+}

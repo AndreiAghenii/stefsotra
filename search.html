@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Căutare — Stefsotra</title>
+<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="icon" href="/assets/img/logo.png">
+</head>
+<body>
+<main><div class="wrap" id="root"></div></main>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/assistant.js"></script>
+<script>
+var EXAMPLES = ['furtun silicon 38 mm 90 grade', 'camlock 2"', 'colier 8-14', 'storz 75'];
+
+S.load(['catalogue']).then(function () {
+  S.chrome('/search.html');
+  document.getElementById('root').innerHTML =
+    '<h1>' + S.esc(S.t('srch.h1')) + '</h1>' +
+    '<p class="lead">' + S.esc(S.t('srch.lead')) + '</p>' +
+    '<form class="bigsearch" id="f">' +
+      '<input type="search" id="q" placeholder="' + S.esc(S.t('srch.ph')) + '" autofocus>' +
+      '<button class="btn" type="submit">' + S.esc(S.t('srch.go')) + '</button>' +
+    '</form>' +
+    '<p class="small muted" id="egs">' + S.esc(S.t('srch.try')) + ' ' +
+      EXAMPLES.map(function (e) {
+        return '<button type="button" class="eg" data-q="' + S.esc(e) + '">' + S.esc(e) + '</button>';
+      }).join('') + '</p>' +
+    '<div id="out">' + startState() + '</div>';
+
+  document.getElementById('f').addEventListener('submit', function (e) {
+    e.preventDefault();
+    go(document.getElementById('q').value);
+  });
+  document.querySelectorAll('.eg').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.getElementById('q').value = b.dataset.q;
+      go(b.dataset.q);
+    });
+  });
+
+  var q0 = new URLSearchParams(location.search).get('q');
+  if (q0) { document.getElementById('q').value = q0; go(q0); }
+}).catch(S.fail);
+
+// Landing on an empty search box with nothing on the page reads as broken. Show what
+// there is to search through.
+function startState() {
+  return '<h2 style="margin-top:30px">' + S.esc(S.t('empty.browse')) + '</h2>' +
+    '<div class="cards">' + S.catalogue.groups.map(function (g) {
+      return '<a class="gcard" href="' + S.url('/g/' + encodeURIComponent(g.key) + '/') + '">' +
+        '<span class="gcard-t">' + S.esc(S.groupLabel(g.key)) +
+        '<i>' + S.esc(S.t('cat.results', { n: g.count })) + '</i></span>' +
+        '<span class="gcard-list small muted">' +
+        g.categories.slice(0, 4).map(function (c) { return S.esc(S.catLabel(c.key)); }).join(' · ') +
+        '</span></a>';
+    }).join('') + '</div>';
+}
+
+function go(text) {
+  text = (text || '').trim();
+  if (!text) return;
+  history.replaceState(null, '', 'search.html?q=' + encodeURIComponent(text));
+  document.getElementById('out').innerHTML =
+    '<p class="muted">' + S.esc(S.t('srch.working')) + '</p>';
+
+  S.smartParse(text).then(function (r) { show(r.q, r.by, text); });
+}
+
+function show(q, by, text) {
+  var list = S.searchProducts(q);
+
+  // Show what the query was understood to mean. Each chip can be switched off, which
+  // is the quickest way for someone to correct a wrong reading without retyping.
+  var chips = [];
+  if (q.cat) chips.push(['cat', S.catLabel(q.cat)]);
+  if (q.grp) chips.push(['grp', S.groupLabel(q.grp)]);
+  if (q.dia) chips.push(['dia', 'Ø ' + q.dia + ' mm ±3']);
+  if (q.ang) chips.push(['ang', q.ang + '°']);
+  if (q.mat) chips.push(['mat', S.t('prod.material') + ': ' + q.mat]);
+  if (q.text) chips.push(['text', '“' + q.text + '”']);
+
+  document.getElementById('out').innerHTML =
+    (chips.length
+      ? '<p class="readback"><span class="small muted">' + S.esc(S.t('srch.read')) + '</span> ' +
+        chips.map(function (c) {
+          return '<button type="button" class="chip" data-k="' + c[0] + '">' +
+            S.esc(c[1]) + ' <i>✕</i></button>';
+        }).join('') +
+        '<span class="engine small">' +
+          S.esc(S.t(by === 'ai' ? 'srch.byAI' : 'srch.byRules')) + '</span></p>'
+      : '') +
+    '<p class="muted small">' + S.esc(S.t('srch.results', { n: list.length })) + '</p>' +
+    (list.length
+      ? '<div class="grid">' + list.slice(0, 60).map(S.tile).join('') + '</div>'
+      : '<div class="note"><p>' + S.esc(S.t('srch.none')) + '</p>' +
+        '<button type="button" class="btn ghost" data-ask>' + S.esc(S.t('srch.ask')) + '</button></div>');
+
+  document.querySelectorAll('.readback .chip').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var k = b.dataset.k;
+      if (k === 'dia') q.dia = 0; else q[k] = '';
+      show(q, by, text);
+    });
+  });
+  var ask = document.querySelector('[data-ask]');
+  if (ask) ask.addEventListener('click', function () {
+    S.assistant.open();
+    S.assistant.send(text);
+  });
+}
+</script>
+</body>
+</html>

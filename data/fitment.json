@@ -1,0 +1,466 @@
+{
+ "note": "Exact-fit records. Everything else falls back to dimensional matching.",
+ "entries": [
+  {
+   "oe": "9065012482",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "9 065 012 482",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "9065010182",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "9065010182",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "9018326723",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "9018326723",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9065010482",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A9065010482",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "9065013682",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "9065013682",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9018326723",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 901 832 67 23",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9015011882",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 901 501 18 82",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A2712001352",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 271 200 13 52",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A6112030482",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 611 203 04 82",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A6012030682",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 601 203 06 82",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9065011482",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 906 501 14 82",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9065013682",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A9065013682",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "9015011582",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "901 501 15 82",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9065010182",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 906 501 01 82",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9065012482",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 906 501 24 82",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A6112030582",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A 611 203 05 82",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "6512006901",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "6512006901",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9015012582",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A9015012582",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9065013282",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A9065013282",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9015011182",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A9015011182",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "A9065010682",
+   "handle": "mercedes-sprinter-silicone-hoses",
+   "variant": "A9065010682",
+   "make": "Mercedes-Benz",
+   "models": [
+    "Sprinter"
+   ]
+  },
+  {
+   "oe": "5490-1303450",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "5490-1303450",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "5490-1303419",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "5490-1303419",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "53605M-1303026",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "53605M-1303026",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "6520xc-1303026",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "6520xc-1303026",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "53205-1170245",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "53205-1170245",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "53205-1170248",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "53205-1170248",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "4308-1170245",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "4308-1170245",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "543208-1303260",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "543208-1303260",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "5432A5-1303260",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "5432A5-1303260",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "555142-1303251",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "555142-1303251",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "5010315868",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "5010315868",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "5010315918",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "5010315918",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "533632-1303251",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "533632-1303251",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "5440B9-1323094",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "5440B9-1323094",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "MM3245",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "MM3 245",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  },
+  {
+   "oe": "hoseHP-SM16",
+   "handle": "kamaz-maz-silicone-hoses",
+   "variant": "hoseHP-SM16",
+   "make": "KAMAZ",
+   "models": [
+    "4308",
+    "5320",
+    "53205",
+    "53212",
+    "5490",
+    "53605",
+    "6520",
+    "65115",
+    "43118"
+   ]
+  }
+ ]
+}

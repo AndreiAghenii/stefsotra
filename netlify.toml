@@ -1,0 +1,84 @@
+# Static publish; the whole folder is the site.
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# The assistant needs the catalogue index at runtime. Netlify only bundles what a
+# function requires, and this is read with fs, so it has to be named explicitly.
+[functions]
+  included_files = ["data/index.txt"]
+
+# Old Shopify-style addresses, so any existing link or bookmark still lands somewhere
+# useful instead of on a 404. 301 tells Google the address moved for good.
+[[redirects]]
+  from = "/product.html"
+  to = "/catalog.html"
+  status = 301
+[[redirects]]
+  from = "/about.html"
+  to = "/about/"
+  status = 301
+[[redirects]]
+  from = "/contact.html"
+  to = "/contact/"
+  status = 301
+[[redirects]]
+  from = "/delivery.html"
+  to = "/delivery/"
+  status = 301
+[[redirects]]
+  from = "/partners.html"
+  to = "/partners/"
+  status = 301
+[[redirects]]
+  from = "/returns.html"
+  to = "/returns/"
+  status = 301
+[[redirects]]
+  from = "/warranty.html"
+  to = "/warranty/"
+  status = 301
+[[redirects]]
+  from = "/pages/about-us"
+  to = "/about/"
+  status = 301
+[[redirects]]
+  from = "/pages/delivery"
+  to = "/delivery/"
+  status = 301
+[[redirects]]
+  from = "/pages/contact"
+  to = "/contact/"
+  status = 301
+[[redirects]]
+  from = "/pages/partners"
+  to = "/partners/"
+  status = 301
+[[redirects]]
+  from = "/pages/return-policy"
+  to = "/returns/"
+  status = 301
+[[redirects]]
+  from = "/pages/warranty-plicy"
+  to = "/warranty/"
+  status = 301
+[[redirects]]
+  from = "/products/:handle"
+  to = "/p/:handle/"
+  status = 301
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

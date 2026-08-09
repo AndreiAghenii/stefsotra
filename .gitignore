@@ -1,0 +1,11 @@
+.DS_Store
+**/.DS_Store
+__pycache__/
+*.pyc
+node_modules/
+.netlify/
+.env
+
+# Cached copy of the live Shopify feed. Regenerate with:
+#   python3 scripts/build_catalogue.py
+data/_raw.json

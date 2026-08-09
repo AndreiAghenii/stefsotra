@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catalog — Stefsotra</title>
+<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="icon" href="/assets/img/logo.png">
+</head>
+<body>
+<main>
+  <div class="wrap">
+    <h1 id="h1">&nbsp;</h1>
+    <div class="layout">
+      <aside class="filters">
+        <h2 data-t="cat.filters">&nbsp;</h2>
+        <div class="field">
+          <label data-t="cat.search">&nbsp;</label>
+          <input type="text" id="q" data-t-ph="cat.search">
+        </div>
+        <div class="field">
+          <label data-t="prod.category">&nbsp;</label>
+          <select id="cat"></select>
+        </div>
+        <div class="field">
+          <label><span data-t="cat.diameter">&nbsp;</span> <span id="dLbl" class="muted"></span></label>
+          <input type="range" id="dia" min="0" max="260" step="1" value="0" style="padding:0">
+        </div>
+        <div class="field">
+          <label data-t="cat.angle">&nbsp;</label>
+          <select id="ang"></select>
+        </div>
+        <div class="field">
+          <label data-t="cat.material">&nbsp;</label>
+          <select id="mat"></select>
+        </div>
+        <button class="btn ghost" id="clear" style="width:100%" data-t="cat.clear">&nbsp;</button>
+      </aside>
+      <section>
+        <div class="listbar">
+          <p class="muted small" id="count"></p>
+          <label class="sortwrap"><span data-t="cat.sort">&nbsp;</span>
+            <select id="sort"></select></label>
+        </div>
+        <div id="active" class="chips"></div>
+        <div class="grid" id="grid"></div>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/assistant.js"></script>
+<script>
+var Q = { q: '', cat: '', group: '', dia: 0, ang: '', mat: '', sort: '' };
+
+S.load(['catalogue']).then(function () {
+  S.chrome('/catalog.html');
+  S.applyStatic();
+
+  var url = new URLSearchParams(location.search);
+  Q.cat = url.get('cat') || '';
+  Q.group = url.get('group') || '';
+  Q.q = url.get('q') || '';
+  Q.dia = Number(url.get('dia') || 0);
+  Q.ang = url.get('ang') || '';
+
+  // Categories are grouped in the dropdown too, so all 17 of them stay navigable.
+  document.getElementById('cat').innerHTML =
+    '<option value="">' + S.esc(S.t('cat.all')) + '</option>' +
+    S.catalogue.groups.map(function (g) {
+      return '<optgroup label="' + S.esc(S.groupLabel(g.key)) + '">' +
+        g.categories.map(function (c) {
+          return '<option value="' + S.esc(c.key) + '">' + S.esc(S.catLabel(c.key)) +
+                 ' (' + c.count + ')</option>';
+        }).join('') + '</optgroup>';
+    }).join('');
+
+  fillSelect('sort', ['low', 'high', 'az', 'size'], 'cat.sortRel', function (v) {
+    return S.t({ low: 'cat.sortLow', high: 'cat.sortHigh', az: 'cat.sortAZ', size: 'cat.sortSize' }[v]);
+  });
+  fillSelect('ang', uniqVals(function (p) { return p.attrs.angle; }), 'cat.any',
+             function (v) { return v + '°'; });
+  fillSelect('mat', uniqVals(function (p) {
+    var m = [p.attrs.material];
+    p.variants.forEach(function (v) { if (v.dims.material) m.push(v.dims.material); });
+    return m;
+  }), 'cat.any');
+
+  document.getElementById('cat').value = Q.cat;
+  document.getElementById('ang').value = Q.ang;
+  document.getElementById('dia').value = Q.dia;
+  document.getElementById('q').value = Q.q;
+
+  ['q', 'ang', 'mat', 'sort'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function (e) {
+      Q[id] = e.target.value; render();
+    });
+  });
+  // Choosing a category drops whatever group you arrived from; otherwise the two
+  // filters fight each other and the grid looks broken.
+  document.getElementById('cat').addEventListener('input', function (e) {
+    Q.cat = e.target.value;
+    if (Q.cat) Q.group = '';
+    render();
+  });
+  document.getElementById('dia').addEventListener('input', function (e) {
+    Q.dia = Number(e.target.value); render();
+  });
+  document.getElementById('clear').addEventListener('click', function () {
+    Q = { q: '', cat: '', group: '', dia: 0, ang: '', mat: '', sort: '' };
+    ['q', 'cat', 'ang', 'mat', 'sort'].forEach(function (id) { document.getElementById(id).value = ''; });
+    document.getElementById('dia').value = 0;
+    render();
+  });
+  render();
+}).catch(S.fail);
+
+function uniqVals(fn) {
+  var s = {};
+  S.catalogue.products.forEach(function (p) {
+    var v = fn(p); (Array.isArray(v) ? v : [v]).forEach(function (x) { if (x) s[x] = 1; });
+  });
+  return Object.keys(s).sort(function (a, b) { return (Number(a) || 0) - (Number(b) || 0) || a.localeCompare(b); });
+}
+function fillSelect(id, values, anyKey, label) {
+  document.getElementById(id).innerHTML =
+    '<option value="">' + S.esc(S.t(anyKey)) + '</option>' +
+    values.map(function (v) {
+      return '<option value="' + S.esc(v) + '">' + S.esc(label ? label(v) : v) + '</option>';
+    }).join('');
+}
+
+function render() {
+  document.getElementById('dLbl').textContent = Q.dia ? '≈ ' + Q.dia + ' mm' : '';
+  var heading = Q.cat ? S.catLabel(Q.cat) : Q.group ? S.groupLabel(Q.group) : S.t('cat.h1');
+  document.getElementById('h1').textContent = heading;
+  document.title = heading + ' — Stefsotra';
+
+  var list = S.searchProducts({
+    cat: Q.cat, grp: Q.group, dia: Q.dia, ang: Q.ang, mat: Q.mat, text: Q.q
+  });
+
+  list = sortList(list);
+  document.getElementById('count').textContent = S.t('cat.results', { n: list.length });
+  document.getElementById('grid').innerHTML = list.length
+    ? list.map(S.tile).join('')
+    : '<p class="muted">' + S.esc(S.t('cat.none')) + '</p>';
+  activeChips();
+  // the address bar follows the filters, so a filtered view can be bookmarked or sent
+  var qs = Object.keys(Q).filter(function (k) { return Q[k]; })
+    .map(function (k) { return k + '=' + encodeURIComponent(Q[k]); }).join('&');
+  history.replaceState(null, '', '/catalog.html' + (qs ? '?' + qs : ''));
+}
+
+function sortList(list) {
+  var by = {
+    low:  function (a, b) { return a.price_min - b.price_min; },
+    high: function (a, b) { return b.price_max - a.price_max; },
+    az:   function (a, b) { return a.title.localeCompare(b.title); },
+    size: function (a, b) { return b.variants.length - a.variants.length; }
+  }[Q.sort];
+  return by ? list.slice().sort(by) : list;
+}
+
+// Filters restated above the grid, each one removable. With five controls in a sidebar
+// it is otherwise easy to forget why a category looks half empty.
+function activeChips() {
+  var on = [];
+  if (Q.group) on.push(['group', S.groupLabel(Q.group)]);
+  if (Q.cat) on.push(['cat', S.catLabel(Q.cat)]);
+  if (Q.dia) on.push(['dia', 'Ø ' + Q.dia + ' mm ±3']);
+  if (Q.ang) on.push(['ang', Q.ang + '°']);
+  if (Q.mat) on.push(['mat', Q.mat]);
+  if (Q.q) on.push(['q', '“' + Q.q + '”']);
+
+  var box = document.getElementById('active');
+  box.innerHTML = on.length
+    ? '<span class="small muted" style="align-self:center">' + S.esc(S.t('cat.active')) + '</span>' +
+      on.map(function (c) {
+        return '<button type="button" class="chip" data-k="' + c[0] + '">' +
+          S.esc(c[1]) + ' <i>✕</i></button>';
+      }).join('')
+    : '';
+  box.querySelectorAll('.chip').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var k = b.dataset.k;
+      Q[k] = k === 'dia' ? 0 : '';
+      var el = document.getElementById(k === 'group' ? 'cat' : k);
+      if (el) el.value = k === 'dia' ? 0 : '';
+      render();
+    });
+  });
+}
+</script>
+</body>
+</html>

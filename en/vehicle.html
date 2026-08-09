@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Caută după vehicul — Stefsotra</title>
+<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="icon" href="/assets/img/logo.png">
+</head>
+<body>
+<main><div class="wrap" id="root"></div></main>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/assistant.js"></script>
+<script>
+/* Three steps, one visible at a time. The old page showed everything at once, which
+   meant the discouraging "no exact match for your car" paragraph was the first thing
+   a customer read. Here the vehicle is step 1, measuring is step 2 and it only appears
+   once there is something to say, and the results explain how close each size is. */
+
+var V = { make: '', model: '', year: '', id: 0, ang: '' };
+var step = 1;
+
+S.load(['catalogue', 'vehicles', 'fitment']).then(function () {
+  S.chrome('/vehicle.html');
+  render();
+}).catch(S.fail);
+
+/* --------------------------------------------------------------------- helpers */
+
+// vPIC and Wikidata both prefix the make onto the model ("Dacia Dokker"), which reads
+// badly under a heading that already says Dacia.
+function modelName(make, name) {
+  var re = new RegExp('^' + make.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s+', 'i');
+  return name.replace(re, '');
+}
+
+function fitmentHits() {
+  if (!V.make || !V.model) return [];
+  return (S.fitment.entries || []).filter(function (f) {
+    return f.make === V.make && f.models.some(function (m) {
+      return V.model.toLowerCase().indexOf(m.toLowerCase()) >= 0 ||
+             m.toLowerCase().indexOf(V.model.toLowerCase()) >= 0;
+    });
+  });
+}
+
+// The diameters actually stocked, so the quick-pick chips can never suggest a size
+// that returns nothing.
+function commonSizes() {
+  var n = {};
+  S.catalogue.products.forEach(function (p) {
+    p.variants.forEach(function (v) {
+      if (v.dims.id_mm != null) n[v.dims.id_mm] = (n[v.dims.id_mm] || 0) + 1;
+    });
+  });
+  return Object.keys(n).map(Number).sort(function (a, b) { return n[b] - n[a]; })
+          .slice(0, 8).sort(function (a, b) { return a - b; });
+}
+
+function carLabel() {
+  return [V.make, modelName(V.make, V.model), V.year].filter(Boolean).join(' ');
+}
+
+/* ----------------------------------------------------------------------- render */
+
+function render() {
+  document.getElementById('root').innerHTML =
+    '<h1>' + S.esc(S.t('veh.h1')) + '</h1>' + steps() +
+    '<div class="wiz">' + (step === 1 ? stepVehicle() : step === 2 ? stepMeasure() : stepResults()) + '</div>';
+  wire();
+}
+
+function steps() {
+  var labels = [['veh.step1', 'veh.step1sub'], ['veh.step2', 'veh.step2sub'], ['veh.step3', '']];
+  return '<ol class="steps">' + labels.map(function (l, i) {
+    var n = i + 1;
+    return '<li class="' + (n === step ? 'on' : n < step ? 'done' : '') + '"' +
+      (n < step ? ' data-goto="' + n + '"' : '') + '>' +
+      '<b>' + (n < step ? '✓' : n) + '</b><span>' + S.esc(S.t(l[0])) +
+      (l[1] ? '<i>' + S.esc(S.t(l[1])) + '</i>' : '') + '</span></li>';
+  }).join('') + '</ol>';
+}
+
+function stepVehicle() {
+  var makes = Object.keys(S.vehicles.makes).sort();
+  var models = (S.vehicles.makes[V.make] || []);
+  var m = models.filter(function (x) { return x.name === V.model; })[0];
+  var years = [];
+  if (m) for (var y = m.to; y >= m.from; y--) years.push(String(y));
+
+  return '<div class="row wiz-row">' +
+      picker('make', 'veh.make', makes.map(function (x) { return [x, x]; }), V.make, false) +
+      picker('model', 'veh.model', models.map(function (x) { return [x.name, modelName(V.make, x.name)]; }),
+             V.model, !V.make) +
+      picker('year', 'veh.year', years.map(function (x) { return [x, x]; }), V.year, !V.model) +
+    '</div>' +
+    (V.make && V.model && V.year ? fitNote() : '') +
+    '<div class="wiz-btns">' +
+      '<button class="btn" id="next1"' + (V.make && V.model && V.year ? '' : ' disabled') + '>' +
+        S.esc(S.t('veh.step2')) + ' →</button>' +
+      '<button class="btn ghost" id="skip">' + S.esc(S.t('veh.skip')) + '</button>' +
+    '</div>';
+}
+
+function fitNote() {
+  var hits = fitmentHits();
+  if (!hits.length) return '<p class="muted small hint">' + S.esc(S.t('veh.noExactShort')) + '</p>';
+  var byHandle = {};
+  hits.forEach(function (h) { (byHandle[h.handle] = byHandle[h.handle] || []).push(h); });
+  return '<div class="note ok"><strong>' + S.esc(S.t('veh.exactOne')) + '</strong></div>' +
+    '<div class="grid">' + Object.keys(byHandle).map(function (h) {
+      var p = S.byHandle(h);
+      return p ? S.tile(p) : '';
+    }).join('') + '</div>';
+}
+
+function stepMeasure() {
+  var sizes = commonSizes();
+  return (carLabel() ? '<p class="crumb">' + S.esc(carLabel()) +
+      ' <button type="button" class="linkish" data-goto="1">' + S.esc(S.t('veh.change')) + '</button></p>' : '') +
+    '<div class="measure-grid">' +
+      '<div>' +
+        '<div class="field"><label for="mid">' + S.esc(S.t('veh.id')) + '</label>' +
+          '<input type="number" id="mid" min="4" max="300" step="1" placeholder="38" value="' +
+          (V.id || '') + '" inputmode="numeric"></div>' +
+        '<p class="small muted" style="margin:-6px 0 6px">' + S.esc(S.t('veh.common')) + '</p>' +
+        '<p class="chips">' + sizes.map(function (s) {
+          return '<button type="button" class="size-chip" data-size="' + s + '"' +
+            (Number(V.id) === s ? ' aria-pressed="true"' : '') + '>' + s + '</button>';
+        }).join('') + '</p>' +
+        '<div class="field"><label for="mang">' + S.esc(S.t('veh.angleQ')) + '</label>' +
+          '<select id="mang">' +
+            '<option value="">' + S.esc(S.t('veh.anyAngle')) + '</option>' +
+            '<option value="0"' + (V.ang === '0' ? ' selected' : '') + '>' + S.esc(S.t('veh.straight')) + '</option>' +
+            [45, 90, 135, 180].map(function (a) {
+              return '<option value="' + a + '"' + (V.ang === String(a) ? ' selected' : '') + '>' + a + '°</option>';
+            }).join('') +
+          '</select></div>' +
+        '<p class="small muted">' + S.esc(S.t('veh.tol')) + '</p>' +
+        '<p id="mErr" class="small" style="color:var(--bad)" hidden></p>' +
+      '</div>' +
+      '<aside class="howto">' + diagram() +
+        '<h3>' + S.esc(S.t('veh.howto')) + '</h3>' +
+        '<p class="small">' + S.esc(S.t('veh.howtoText')) + '</p>' +
+      '</aside>' +
+    '</div>' +
+    '<div class="wiz-btns">' +
+      '<button class="btn" id="find">' + S.esc(S.t('veh.find')) + '</button>' +
+      '<button class="btn ghost" data-goto="1">← ' + S.esc(S.t('veh.step1')) + '</button>' +
+    '</div>';
+}
+
+// Measuring the outside instead of the bore is the single most common mistake, so it
+// gets a picture rather than another sentence.
+function diagram() {
+  return '<svg viewBox="0 0 220 120" class="dia" role="img" aria-hidden="true">' +
+    '<defs><marker id="ar" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">' +
+      '<path d="M0,0 L7,3.5 L0,7 z" fill="var(--brand)"/></marker></defs>' +
+    '<rect x="20" y="18" width="180" height="84" rx="42" fill="none" stroke="var(--ink-3)" stroke-width="2"/>' +
+    '<rect x="34" y="34" width="152" height="52" rx="26" fill="var(--brand-tint)" stroke="var(--brand)" stroke-width="2"/>' +
+    '<line x1="60" y1="60" x2="160" y2="60" stroke="var(--brand)" stroke-width="2" ' +
+      'marker-start="url(#ar)" marker-end="url(#ar)"/>' +
+    '<text x="110" y="52" text-anchor="middle" font-size="15" font-weight="700" fill="var(--brand)">Ø</text>' +
+    '</svg>';
+}
+
+function stepResults() {
+  var list = matches();
+  return '<p class="crumb">' +
+      (carLabel() ? S.esc(carLabel()) + ' · ' : '') +
+      'Ø ' + V.id + ' mm' + (V.ang ? ' · ' + (V.ang === '0' ? S.esc(S.t('veh.straight')) : V.ang + '°') : '') +
+      ' <button type="button" class="linkish" data-goto="2">' + S.esc(S.t('veh.change')) + '</button></p>' +
+    '<p class="muted small">' + S.esc(S.t('cat.results', { n: list.length })) + '</p>' +
+    (list.length
+      ? '<div class="grid">' + list.map(function (r) {
+          return S.tile(r.p).replace('<div class="dims">',
+            '<div class="dims"><span class="fitpill">' + S.esc(r.note) + '</span><br>');
+        }).join('') + '</div>'
+      : '<div class="note warn"><p>' + S.esc(S.t('cat.none')) + '</p>' +
+        '<button type="button" class="btn ghost" id="askAI">' + S.esc(S.t('srch.ask')) + '</button></div>') +
+    '<div class="wiz-btns"><button class="btn ghost" data-goto="2">← ' +
+      S.esc(S.t('veh.step2')) + '</button></div>';
+}
+
+// Every result says how it relates to the measured size, so a near miss is obviously
+// a near miss rather than looking like a wrong answer.
+function matches() {
+  var id = Number(V.id);
+  var out = [];
+  S.catalogue.products.forEach(function (p) {
+    if (V.ang === '0' && p.attrs.angle) return;
+    if (V.ang && V.ang !== '0' && String(p.attrs.angle || '') !== V.ang) return;
+    var best = null;
+    p.variants.forEach(function (v) {
+      var d = v.dims, delta = null;
+      if (d.id_min != null) {
+        if (id >= d.id_min - 3 && id <= d.id_max + 3) {
+          delta = (id >= d.id_min && id <= d.id_max) ? 0
+                : (id < d.id_min ? d.id_min - id : -(id - d.id_max));
+        }
+      } else if (d.clamp_min != null && id >= d.clamp_min && id <= d.clamp_max) {
+        delta = 0;
+      }
+      if (delta !== null && (best === null || Math.abs(delta) < Math.abs(best.delta)))
+        best = { v: v, delta: delta };
+    });
+    if (best) {
+      out.push({
+        p: p, d: Math.abs(best.delta),
+        note: best.delta === 0 ? S.t('veh.mExact')
+            : best.delta > 0 ? S.t('veh.mBig', { n: best.delta })
+            : S.t('veh.mSmall', { n: -best.delta })
+      });
+    }
+  });
+  return out.sort(function (a, b) { return a.d - b.d; });
+}
+
+/* ------------------------------------------------------------------------ wiring */
+
+function picker(id, labelKey, opts, value, disabled) {
+  return '<div class="field"><label for="' + id + '">' + S.esc(S.t(labelKey)) + '</label>' +
+    '<select id="' + id + '"' + (disabled ? ' disabled' : '') + '>' +
+      '<option value="">' + S.esc(S.t('veh.select')) + '</option>' +
+      opts.map(function (o) {
+        return '<option value="' + S.esc(o[0]) + '"' + (o[0] === value ? ' selected' : '') + '>' +
+          S.esc(o[1]) + '</option>';
+      }).join('') +
+    '</select></div>';
+}
+
+function wire() {
+  document.querySelectorAll('[data-goto]').forEach(function (b) {
+    b.addEventListener('click', function () { step = Number(b.dataset.goto); render(); });
+  });
+
+  var mk = document.getElementById('make');
+  if (mk) {
+    mk.addEventListener('change', function (e) { V.make = e.target.value; V.model = ''; V.year = ''; render(); });
+    document.getElementById('model').addEventListener('change', function (e) {
+      V.model = e.target.value; V.year = ''; render();
+    });
+    document.getElementById('year').addEventListener('change', function (e) {
+      V.year = e.target.value; render();
+    });
+    document.getElementById('next1').addEventListener('click', function () { step = 2; render(); });
+    document.getElementById('skip').addEventListener('click', function () {
+      V.make = V.model = V.year = ''; step = 2; render();
+    });
+  }
+
+  var mid = document.getElementById('mid');
+  if (mid) {
+    document.querySelectorAll('.size-chip').forEach(function (b) {
+      b.addEventListener('click', function () {
+        mid.value = b.dataset.size;
+        document.querySelectorAll('.size-chip').forEach(function (x) { x.removeAttribute('aria-pressed'); });
+        b.setAttribute('aria-pressed', 'true');
+      });
+    });
+    mid.addEventListener('keydown', function (e) { if (e.key === 'Enter') find(); });
+    document.getElementById('find').addEventListener('click', find);
+  }
+
+  var ask = document.getElementById('askAI');
+  if (ask) ask.addEventListener('click', function () {
+    S.assistant.open();
+    S.assistant.send(S.t('veh.id') + ' ' + V.id + (V.ang && V.ang !== '0' ? ', ' + V.ang + '°' : '') +
+      (carLabel() ? ', ' + carLabel() : ''));
+  });
+}
+
+function find() {
+  var id = Number(document.getElementById('mid').value);
+  if (!id) {
+    var e = document.getElementById('mErr');
+    e.textContent = S.t('veh.needId'); e.hidden = false;
+    document.getElementById('mid').focus();
+    return;
+  }
+  V.id = id;
+  V.ang = document.getElementById('mang').value;
+  step = 3;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
