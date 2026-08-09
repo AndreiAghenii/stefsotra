@@ -620,3 +620,5 @@ footer.site { border-top: 1px solid var(--line); background: var(--bg-2); margin
   .grid { grid-template-columns: 1fr; }
   .wrap { padding: 0 14px; }
 }
+.madeby a { color: var(--ink-3); }
+.madeby a:hover { color: var(--brand); }

@@ -404,7 +404,8 @@
     '</div><div class="wrap foot-legal small">' +
       '<span>© ' + new Date().getFullYear() + ' STEFSOTRA · ' +
       '<a href="https://stefsotra.md">stefsotra.md</a></span>' +
-      '<span class="madeby">' + S.esc(S.t('foot.by')) + '</span></div></footer>';
+      '<span class="madeby"><a href="https://aggento.com" target="_blank" rel="noopener">' +
+      S.esc(S.t('foot.by')) + '</a></span></div></footer>';
   };
 
   S.chrome = function (current) {

@@ -263,7 +263,8 @@ def footer_html(lang, path):
         '<div class="wrap foot-cats small">%s</div>'
         '<div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · '
         '<a href="https://stefsotra.md">stefsotra.md</a></span>'
-        '<span class="madeby">%s</span></div>'
+        '<span class="madeby"><a href="https://aggento.com" target="_blank" '
+        'rel="noopener">%s</a></span></div>'
         '</footer>\n'
         % (e(t(lang, 'site.tagline')), e(c['phone_href']), e(c['phone']),
            e(c['email']), e(c['email']),
