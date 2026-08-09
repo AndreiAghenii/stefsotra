@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Catalog — Stefsotra</title>
 <link rel="stylesheet" href="/assets/css/app.css">
-<link rel="icon" href="/assets/img/logo.png">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#bf2c2c">
 </head>
 <body>
 <main>
@@ -13,7 +17,7 @@
     <h1 id="h1">&nbsp;</h1>
     <div class="layout">
       <aside class="filters">
-        <h2 data-t="cat.filters">&nbsp;</h2>
+        <h2 id="fh">&nbsp;</h2>
         <div class="field">
           <label data-t="cat.search">&nbsp;</label>
           <input type="text" id="q" data-t-ph="cat.search">
@@ -22,18 +26,7 @@
           <label data-t="prod.category">&nbsp;</label>
           <select id="cat"></select>
         </div>
-        <div class="field">
-          <label><span data-t="cat.diameter">&nbsp;</span> <span id="dLbl" class="muted"></span></label>
-          <input type="range" id="dia" min="0" max="260" step="1" value="0" style="padding:0">
-        </div>
-        <div class="field">
-          <label data-t="cat.angle">&nbsp;</label>
-          <select id="ang"></select>
-        </div>
-        <div class="field">
-          <label data-t="cat.material">&nbsp;</label>
-          <select id="mat"></select>
-        </div>
+        <div id="facets"></div>
         <button class="btn ghost" id="clear" style="width:100%" data-t="cat.clear">&nbsp;</button>
       </aside>
       <section>
@@ -51,20 +44,91 @@
 <script src="/assets/js/app.js"></script>
 <script src="/assets/js/assistant.js"></script>
 <script>
-var Q = { q: '', cat: '', group: '', dia: 0, ang: '', mat: '', sort: '' };
+var Q = { q: '', cat: '', group: '', sort: '' };   // plus one entry per active facet
+
+/* Filters are built from the products actually in view, not from a fixed list.
+   A clamp has no bore and no angle; it has a clamping range. A Guillemin coupling is
+   sized by DN. A rubber sheet has neither. Showing all five controls everywhere meant
+   four of them did nothing in most categories, which reads as a broken page. */
+
+var FACETS = [
+  { key: 'dia', label: 'cat.diameter', type: 'range', unit: ' mm',
+    values: function (ps) {
+      return uniqNums(ps, function (v) { return v.dims.id_mm; });
+    },
+    match: function (p, val) {
+      return p.variants.some(function (v) {
+        var d = v.dims;
+        return d.id_min != null && val >= d.id_min - 3 && val <= d.id_max + 3;
+      });
+    } },
+
+  { key: 'clamp', label: 'cat.clampRange', type: 'range', unit: ' mm',
+    values: function (ps) {
+      var s = {};
+      ps.forEach(function (p) { p.variants.forEach(function (v) {
+        if (v.dims.clamp_min != null) { s[v.dims.clamp_min] = 1; s[v.dims.clamp_max] = 1; }
+      }); });
+      return Object.keys(s).map(Number).sort(function (a, b) { return a - b; });
+    },
+    match: function (p, val) {
+      return p.variants.some(function (v) {
+        var d = v.dims;
+        return d.clamp_min != null && val >= d.clamp_min && val <= d.clamp_max;
+      });
+    } },
+
+  { key: 'ang', label: 'cat.angle', type: 'select', fmt: function (v) { return v + '°'; },
+    values: function (ps) { return uniqVals(ps, function (p) { return p.attrs.angle; }); },
+    match: function (p, val) { return String(p.attrs.angle || '') === val; } },
+
+  { key: 'len', label: 'cat.length', type: 'select', fmt: function (v) { return v + ' mm'; },
+    values: function (ps) { return uniqVals(ps, function (p) { return p.attrs.length_mm; }); },
+    match: function (p, val) { return String(p.attrs.length_mm || '') === val; } },
+
+  { key: 'dn', label: 'cat.dn', type: 'select', fmt: function (v) { return 'DN' + v; },
+    values: function (ps) {
+      return uniqVals(ps, function (p) {
+        return p.variants.map(function (v) { return v.dims.dn; });
+      });
+    },
+    match: function (p, val) {
+      return p.variants.some(function (v) { return String(v.dims.dn || '') === val; });
+    } },
+
+  { key: 'thr', label: 'cat.thread', type: 'select',
+    values: function (ps) {
+      return uniqVals(ps, function (p) {
+        return p.variants.map(function (v) { return v.dims.thread; });
+      });
+    },
+    match: function (p, val) {
+      return p.variants.some(function (v) { return v.dims.thread === val; });
+    } },
+
+  { key: 'mat', label: 'cat.material', type: 'select',
+    values: function (ps) {
+      return uniqVals(ps, function (p) {
+        return [p.attrs.material].concat(p.variants.map(function (v) { return v.dims.material; }));
+      });
+    },
+    match: function (p, val) {
+      return p.attrs.material === val ||
+             p.variants.some(function (v) { return v.dims.material === val; });
+    } }
+];
 
 S.load(['catalogue']).then(function () {
   S.chrome('/catalog.html');
   S.applyStatic();
 
   var url = new URLSearchParams(location.search);
-  Q.cat = url.get('cat') || '';
-  Q.group = url.get('group') || '';
-  Q.q = url.get('q') || '';
-  Q.dia = Number(url.get('dia') || 0);
-  Q.ang = url.get('ang') || '';
+  ['cat', 'group', 'q', 'sort'].forEach(function (k) { Q[k] = url.get(k) || ''; });
+  FACETS.forEach(function (f) {
+    var v = url.get(f.key);
+    if (v) Q[f.key] = f.type === 'range' ? Number(v) : v;
+  });
 
-  // Categories are grouped in the dropdown too, so all 17 of them stay navigable.
   document.getElementById('cat').innerHTML =
     '<option value="">' + S.esc(S.t('cat.all')) + '</option>' +
     S.catalogue.groups.map(function (g) {
@@ -74,123 +138,192 @@ S.load(['catalogue']).then(function () {
                  ' (' + c.count + ')</option>';
         }).join('') + '</optgroup>';
     }).join('');
-
-  fillSelect('sort', ['low', 'high', 'az', 'size'], 'cat.sortRel', function (v) {
-    return S.t({ low: 'cat.sortLow', high: 'cat.sortHigh', az: 'cat.sortAZ', size: 'cat.sortSize' }[v]);
-  });
-  fillSelect('ang', uniqVals(function (p) { return p.attrs.angle; }), 'cat.any',
-             function (v) { return v + '°'; });
-  fillSelect('mat', uniqVals(function (p) {
-    var m = [p.attrs.material];
-    p.variants.forEach(function (v) { if (v.dims.material) m.push(v.dims.material); });
-    return m;
-  }), 'cat.any');
-
   document.getElementById('cat').value = Q.cat;
-  document.getElementById('ang').value = Q.ang;
-  document.getElementById('dia').value = Q.dia;
   document.getElementById('q').value = Q.q;
 
-  ['q', 'ang', 'mat', 'sort'].forEach(function (id) {
-    document.getElementById(id).addEventListener('input', function (e) {
-      Q[id] = e.target.value; render();
-    });
-  });
-  // Choosing a category drops whatever group you arrived from; otherwise the two
-  // filters fight each other and the grid looks broken.
+  fillSort();
+  document.getElementById('q').addEventListener('input', function (e) { Q.q = e.target.value; render(); });
+  document.getElementById('sort').addEventListener('input', function (e) { Q.sort = e.target.value; render(); });
   document.getElementById('cat').addEventListener('input', function (e) {
     Q.cat = e.target.value;
     if (Q.cat) Q.group = '';
+    dropFacets();               // last category's facets do not apply to this one
     render();
   });
-  document.getElementById('dia').addEventListener('input', function (e) {
-    Q.dia = Number(e.target.value); render();
-  });
   document.getElementById('clear').addEventListener('click', function () {
-    Q = { q: '', cat: '', group: '', dia: 0, ang: '', mat: '', sort: '' };
-    ['q', 'cat', 'ang', 'mat', 'sort'].forEach(function (id) { document.getElementById(id).value = ''; });
-    document.getElementById('dia').value = 0;
+    Q = { q: '', cat: '', group: '', sort: '' };
+    document.getElementById('cat').value = '';
+    document.getElementById('q').value = '';
+    document.getElementById('sort').value = '';
     render();
   });
   render();
 }).catch(S.fail);
 
-function uniqVals(fn) {
+function dropFacets() { FACETS.forEach(function (f) { delete Q[f.key]; }); }
+
+function uniqVals(ps, fn) {
   var s = {};
-  S.catalogue.products.forEach(function (p) {
-    var v = fn(p); (Array.isArray(v) ? v : [v]).forEach(function (x) { if (x) s[x] = 1; });
+  ps.forEach(function (p) {
+    var v = fn(p);
+    (Array.isArray(v) ? v : [v]).forEach(function (x) { if (x) s[x] = 1; });
   });
-  return Object.keys(s).sort(function (a, b) { return (Number(a) || 0) - (Number(b) || 0) || a.localeCompare(b); });
+  return Object.keys(s).sort(function (a, b) {
+    return (Number(a) || 0) - (Number(b) || 0) || a.localeCompare(b);
+  });
 }
-function fillSelect(id, values, anyKey, label) {
-  document.getElementById(id).innerHTML =
-    '<option value="">' + S.esc(S.t(anyKey)) + '</option>' +
-    values.map(function (v) {
-      return '<option value="' + S.esc(v) + '">' + S.esc(label ? label(v) : v) + '</option>';
-    }).join('');
+function uniqNums(ps, fn) {
+  var s = {};
+  ps.forEach(function (p) { p.variants.forEach(function (v) {
+    var x = fn(v); if (x != null) s[x] = 1;
+  }); });
+  return Object.keys(s).map(Number).sort(function (a, b) { return a - b; });
+}
+function fillSort() {
+  document.getElementById('sort').innerHTML =
+    '<option value="">' + S.esc(S.t('cat.sortRel')) + '</option>' +
+    [['low', 'cat.sortLow'], ['high', 'cat.sortHigh'], ['az', 'cat.sortAZ'], ['size', 'cat.sortSize']]
+      .map(function (o) {
+        return '<option value="' + o[0] + '"' + (Q.sort === o[0] ? ' selected' : '') + '>' +
+          S.esc(S.t(o[1])) + '</option>';
+      }).join('');
+}
+
+// Products in the current category or group, before any facet is applied. Facets are
+// built from this so they can never offer a value that returns nothing.
+function scope() {
+  return S.catalogue.products.filter(function (p) {
+    if (Q.cat && p.category !== Q.cat) return false;
+    if (Q.group && p.group !== Q.group) return false;
+    return true;
+  });
+}
+
+function activeFacets(ps) {
+  return FACETS.filter(function (f) { return f.values(ps).length > 1; });
+}
+
+function renderFacets(ps, shown) {
+  var box = document.getElementById('facets');
+  box.innerHTML = shown.length
+    ? shown.map(function (f) {
+        var vals = f.values(ps);
+        if (f.type === 'range') {
+          var lo = vals[0], hi = vals[vals.length - 1], cur = Q[f.key] || 0;
+          return '<div class="field"><label for="f_' + f.key + '">' + S.esc(S.t(f.label)) +
+            ' <span class="muted">' + (cur ? '≈ ' + cur + f.unit : '') + '</span></label>' +
+            '<input type="range" id="f_' + f.key + '" data-f="' + f.key + '" min="0" max="' + hi +
+            '" step="1" value="' + cur + '" style="padding:0">' +
+            '<span class="rangeends small muted">' + lo + f.unit + ' – ' + hi + f.unit + '</span></div>';
+        }
+        return '<div class="field"><label for="f_' + f.key + '">' + S.esc(S.t(f.label)) + '</label>' +
+          '<select id="f_' + f.key + '" data-f="' + f.key + '">' +
+          '<option value="">' + S.esc(S.t('cat.any')) + '</option>' +
+          vals.map(function (v) {
+            return '<option value="' + S.esc(v) + '"' + (Q[f.key] === v ? ' selected' : '') + '>' +
+              S.esc(f.fmt ? f.fmt(v) : v) + '</option>';
+          }).join('') + '</select></div>';
+      }).join('')
+    : '<p class="small muted">' + S.esc(S.t('cat.noFilters')) + '</p>';
+
+  box.querySelectorAll('[data-f]').forEach(function (el) {
+    el.addEventListener('input', function () {
+      var f = FACETS.filter(function (x) { return x.key === el.dataset.f; })[0];
+      var v = f.type === 'range' ? Number(el.value) : el.value;
+      if (v) Q[f.key] = v; else delete Q[f.key];
+      render();
+    });
+  });
 }
 
 function render() {
-  document.getElementById('dLbl').textContent = Q.dia ? '≈ ' + Q.dia + ' mm' : '';
+  var ps = scope();
+  var shown = activeFacets(ps);
+  // a facet that is no longer offered must not keep filtering invisibly
+  FACETS.forEach(function (f) {
+    if (Q[f.key] != null && shown.indexOf(f) < 0) delete Q[f.key];
+  });
+  renderFacets(ps, shown);
+
   var heading = Q.cat ? S.catLabel(Q.cat) : Q.group ? S.groupLabel(Q.group) : S.t('cat.h1');
   document.getElementById('h1').textContent = heading;
+  document.getElementById('fh').textContent =
+    (Q.cat || Q.group) ? S.t('cat.scope', { c: heading }) : S.t('cat.filters');
   document.title = heading + ' — Stefsotra';
 
-  var list = S.searchProducts({
-    cat: Q.cat, grp: Q.group, dia: Q.dia, ang: Q.ang, mat: Q.mat, text: Q.q
+  var list = ps.filter(function (p) {
+    return FACETS.every(function (f) {
+      return Q[f.key] == null || f.match(p, Q[f.key]);
+    });
   });
-
+  if (Q.q) {
+    var terms = Q.q.toLowerCase().split(/\s+/).filter(Boolean);
+    list = list.filter(function (p) {
+      var hay = (S.name(p) + ' ' + p.title + ' ' + p.tags.join(' ') + ' ' +
+        p.variants.map(function (v) { return v.title + ' ' + v.sku; }).join(' ')).toLowerCase();
+      return terms.every(function (t) { return hay.indexOf(t) >= 0; });
+    });
+  }
   list = sortList(list);
+
   document.getElementById('count').textContent = S.t('cat.results', { n: list.length });
   document.getElementById('grid').innerHTML = list.length
     ? list.map(S.tile).join('')
     : '<p class="muted">' + S.esc(S.t('cat.none')) + '</p>';
-  activeChips();
-  // the address bar follows the filters, so a filtered view can be bookmarked or sent
+  activeChips(shown);
+
   var qs = Object.keys(Q).filter(function (k) { return Q[k]; })
     .map(function (k) { return k + '=' + encodeURIComponent(Q[k]); }).join('&');
-  history.replaceState(null, '', '/catalog.html' + (qs ? '?' + qs : ''));
+  history.replaceState(null, '', S.url('/catalog.html') + (qs ? '?' + qs : ''));
 }
 
 function sortList(list) {
   var by = {
     low:  function (a, b) { return a.price_min - b.price_min; },
     high: function (a, b) { return b.price_max - a.price_max; },
-    az:   function (a, b) { return a.title.localeCompare(b.title); },
+    az:   function (a, b) { return S.name(a).localeCompare(S.name(b)); },
     size: function (a, b) { return b.variants.length - a.variants.length; }
   }[Q.sort];
   return by ? list.slice().sort(by) : list;
 }
 
-// Filters restated above the grid, each one removable. With five controls in a sidebar
-// it is otherwise easy to forget why a category looks half empty.
-function activeChips() {
+function activeChips(shown) {
   var on = [];
   if (Q.group) on.push(['group', S.groupLabel(Q.group)]);
   if (Q.cat) on.push(['cat', S.catLabel(Q.cat)]);
-  if (Q.dia) on.push(['dia', 'Ø ' + Q.dia + ' mm ±3']);
-  if (Q.ang) on.push(['ang', Q.ang + '°']);
-  if (Q.mat) on.push(['mat', Q.mat]);
+  shown.forEach(function (f) {
+    if (Q[f.key] != null) {
+      on.push([f.key, S.t(f.label) + ': ' +
+        (f.type === 'range' ? Q[f.key] + f.unit : (f.fmt ? f.fmt(Q[f.key]) : Q[f.key]))]);
+    }
+  });
   if (Q.q) on.push(['q', '“' + Q.q + '”']);
 
   var box = document.getElementById('active');
   box.innerHTML = on.length
     ? '<span class="small muted" style="align-self:center">' + S.esc(S.t('cat.active')) + '</span>' +
       on.map(function (c) {
-        return '<button type="button" class="chip" data-k="' + c[0] + '">' +
-          S.esc(c[1]) + ' <i>✕</i></button>';
+        return '<button type="button" class="chip" data-k="' + c[0] + '">' + S.esc(c[1]) + ' <i>✕</i></button>';
       }).join('')
     : '';
   box.querySelectorAll('.chip').forEach(function (b) {
     b.addEventListener('click', function () {
       var k = b.dataset.k;
-      Q[k] = k === 'dia' ? 0 : '';
-      var el = document.getElementById(k === 'group' ? 'cat' : k);
-      if (el) el.value = k === 'dia' ? 0 : '';
+      if (k === 'cat' || k === 'group' || k === 'q') {
+        Q[k] = '';
+        var el = document.getElementById(k === 'group' ? 'cat' : k);
+        if (el) el.value = '';
+        if (k === 'cat' || k === 'group') dropFacets();
+      } else {
+        delete Q[k];
+      }
       render();
     });
   });
 }
+</script>
+<script src="/assets/js/assistant.js"></script>
+<script>
 </script>
 </body>
 </html>

@@ -555,3 +555,68 @@ footer.site { border-top: 1px solid var(--line); background: var(--bg-2); margin
 .emptybox { border: 1px dashed var(--line); border-radius: var(--radius); padding: 34px 24px; text-align: center; background: var(--bg-2); }
 .emptybox h2 { margin: 0 0 6px; }
 .emptybox p { margin: 0 0 16px; }
+
+/* placeholder art for products we have not photographed yet */
+.tile .ph.none, .gallery .main.ph.none {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; background: var(--bg-2); color: var(--ink-3); padding: 14px; text-align: center;
+}
+.phart { width: 44%; max-width: 120px; height: auto; color: var(--ink-3); opacity: .55; }
+.gallery .main .phart { width: 34%; }
+.phname { font-size: .8rem; font-weight: 600; color: var(--ink-2); line-height: 1.3; }
+.gallery .main .phname { font-size: 1rem; }
+.phnote { font-size: .72rem; color: var(--ink-3); }
+
+.foot-legal { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.madeby { color: var(--ink-3); }
+.altname { margin: -2px 0 8px; }
+.rangeends { display: block; margin-top: 3px; }
+
+/* ---------------------------------------------------------------- touch targets
+   Measured at 320-768 px: the language switch, the burger, the assistant and cart
+   buttons, the range sliders, the star picker and the tile controls all came out
+   between 16 and 39 px tall. WCAG 2.5.5 asks for 44x44; a 16 px slider thumb on a
+   phone is genuinely hard to hit. Only the sizes change -- nothing moves. */
+@media (pointer: coarse), (max-width: 800px) {
+  .iconbtn, .menu-btn, .langs a, .langs button {
+    min-height: 44px; min-width: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .langs a, .langs button { padding-left: 12px; padding-right: 12px; }
+
+  .btn, .tile-btn, .size-chip, .chips button, .chip, .eg { min-height: 44px; }
+  .tile-btn, .tile-size { min-height: 44px; font-size: .9rem; }
+
+  select, input[type=text], input[type=number], input[type=email], input[type=tel],
+  input[type=search], textarea { min-height: 44px; font-size: 16px; }
+
+  /* 16px stops iOS Safari zooming the page when a field is focused */
+
+  input[type=range] { height: 44px; background: transparent; }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 3px; background: var(--line);
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 26px; height: 26px;
+    border-radius: 50%; background: var(--brand); margin-top: -10px;
+    border: 2px solid #fff; box-shadow: var(--shadow);
+  }
+  input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line); }
+  input[type=range]::-moz-range-thumb {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--brand); border: 2px solid #fff;
+  }
+
+  .starpick button { font-size: 2rem; min-width: 44px; min-height: 44px; padding: 0 4px; }
+  .linkish { min-height: 44px; display: inline-flex; align-items: center; }
+  .thumbs button { width: 56px; height: 56px; }
+  .steps li { flex-basis: 100%; }
+  .sortwrap { width: 100%; }
+  .sortwrap select { flex: 1; }
+  .foot-legal { flex-direction: column; gap: 4px; }
+}
+
+/* very narrow phones: one product per row reads better than two squeezed ones */
+@media (max-width: 359px) {
+  .grid { grid-template-columns: 1fr; }
+  .wrap { padding: 0 14px; }
+}

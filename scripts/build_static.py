@@ -166,8 +166,11 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
         '<meta property="og:image" content="%s">\n' % e(img) +
         '<meta property="og:locale" content="%s">\n' % {'ro': 'ro_MD', 'ru': 'ru_MD', 'en': 'en_US'}[lang] +
         '<meta name="twitter:card" content="summary_large_image">\n'
-        '<meta name="theme-color" content="#1d4e7a">\n'
-        '<link rel="icon" href="/assets/img/logo.png">\n'
+        '<meta name="theme-color" content="#bf2c2c">\n'
+        '<link rel="icon" href="/favicon.ico" sizes="32x32">\n'
+        '<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">\n'
+        '<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">\n'
+        '<link rel="manifest" href="/site.webmanifest">\n'
         '<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>\n'
         '<link rel="stylesheet" href="/assets/css/app.css">\n' +
         blocks +
@@ -195,8 +198,7 @@ def header_html(lang, current=''):
     links = ''.join(
         '<a href="%s%s"%s>%s</a>' % (px, url, ' aria-current="page"' if url == current else '',
                                      e(t(lang, key)))
-        for url, key in [('/vehicle.html', 'nav.vehicle'), ('/about/', 'nav.about'),
-                         ('/delivery/', 'nav.delivery'), ('/contact/', 'nav.contact')])
+        for url, key in [('/vehicle.html', 'nav.vehicle')])
 
     langs = ''.join(
         '<a href="%s%s" data-lang="%s" aria-pressed="%s">%s</a>'
@@ -259,12 +261,14 @@ def footer_html(lang, path):
         '<p class="small"><a href="tel:%s">%s</a></p>'
         '<p class="small"><a href="mailto:%s">%s</a></p>%s</div>%s</div>'
         '<div class="wrap foot-cats small">%s</div>'
-        '<div class="wrap foot-legal small">© 2026 STEFSOTRA · <a href="https://stefsotra.md">stefsotra.md</a></div>'
+        '<div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · '
+        '<a href="https://stefsotra.md">stefsotra.md</a></span>'
+        '<span class="madeby">%s</span></div>'
         '</footer>\n'
         % (e(t(lang, 'site.tagline')), e(c['phone_href']), e(c['phone']),
            e(c['email']), e(c['email']),
            ('<p class="small">%s</p>' % e(c['address'])) if c.get('address') else '',
-           colhtml, catlinks))
+           colhtml, catlinks, e(t(lang, 'foot.by'))))
 
 
 def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
@@ -311,8 +315,9 @@ def product_ld(lang, p):
     prices = [v['price'] for v in p['variants']]
     d = {
         '@context': 'https://schema.org', '@type': 'Product',
-        'name': p['title'],
-        'description': strip_tags(p['body_html'], 300) or range_label(p),
+        'name': p.get('title_' + lang) or p['title'],
+        'alternateName': p['title'],
+        'description': strip_tags(desc_html(lang, p), 300) or range_label(p),
         'category': cat_label(lang, p['category']),
         'brand': {'@type': 'Brand', 'name': p['vendor'] or 'Stefsotra'},
         'url': SITE + PREFIX[lang] + '/p/%s/' % p['handle'],
@@ -344,6 +349,37 @@ def faq_ld(faq):
 
 # ---------------------------------------------------------------- shared blocks
 
+PLACEHOLDER_ART = {'hoses': '<path d="M14 34c0-9 7-16 16-16h20c9 0 16 7 16 16v12c0 9-7 16-16 16H30c-9 0-16-7-16-16z"/><path d="M14 40h56M22 24v32M58 24v32"/>', 'couplings': '<circle cx="40" cy="40" r="22"/><circle cx="40" cy="40" r="12"/><path d="M18 40h-8M70 40h-8M40 18v-8M40 70v-8"/>', 'sealing': '<circle cx="40" cy="40" r="24"/><circle cx="40" cy="40" r="17"/><path d="M40 16v8M31 17l3 8M49 17l-3 8"/>', 'materials': '<path d="M12 30h44v28H12z"/><path d="M20 22h44v28"/><path d="M28 14h44v28"/>', 'vehicle': '<ellipse cx="40" cy="40" rx="26" ry="16"/><ellipse cx="40" cy="40" rx="18" ry="9"/><path d="M14 40h52"/>', 'other': '<rect x="16" y="20" width="48" height="40" rx="4"/><path d="M16 34h48"/>'}
+
+
+def placeholder(lang, prod):
+    """Drawn stand-in for a product we have no photograph of.
+
+    A blank grey box reads as a broken image. An outline of the right kind of part,
+    with the product's own name under it, reads as what it is: a real product we have
+    not photographed yet. It is never another product's photo -- borrowing one is how
+    the original catalogue ended up with 41 images showing the wrong item.
+    """
+    art = PLACEHOLDER_ART.get(prod['group'], PLACEHOLDER_ART['other'])
+    return ('<div class="ph none"><svg class="phart" viewBox="0 0 80 80" aria-hidden="true" '
+            'fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" '
+            'stroke-linecap="round">%s</svg><span class="phname">%s</span>'
+            '<span class="phnote">%s</span></div>'
+            % (art, e(prod['title']), e(t(lang, 'ph.none'))))
+
+
+def desc_html(lang, p):
+    """Description in the page's language. Falls back to the original whenever a
+    translation is absent or was held back by the verifier in
+    translate_descriptions.py -- an English description beats a wrong number."""
+    return p.get('body_' + lang) or p['body_html']
+
+
+def name(lang, p):
+    """The product's name in the page's language, falling back to the English original."""
+    return p.get('title_' + lang) or p['title']
+
+
 def tile(lang, p):
     px = PREFIX[lang]
     img = p['images'][0] if p['images'] else None
@@ -363,9 +399,9 @@ def tile(lang, p):
         '<div class="tile-add">%s<button type="button" class="btn tile-btn"%s>%s</button></div></article>'
         % (e(p['handle']), px, e(p['handle']),
            ('<div class="ph"><img loading="lazy" src="%s" alt="%s" width="1200" height="1200"></div>'
-            % (e(img), e(p['title']))) if img else
-           ('<div class="ph none">%s</div>' % e(t(lang, 'prod.noImage'))),
-           e(p['title']), e(range_label(p)), price, sizes,
+            % (e(img), e(name(lang, p)))) if img else
+           placeholder(lang, p),
+           e(name(lang, p)), e(range_label(p)), price, sizes,
            (' data-v="%s"' % e(p['variants'][0]['title'])) if one else '',
            e(t(lang, 'prod.add'))))
 
@@ -478,9 +514,9 @@ def build_category(lang, key, count):
     grp = CAT_OF.get(key, '')
 
     title = {
-        'ro': '%s în Moldova — %d produse, de la %s | Stefsotra' % (label, len(prods), money(lo, lang)),
-        'ru': '%s в Молдове — %d товаров, от %s | Stefsotra' % (label, len(prods), money(lo, lang)),
-        'en': '%s in Moldova — %d products from %s | Stefsotra' % (label, len(prods), money(lo, lang)),
+        'ro': '%s Chișinău — %d produse, de la %s | Stefsotra' % (label, len(prods), money(lo, lang)),
+        'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra' % (label, len(prods), money(lo, lang)),
+        'en': '%s in Chișinău — %d products from %s | Stefsotra' % (label, len(prods), money(lo, lang)),
     }[lang]
     desc = {
         'ro': '%s pe stoc la Stefsotra: %d produse, %d dimensiuni, preț de la %s. Livrare în %s '
@@ -528,12 +564,20 @@ def build_group(lang, g):
     prods = [p for p in CAT['products'] if p['group'] == g['key']]
     label = group_label(lang, g['key'])
     lo = min(p['price_min'] for p in prods)
-    title = '%s — Stefsotra %s' % (label, GEO[lang])
+    sizes = sum(len(p['variants']) for p in prods)
+    title = {
+        'ro': '%s Chișinău — %d produse, de la %s | Stefsotra',
+        'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra',
+        'en': '%s in Chișinău — %d products from %s | Stefsotra',
+    }[lang] % (label, len(prods), money(lo, lang))
     desc = {
-        'ro': '%s la Stefsotra: %d produse, preț de la %s. %s. Livrare în toată Moldova.',
-        'ru': '%s в Stefsotra: %d товаров, цена от %s. %s. Доставка по всей Молдове.',
-        'en': '%s at Stefsotra: %d products from %s. %s. Delivery across Moldova.',
-    }[lang] % (label, len(prods), money(lo, lang),
+        'ro': '%s la Stefsotra Chișinău: %d produse în %d dimensiuni, preț de la %s. %s. '
+              'Tăiem la dimensiune fără cost, livrare în Chișinău și în toată Moldova.',
+        'ru': '%s в Stefsotra, Кишинёв: %d товаров в %d размерах, цена от %s. %s. '
+              'Режем по размеру бесплатно, доставка по Кишинёву и всей Молдове.',
+        'en': '%s at Stefsotra in Chișinău: %d products in %d sizes, from %s. %s. '
+              'Cut to size free of charge, delivery in Chișinău and across Moldova.',
+    }[lang] % (label, len(prods), sizes, money(lo, lang),
                ', '.join(cat_label(lang, c['key']) for c in g['categories']))
 
     cards = ''.join(
@@ -566,15 +610,16 @@ def build_product(lang, p):
     price = (money(p['price_min'], lang) if p['price_min'] == p['price_max']
              else '%s %s – %s' % (t(lang, 'cat.from'), money(p['price_min'], lang), money(p['price_max'], lang)))
 
-    title = '%s — %s | Stefsotra %s' % (p['title'], rng or label, GEO[lang])
+    nm = name(lang, p)
+    title = '%s — %s | Stefsotra %s' % (nm, rng or label, GEO[lang])
     if len(title) > 68:
-        title = '%s | Stefsotra %s' % (p['title'], GEO[lang])
-    body_txt = strip_tags(p['body_html'], 90)
+        title = '%s | Stefsotra %s' % (nm, GEO[lang])
+    body_txt = strip_tags(desc_html(lang, p), 90)
     desc = {
         'ro': '%s. %s. Preț de la %s, %d dimensiuni pe stoc. %sLivrare în %s și în toată Moldova.',
         'ru': '%s. %s. Цена от %s, %d размеров в наличии. %sДоставка по %s и всей Молдове.',
         'en': '%s. %s. From %s, %d sizes in stock. %sDelivery in %s and across Moldova.',
-    }[lang] % (p['title'], rng or label, money(p['price_min'], lang), len(p['variants']),
+    }[lang] % (nm, rng or label, money(p['price_min'], lang), len(p['variants']),
                body_txt + '. ' if body_txt else '', CITY[lang])
 
     imgs = p['images']
@@ -586,8 +631,8 @@ def build_product(lang, p):
             'loading="lazy" width="1200" height="1200"></button>'
             % (i, 'true' if i == 0 else 'false', e(u)) for i, u in enumerate(imgs))
          if len(imgs) > 1 else '')
-    ) if imgs else ('<div class="main" style="display:grid;place-items:center;background:var(--bg-2)">'
-                    '<span class="muted small">%s</span></div>' % e(t(lang, 'prod.noImage')))
+    ) if imgs else ('<div class="main ph none">%s</div>'
+                    % placeholder(lang, p).replace('<div class="ph none">', '').replace('</div>', ''))
 
     rows = []
     ids = [v['dims']['id_mm'] for v in p['variants'] if v['dims'].get('id_mm') is not None]
@@ -631,9 +676,11 @@ def build_product(lang, p):
         '<div class="wrap">' +
         crumb_html(lang, [(t(lang, 'nav.home'), '/'),
                           (group_label(lang, p['group']), '/g/%s/' % p['group']),
-                          (label, '/c/%s/' % p['category']), (p['title'], '')]) +
+                          (label, '/c/%s/' % p['category']), (nm, '')]) +
         '<div class="pdp"><div class="gallery">%s</div><div>' % gallery +
-        '<h1>%s</h1><p class="price big">%s</p>' % (e(p['title']), e(price)) +
+        '<h1>%s</h1>%s<p class="price big">%s</p>'
+        % (e(nm), ('<p class="altname small muted">%s</p>' % e(p['title'])) if nm != p['title'] else '',
+           e(price)) +
         '<div class="field" style="margin-top:20px"><label for="variant">%s</label>'
         '<select id="variant">%s</select></div>' % (e(t(lang, 'prod.variants')), opts) +
         '<p class="muted small" id="selInfo" style="margin:-6px 0 12px"></p>'
@@ -644,7 +691,7 @@ def build_product(lang, p):
                     for k in ('prod.noPay', 'prod.warr', 'prod.cut'))) +
         '<h2 style="margin-top:26px">%s</h2>%s</div></div>' % (e(t(lang, 'prod.spec')), spec) +
         sizetable +
-        ('<div class="desc">%s</div>' % p['body_html'] if p['body_html'] else '') +
+        ('<div class="desc">%s</div>' % desc_html(lang, p) if p['body_html'] else '') +
         review_block(lang, p) +
         ('<section style="margin-top:40px"><h2>%s</h2><div class="grid">%s</div></section>'
          % (e(t(lang, 'prod.related')), ''.join(tile(lang, x) for x in related)) if related else '') +

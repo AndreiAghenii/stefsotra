@@ -218,6 +218,29 @@
     return out.join(' · ');
   };
 
+  // Drawn stand-in for a product with no photograph -- see placeholder() in
+  // build_static.py for why this is never another product's picture.
+  var PH_ART = {"hoses": "<path d=\"M14 34c0-9 7-16 16-16h20c9 0 16 7 16 16v12c0 9-7 16-16 16H30c-9 0-16-7-16-16z\"/><path d=\"M14 40h56M22 24v32M58 24v32\"/>", "couplings": "<circle cx=\"40\" cy=\"40\" r=\"22\"/><circle cx=\"40\" cy=\"40\" r=\"12\"/><path d=\"M18 40h-8M70 40h-8M40 18v-8M40 70v-8\"/>", "sealing": "<circle cx=\"40\" cy=\"40\" r=\"24\"/><circle cx=\"40\" cy=\"40\" r=\"17\"/><path d=\"M40 16v8M31 17l3 8M49 17l-3 8\"/>", "materials": "<path d=\"M12 30h44v28H12z\"/><path d=\"M20 22h44v28\"/><path d=\"M28 14h44v28\"/>", "vehicle": "<ellipse cx=\"40\" cy=\"40\" rx=\"26\" ry=\"16\"/><ellipse cx=\"40\" cy=\"40\" rx=\"18\" ry=\"9\"/><path d=\"M14 40h52\"/>", "other": "<rect x=\"16\" y=\"20\" width=\"48\" height=\"40\" rx=\"4\"/><path d=\"M16 34h48\"/>"};
+  S.placeholder = function (p) {
+    return '<div class="ph none">' +
+      '<svg class="phart" viewBox="0 0 80 80" aria-hidden="true" fill="none" stroke="currentColor" ' +
+      'stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">' +
+      (PH_ART[p.group] || PH_ART.other) + '</svg>' +
+      '<span class="phname">' + S.esc(p.title) + '</span>' +
+      '<span class="phnote">' + S.esc(S.t('ph.none')) + '</span></div>';
+  };
+
+  // Product name in the current language, falling back to the English original.
+  S.name = function (p) {
+    return p['title_' + S.lang] || p.title;
+  };
+
+  // Description likewise. A missing translation means the verifier in
+  // translate_descriptions.py held it back, so the original is shown instead.
+  S.body = function (p) {
+    return p['body_' + S.lang] || p.body_html;
+  };
+
   S.img = function (p) {
     return p.images && p.images.length ? p.images[0] : null;
   };
@@ -239,10 +262,10 @@
     var one = p.variants.length === 1;
     return '<article class="tile" data-h="' + S.esc(p.handle) + '">' +
       '<a class="tile-link" href="' + S.url('/p/' + encodeURIComponent(p.handle) + '/') + '">' +
-        (img ? '<div class="ph"><img loading="lazy" src="' + S.esc(img) + '" alt="' + S.esc(p.title) + '"></div>'
-             : '<div class="ph none">' + S.esc(S.t('prod.noImage')) + '</div>') +
+        (img ? '<div class="ph"><img loading="lazy" src="' + S.esc(img) + '" alt="' + S.esc(S.name(p)) + '"></div>'
+             : S.placeholder(p)) +
         '<div class="meta">' +
-          '<div class="name">' + S.esc(p.title) + '</div>' +
+          '<div class="name">' + S.esc(S.name(p)) + '</div>' +
           '<div class="dims">' + S.esc(S.rangeLabel(p)) + '</div>' +
           '<div class="price">' +
             (p.price_min === p.price_max ? S.money(p.price_min)
@@ -316,15 +339,9 @@
     '</div></div>';
   }
 
+  // The company pages sit in the footer, by request. The header carries only what a
+  // shopper is here to do: find a product, find one for their vehicle, search, order.
   S.header = function (current) {
-    var pageLinks = [
-      ['/about/', 'nav.about'],
-      ['/delivery/', 'nav.delivery'],
-      ['/contact/', 'nav.contact']
-    ].map(function (n) {
-      return '<a href="' + S.url(n[0]) + '"' + (n[0] === current ? ' aria-current="page"' : '') +
-             '>' + S.esc(S.t(n[1])) + '</a>';
-    }).join('');
 
     var langs = LANGS.map(function (l) {
       return '<button type="button" data-lang="' + l + '" aria-pressed="' +
@@ -341,7 +358,6 @@
             S.esc(S.t('nav.products')) + '<i></i></button>' +
           '<a href="' + S.url('/vehicle.html') + '"' + (current === '/vehicle.html' ? ' aria-current="page"' : '') +
             '>' + S.esc(S.t('nav.vehicle')) + '</a>' +
-          pageLinks +
         '</nav>' +
         '<form class="hsearch" action="' + S.url('/search.html') + '" method="get" role="search">' +
           '<input type="search" name="q" aria-label="' + S.esc(S.t('nav.search')) + '" placeholder="' +
@@ -385,8 +401,10 @@
         (c.email ? '<p class="small"><a href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a></p>' : '') +
         (c.address ? '<p class="small">' + S.esc(c.address) + '</p>' : '') +
       '</div>' + cols +
-    '</div><div class="wrap foot-legal small">© ' + new Date().getFullYear() +
-      ' STEFSOTRA · <a href="https://stefsotra.md">stefsotra.md</a></div></footer>';
+    '</div><div class="wrap foot-legal small">' +
+      '<span>© ' + new Date().getFullYear() + ' STEFSOTRA · ' +
+      '<a href="https://stefsotra.md">stefsotra.md</a></span>' +
+      '<span class="madeby">' + S.esc(S.t('foot.by')) + '</span></div></footer>';
   };
 
   S.chrome = function (current) {
