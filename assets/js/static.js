@@ -107,19 +107,31 @@
 
     // Netlify accepts a urlencoded POST to any path on the site, which is what lets a
     // static page take a submission without a backend.
-    [['rf', 'rok'], ['cf', 'ok']].forEach(function (pair) {
-      var f = document.getElementById(pair[0]);
-      var ok = document.getElementById(pair[1]);
-      if (!f || !ok) return;
-      f.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var done = function () { f.hidden = true; ok.hidden = false; };
-        fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(new FormData(f)).toString()
-        }).then(done).catch(done);   // locally there is nothing to post to
+    [['rf', 'rok', 'Recenzie Stefsotra'], ['cf', 'ok', 'Mesaj de pe stefsotra.md']]
+      .forEach(function (spec) {
+        var f = document.getElementById(spec[0]);
+        var ok = document.getElementById(spec[1]);
+        if (!f || !ok) return;
+        f.addEventListener('submit', function (e) {
+          e.preventDefault();
+          fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(new FormData(f)).toString()
+          }).then(function (r) {
+            if (!r.ok) throw new Error(r.status);
+            f.hidden = true; ok.hidden = false;
+          }).catch(function () {
+            // Netlify unreachable or not configured: hand it to the mail client so the
+            // message still reaches the shop rather than vanishing.
+            var lines = [];
+            new FormData(f).forEach(function (v, k) {
+              if (k !== 'form-name' && k !== 'company' && v) lines.push(k + ': ' + v);
+            });
+            location.href = S.mailto(spec[2], lines.join('\n'));
+            f.hidden = true; ok.hidden = false;
+          });
+        });
       });
-    });
   }
 })();

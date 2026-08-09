@@ -622,3 +622,79 @@ footer.site { border-top: 1px solid var(--line); background: var(--bg-2); margin
 }
 .madeby a { color: var(--ink-3); }
 .madeby a:hover { color: var(--brand); }
+
+/* ---------------------------------------------------------------- mobile drawer
+   The phone menu used to be the desktop bar stacked vertically -- two items, one of
+   which opened a mega-menu inside itself. This is a real drawer: search first, then
+   the product groups as an accordion, then the company pages, language and phone. */
+body.noscroll { overflow: hidden; }
+/* belt and braces: a fixed panel must never be able to widen the document */
+.drawer, .drawer-back { max-width: 100vw; }
+.drawer-back {
+  position: fixed; inset: 0; z-index: 60; background: rgba(22, 25, 29, .45);
+  backdrop-filter: blur(2px);
+}
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 61;
+  width: min(390px, 92vw); background: var(--bg);
+  display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
+  animation: drawerIn .18s ease-out;
+}
+@keyframes drawerIn { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .drawer { animation: none; } }
+
+.drawer > header {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 16px; border-bottom: 1px solid var(--line); flex: none;
+}
+.drawer > header .logo img { height: 26px; }
+.drawer .ai-x { font-size: 1.2rem; min-width: 44px; min-height: 44px; }
+
+.drawer-search { display: flex; gap: 8px; padding: 14px 16px; border-bottom: 1px solid var(--line); flex: none; }
+.drawer-search input { flex: 1; min-width: 0; }
+
+.drawer-body { flex: 1; overflow-y: auto; padding: 6px 16px 20px; -webkit-overflow-scrolling: touch; }
+.dlabel {
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3);
+  font-weight: 700; margin: 18px 0 6px;
+}
+.dgroup { border-bottom: 1px solid var(--line); }
+.dgroup summary {
+  cursor: pointer; list-style: none; padding: 14px 26px 14px 0; font-weight: 600;
+  position: relative; min-height: 44px; display: flex; align-items: center;
+}
+.dgroup summary::-webkit-details-marker { display: none; }
+.dgroup summary::after {
+  content: ""; position: absolute; right: 6px; top: 50%; width: 8px; height: 8px;
+  border: solid var(--ink-3); border-width: 0 2px 2px 0;
+  transform: translateY(-70%) rotate(45deg); transition: transform .15s;
+}
+.dgroup[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
+.dgroup ul { list-style: none; margin: 0; padding: 0 0 10px; }
+.dgroup li a {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 11px 6px; color: var(--ink-2); font-size: .94rem; min-height: 44px;
+}
+.dgroup li a:hover { color: var(--brand); text-decoration: none; }
+.dgroup li a span { color: var(--ink-3); font-size: .8rem; }
+.dgroup li.all a { color: var(--brand); font-weight: 600; }
+
+.dlinks { display: grid; }
+.dlinks a {
+  padding: 13px 6px; border-bottom: 1px solid var(--line); color: var(--ink);
+  font-size: .96rem; min-height: 44px; display: flex; align-items: center;
+}
+.dlinks a:hover { color: var(--brand); text-decoration: none; }
+
+.drawer > footer {
+  flex: none; padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line); background: var(--bg-2);
+  display: flex; align-items: center; gap: 12px;
+}
+.drawer > footer .btn { flex: 1; }
+
+/* the old inline nav is only for the desktop bar now */
+@media (max-width: 840px) { nav.main { display: none !important; } }
+@media (min-width: 841px) { .drawer, .drawer-back { display: none !important; } }
+.desc .summary { font-size: 1rem; color: var(--ink); }
+.desc.orig { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); }

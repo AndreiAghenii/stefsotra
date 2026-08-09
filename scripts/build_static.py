@@ -142,7 +142,9 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
         for l in LANGS)
     alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, path)
     canonical = SITE + PREFIX[lang] + path
-    img = image or (SITE + '/assets/img/logo.png')
+    # 1.91:1 preview card. A square product photo was being cropped through the middle
+    # by every chat app; these are drawn by scripts/build_og.py.
+    img = image or (SITE + '/assets/img/og-default.png')
     blocks = ''.join(
         '<script type="application/ld+json">%s</script>' %
         json.dumps(b, ensure_ascii=False, separators=(',', ':'))
@@ -164,6 +166,9 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
         '<meta property="og:description" content="%s">\n' % e(desc) +
         '<meta property="og:url" content="%s">\n' % e(canonical) +
         '<meta property="og:image" content="%s">\n' % e(img) +
+        '<meta property="og:image:width" content="1200">\n'
+        '<meta property="og:image:height" content="630">\n'
+        '<meta property="og:image:alt" content="%s">\n' % e(title) +
         '<meta property="og:locale" content="%s">\n' % {'ro': 'ro_MD', 'ru': 'ru_MD', 'en': 'en_US'}[lang] +
         '<meta name="twitter:card" content="summary_large_image">\n'
         '<meta name="theme-color" content="#bf2c2c">\n'
@@ -278,6 +283,9 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
            header_html(lang, current).replace('{PATH}', path) +
            '<main>' + body + '</main>' +
            footer_html(lang, path) +
+           '<script>window.__CONTACT=%s;</script>' % json.dumps(
+               {k: CONTACT[k] for k in ('email', 'phone', 'phone_href')},
+               ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'
            '<script src="/assets/js/static.js"></script>' + scripts +
@@ -318,7 +326,7 @@ def product_ld(lang, p):
         '@context': 'https://schema.org', '@type': 'Product',
         'name': p.get('title_' + lang) or p['title'],
         'alternateName': p['title'],
-        'description': strip_tags(desc_html(lang, p), 300) or range_label(p),
+        'description': strip_tags(summary(lang, p), 300),
         'category': cat_label(lang, p['category']),
         'brand': {'@type': 'Brand', 'name': p['vendor'] or 'Stefsotra'},
         'url': SITE + PREFIX[lang] + '/p/%s/' % p['handle'],
@@ -374,6 +382,54 @@ def desc_html(lang, p):
     translation is absent or was held back by the verifier in
     translate_descriptions.py -- an English description beats a wrong number."""
     return p.get('body_' + lang) or p['body_html']
+
+
+def summary(lang, p):
+    """A description in the page's language, assembled from verified data.
+
+    The prose descriptions came from Shopify in English (and Russian for the camlocks),
+    and translating 145,000 characters of them needs a model -- see
+    translate_descriptions.py. Until that has been run the page would show Romanian
+    headings above English text.
+
+    This fills the gap without a translation risk: every sentence is built from a field
+    that is already checked -- the parsed dimensions, the angle, the wall thickness, the
+    temperature range read out of the source text, the price. Nothing here is invented
+    and nothing is machine-translated, so it is correct in every language from the start.
+    """
+    out = []
+    n = len(p['variants'])
+    out.append(t(lang, 'sum.is' if n > 1 else 'sum.is1', name=name(lang, p), n=n))
+
+    ids = [v['dims']['id_mm'] for v in p['variants'] if v['dims'].get('id_mm') is not None]
+    if ids:
+        d = ('%g mm' % min(ids)) if min(ids) == max(ids) else ('%g–%g mm' % (min(ids), max(ids)))
+        out.append(t(lang, 'sum.dia', d=d))
+    clamps = [v['dims'] for v in p['variants'] if v['dims'].get('clamp_min') is not None]
+    if clamps:
+        lo = min(c['clamp_min'] for c in clamps)
+        hi = max(c['clamp_max'] for c in clamps)
+        out.append(t(lang, 'sum.clamp', d='%g–%g mm' % (lo, hi)))
+
+    if p['attrs'].get('angle'):
+        out.append(t(lang, 'sum.angle', a=p['attrs']['angle']))
+    mat = p['attrs'].get('material')
+    if mat:
+        out.append(t(lang, 'sum.material', m=STR[lang].get('mat.' + mat, mat)))
+    if p['spec'].get('wall_mm'):
+        out.append(t(lang, 'sum.wall', w=p['spec']['wall_mm']))
+    if p['spec'].get('temperature'):
+        out.append(t(lang, 'sum.temp', t=p['spec']['temperature']))
+    if p['spec'].get('max_pressure'):
+        out.append(t(lang, 'sum.press', p=p['spec']['max_pressure']))
+    if p['spec'].get('standards'):
+        out.append(t(lang, 'sum.std', s=', '.join(p['spec']['standards'])))
+
+    out.append(t(lang, 'sum.price', p=money(p['price_min'], lang)))
+    if p['group'] == 'hoses':
+        out.append(t(lang, 'sum.cut'))
+    out.append(t(lang, 'sum.deliver'))
+    return ' '.join(out)
 
 
 def name(lang, p):
@@ -438,8 +494,25 @@ def build_home(lang):
               'and across Moldova.' % (CAT['count'], variants),
     }[lang]
 
-    picks = [p for p in CAT['products'] if p['images']
-             and p['category'] in ('silicone-hose', 'camlock', 'storz', 'industrial-hose')][:4]
+    # Four products that look different from each other. Filtering only by category put
+    # the KAMAZ and the Sprinter hose side by side, and they share one photograph -- see
+    # scripts/image_signatures.py. Pick on the picture, not on the product record.
+    picks, seen_sig, seen_cat = [], [], set()
+    for p in CAT['products']:
+        if not p['images'] or p['category'] not in ('silicone-hose', 'camlock', 'storz',
+                                                    'industrial-hose', 'pvc-hose', 'clamp'):
+            continue
+        sig = p.get('img_sig')
+        if sig and any(bin(int(sig, 16) ^ int(s2, 16)).count('1') <= 6 for s2 in seen_sig):
+            continue
+        if p['category'] in seen_cat:
+            continue
+        picks.append(p)
+        seen_cat.add(p['category'])
+        if sig:
+            seen_sig.append(sig)
+        if len(picks) == 4:
+            break
     art = ''.join(
         '<a class="hero-tile t%d" href="%s/p/%s/" title="%s"><img src="%s" alt="%s" '
         'width="1200" height="1200"%s></a>'
@@ -502,7 +575,6 @@ def build_home(lang):
                                    'target': SITE + PREFIX[lang] + '/search.html?q={search_term_string}',
                                    'query-input': 'required name=search_term_string'}}
     return page(lang, '/', title, desc, body,
-                image=picks[0]['images'][0] if picks else None,
                 jsonld=[org_ld(), site_ld])
 
 
@@ -556,7 +628,6 @@ def build_category(lang, key, count):
                              (group_label(lang, grp), '/g/%s/' % grp),
                              (label, '/c/%s/' % key)])
     return page(lang, '/c/%s/' % key, title, desc, body,
-                image=next((p['images'][0] for p in prods if p['images']), None),
                 jsonld=[lst, crumb])
 
 
@@ -615,7 +686,7 @@ def build_product(lang, p):
     title = '%s — %s | Stefsotra %s' % (nm, rng or label, GEO[lang])
     if len(title) > 68:
         title = '%s | Stefsotra %s' % (nm, GEO[lang])
-    body_txt = strip_tags(desc_html(lang, p), 90)
+    body_txt = strip_tags(summary(lang, p), 90)
     desc = {
         'ro': '%s. %s. Preț de la %s, %d dimensiuni pe stoc. %sLivrare în %s și în toată Moldova.',
         'ru': '%s. %s. Цена от %s, %d размеров в наличии. %sДоставка по %s и всей Молдове.',
@@ -689,10 +760,16 @@ def build_product(lang, p):
         '<ul class="reassure">%s</ul>' % (
             e(t(lang, 'prod.choose')),
             ''.join('<li>%s</li>' % e(t(lang, k))
-                    for k in ('prod.noPay', 'prod.warr', 'prod.cut'))) +
+                    for k in ('prod.noPay', 'prod.cut'))) +
         '<h2 style="margin-top:26px">%s</h2>%s</div></div>' % (e(t(lang, 'prod.spec')), spec) +
         sizetable +
-        ('<div class="desc">%s</div>' % desc_html(lang, p) if p['body_html'] else '') +
+        ('<div class="desc"><h2>%s</h2><p class="summary">%s</p></div>'
+         % (e(t(lang, 'prod.summary')), e(summary(lang, p)))) +
+        ('<div class="desc orig"><h2>%s</h2>%s%s</div>'
+         % (e(t(lang, 'prod.origDesc')),
+            ('<p class="small muted">%s</p>' % e(t(lang, 'prod.origNote')))
+            if not p.get('body_' + lang) else '',
+            desc_html(lang, p)) if p['body_html'] else '') +
         review_block(lang, p) +
         ('<section style="margin-top:40px"><h2>%s</h2><div class="grid">%s</div></section>'
          % (e(t(lang, 'prod.related')), ''.join(tile(lang, x) for x in related)) if related else '') +
@@ -705,7 +782,7 @@ def build_product(lang, p):
                            'images': p['images']}, ensure_ascii=False, separators=(',', ':')))
 
     return page(lang, '/p/%s/' % p['handle'], title, desc, body,
-                image=imgs[0] if imgs else None,
+                image=SITE + '/assets/og/%s.png' % p['handle'],
                 jsonld=[product_ld(lang, p),
                         crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
                                          (label, '/c/%s/' % p['category']),
@@ -886,6 +963,9 @@ def build_404():
     doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404', noindex=True) +
            header_html(lang).replace('{PATH}', '/') + '<main>' + body + '</main>' +
            footer_html(lang, '/') +
+           '<script>window.__CONTACT=%s;</script>' % json.dumps(
+               {k: CONTACT[k] for k in ('email', 'phone', 'phone_href')},
+               ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'
            '<script src="/assets/js/static.js"></script></body></html>')

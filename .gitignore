@@ -9,3 +9,7 @@ node_modules/
 # Cached copy of the live Shopify feed. Regenerate with:
 #   python3 scripts/build_catalogue.py
 data/_raw.json
+
+# Downloaded originals used to draw the preview cards. Regenerate with:
+#   python3 scripts/build_og.py
+data/_img_cache/

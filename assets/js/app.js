@@ -126,6 +126,23 @@
     return catPromise;
   };
 
+  // Where every request goes. The value comes from data/pages.json; the pre-rendered
+  // pages carry it inline as window.__CONTACT because they never fetch that file. The
+  // literal is only a last resort so a form can never lose its destination.
+  S.contact = function () {
+    return (window.__CONTACT) || S.pagesContact ||
+           { email: 'stefsotra@mail.ru', phone: '+373 (22) 55-39-54', phone_href: '+37322553954' };
+  };
+
+  // A mailto with the whole request already written out. This is the fallback when
+  // Netlify is unreachable, and a visible option in its own right -- some customers
+  // would simply rather send an email.
+  S.mailto = function (subject, body) {
+    return 'mailto:' + S.contact().email +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
+  };
+
   S.byHandle = function (handle) {
     if (!S.catalogue) return null;
     return S.catalogue.products.filter(function (p) { return p.handle === handle; })[0];
@@ -425,10 +442,7 @@
       });
     });
 
-    var mb = document.querySelector('.menu-btn');
-    if (mb) mb.addEventListener('click', function () {
-      document.getElementById('mainnav').classList.toggle('open');
-    });
+    buildDrawer();
 
     // Products mega-menu: hover on pointer devices, click everywhere (and on touch,
     // where hover would otherwise make it impossible to close).
@@ -546,6 +560,97 @@
       b.addEventListener('click', function () { if (S.assistant) S.assistant.open(); });
     });
   };
+
+  /* --------------------------------------------------------------- mobile menu
+     On a phone the old menu was the desktop bar stacked vertically: two items, one of
+     which opened a mega-menu inside it. You could not reach a category without two
+     taps into a panel that was never designed to be there.
+
+     This is a proper drawer instead -- search, then the product groups as an accordion,
+     then the vehicle finder, the company pages, the language switch and the phone
+     number. It is built once here from the mega-menu already in the page, so the
+     pre-rendered pages and the JavaScript pages get the same thing without a second
+     implementation to keep in step. */
+
+  function buildDrawer() {
+    var btn = document.querySelector('.menu-btn');
+    var mega = document.getElementById('mega');
+    if (!btn || document.getElementById('drawer')) return;
+
+    var groups = mega ? [].slice.call(mega.querySelectorAll('.mega-col')).filter(function (c) {
+      return !c.classList.contains('mega-cta');
+    }) : [];
+
+    var acc = groups.map(function (col, i) {
+      var head = col.querySelector('.mega-h');
+      var items = [].slice.call(col.querySelectorAll('li a')).map(function (a) {
+        return '<li><a href="' + a.getAttribute('href') + '">' + a.innerHTML + '</a></li>';
+      }).join('');
+      return '<details class="dgroup"' + (i === 0 ? ' open' : '') + '>' +
+        '<summary>' + S.esc(head.textContent) + '</summary>' +
+        '<ul>' + items + '<li class="all"><a href="' + head.getAttribute('href') + '">' +
+        S.esc(S.t('home.seeAll')) + ' →</a></li></ul></details>';
+    }).join('');
+
+    var pages = [['/vehicle.html', 'nav.vehicle'], ['/about/', 'nav.about'],
+                 ['/delivery/', 'nav.delivery'], ['/partners/', 'nav.partners'],
+                 ['/returns/', 'nav.returns'], ['/warranty/', 'nav.warranty'],
+                 ['/contact/', 'nav.contact']]
+      .map(function (l) {
+        return '<a href="' + S.url(l[0]) + '">' + S.esc(S.t(l[1])) + '</a>';
+      }).join('');
+
+    var langs = LANGS.map(function (l) {
+      return '<a href="' + S.langUrl(l) + '" data-lang="' + l + '" aria-pressed="' +
+             (l === S.lang) + '">' + l + '</a>';
+    }).join('');
+
+    var c = S.contact();
+
+    document.body.insertAdjacentHTML('beforeend',
+      '<div class="drawer-back" id="drawerBack" hidden></div>' +
+      '<aside class="drawer" id="drawer" hidden aria-label="' + S.esc(S.t('nav.menu')) + '">' +
+        '<header>' +
+          '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo.png" alt="STEFSOTRA"></a>' +
+          '<button type="button" class="ai-x" id="drawerClose" aria-label="' + S.esc(S.t('nav.close')) + '">✕</button>' +
+        '</header>' +
+        '<form class="drawer-search" action="' + S.url('/search.html') + '" method="get" role="search">' +
+          '<input type="search" name="q" placeholder="' + S.esc(S.t('srch.ph')) + '" aria-label="' + S.esc(S.t('srch.go')) + '">' +
+          '<button class="btn" type="submit">' + S.esc(S.t('srch.go')) + '</button>' +
+        '</form>' +
+        '<nav class="drawer-body">' +
+          '<p class="dlabel">' + S.esc(S.t('nav.products')) + '</p>' + acc +
+          '<p class="dlabel">' + S.esc(S.t('foot.company')) + '</p>' +
+          '<div class="dlinks">' + pages + '</div>' +
+        '</nav>' +
+        '<footer>' +
+          '<a class="btn" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' +
+          '<div class="langs">' + langs + '</div>' +
+        '</footer>' +
+      '</aside>');
+
+    var drawer = document.getElementById('drawer');
+    var back = document.getElementById('drawerBack');
+    function open(v) {
+      drawer.hidden = !v;
+      back.hidden = !v;
+      document.body.classList.toggle('noscroll', v);
+      btn.setAttribute('aria-expanded', String(v));
+      if (v) drawer.querySelector('input').focus();
+    }
+    btn.setAttribute('aria-expanded', 'false');
+    btn.addEventListener('click', function () { open(drawer.hidden); });
+    back.addEventListener('click', function () { open(false); });
+    document.getElementById('drawerClose').addEventListener('click', function () { open(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !drawer.hidden) open(false);
+    });
+    drawer.querySelectorAll('[data-lang]').forEach(function (a) {
+      a.addEventListener('click', function () {
+        localStorage.setItem(LS_LANG, a.getAttribute('data-lang'));
+      });
+    });
+  }
 
   S.fail = function (err) {
     console.error(err);
