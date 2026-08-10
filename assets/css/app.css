@@ -699,3 +699,20 @@ body.noscroll { overflow: hidden; }
 .desc .summary { font-size: 1rem; color: var(--ink); }
 .desc.orig { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); }
 .perm { margin: 2px 0 0; }
+
+/* the manufacturer's own text, folded away under the specification */
+details.desc.orig { border-top: 1px solid var(--line); padding-top: 0; margin-top: 26px; }
+details.desc.orig > summary {
+  cursor: pointer; list-style: none; padding: 16px 30px 16px 0; position: relative;
+  font-weight: 600; font-size: 1.05rem; color: var(--ink); min-height: 44px;
+  display: flex; align-items: center;
+}
+details.desc.orig > summary::-webkit-details-marker { display: none; }
+details.desc.orig > summary::after {
+  content: ""; position: absolute; right: 6px; top: 50%; width: 9px; height: 9px;
+  border: solid var(--ink-3); border-width: 0 2px 2px 0;
+  transform: translateY(-70%) rotate(45deg); transition: transform .15s;
+}
+details.desc.orig[open] > summary::after { transform: translateY(-30%) rotate(-135deg); }
+details.desc.orig > summary:hover { color: var(--brand); }
+details.desc.orig > *:not(summary) { margin-bottom: 14px; }

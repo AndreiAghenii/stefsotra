@@ -784,7 +784,11 @@ def build_product(lang, p):
         sizetable +
         ('<div class="desc"><h2>%s</h2><p class="summary">%s</p></div>'
          % (e(t(lang, 'prod.summary')), e(summary(lang, p)))) +
-        ('<div class="desc orig"><h2>%s</h2>%s%s</div>'
+        # The manufacturer's own copy is long, and until it has been translated it is in
+        # another language than the rest of the page. It stays in the HTML so search
+        # engines still read it, but it is folded away behind a summary so the page
+        # leads with the specification a customer came for.
+        ('<details class="desc orig"><summary>%s</summary>%s%s</details>'
          % (e(t(lang, 'prod.origDesc')),
             ('<p class="small muted">%s</p>' % e(t(lang, 'prod.origNote')))
             if not p.get('body_' + lang) else '',
