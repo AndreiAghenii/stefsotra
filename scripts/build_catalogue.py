@@ -16,6 +16,7 @@ ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, 'data')
 RAW = os.path.join(DATA, '_raw.json')
 EXTRA = os.path.join(DATA, 'extra_products.json')
+EXTRA_IMG = os.path.join(DATA, 'extra_images.json')
 SRC = 'https://stefsotra.com/products.json?limit=250'
 
 # The Shopify feed quotes USD, but Stefsotra sells in Moldovan lei and the supplier
@@ -300,6 +301,10 @@ def main():
             })
             added.append(x['handle'])
 
+    local_images = json.load(open(EXTRA_IMG, encoding='utf-8')) if os.path.exists(EXTRA_IMG) else {}
+    if local_images:
+        print(f"  local photos from extra_images.json: {len(local_images)} products")
+
     products, stats = [], {'variants': 0, 'unparsed': 0, 'no_image': 0}
     for p in feed:
         attrs, spec = product_attrs(p['title'], p['tags'], p.get('body_html'))
@@ -320,7 +325,10 @@ def main():
                 'dims': dims,
             })
             stats['variants'] += 1
-        imgs = [i['src'].split('?')[0] for i in p['images']]
+        # Photographs added locally through scripts/add_photos.py take precedence over
+        # whatever Shopify holds, so a better picture can be dropped in without touching
+        # the store.
+        imgs = local_images.get(p['handle']) or [i['src'].split('?')[0] for i in p['images']]
         if not imgs:
             stats['no_image'] += 1
         prices = [v['price'] for v in variants]   # already lei
