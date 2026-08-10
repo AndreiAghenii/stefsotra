@@ -260,5 +260,7 @@
 "mat.polypropylene": "polipropilenă",
 "unit.m": "/m",
 "unit.perM": "preț pe metru liniar",
-"prod.oneSize": "Produs cu o singură variantă"
+"prod.oneSize": "Produs cu o singură variantă",
+"prod.onRequest": "Preț la cerere",
+"prod.askPrice": "Cere prețul"
 }

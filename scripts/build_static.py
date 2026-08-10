@@ -84,6 +84,8 @@ def e(s):
 
 
 def money(n, lang=None, unit=None):
+    if not n:
+        return t(lang or 'ro', 'prod.onRequest')
     """Whole Moldovan lei, spaced thousands. `lang` is accepted and ignored: the currency
     label is written the same way in all three languages. `unit` appends /m for the
     products that are cut from a roll -- see UNIT_BY_CATEGORY in build_catalogue.py."""
@@ -327,7 +329,7 @@ def crumbs_ld(lang, items):
 
 
 def product_ld(lang, p):
-    prices = [v['price'] for v in p['variants']]
+    prices = [v['price'] for v in p['variants'] if v['price']]
     d = {
         '@context': 'https://schema.org', '@type': 'Product',
         'name': p.get('title_' + lang) or p['title'],
@@ -344,6 +346,10 @@ def product_ld(lang, p):
         d['sku'] = skus[0]
     # No aggregateRating: there are no reviews yet, and inventing one is both against
     # Google's structured-data policy and against consumer law here.
+    if not prices:
+        # No price yet: say nothing rather than publish a zero, which Google would show
+        # as free and which would be a false offer.
+        return d
     d['offers'] = {
         '@type': 'AggregateOffer', 'priceCurrency': 'MDL',
         'unitText': 'metre' if p.get('unit') == 'm' else 'piece',
@@ -376,7 +382,10 @@ def placeholder(lang, prod):
     not photographed yet. It is never another product's photo -- borrowing one is how
     the original catalogue ended up with 41 images showing the wrong item.
     """
-    art = PLACEHOLDER_ART.get(prod['group'], PLACEHOLDER_ART['other'])
+    # the category is more specific than the group, so it wins where we have art for it
+    art = (PLACEHOLDER_ART.get(prod['category'])
+           or PLACEHOLDER_ART.get('tw' if prod['category'] == 'tw-coupling' else '')
+           or PLACEHOLDER_ART.get(prod['group'], PLACEHOLDER_ART['other']))
     return ('<div class="ph none"><svg class="phart" viewBox="0 0 80 80" aria-hidden="true" '
             'fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" '
             'stroke-linecap="round">%s</svg><span class="phname">%s</span>'
@@ -591,7 +600,8 @@ def build_category(lang, key, count):
     px = PREFIX[lang]
     prods = [p for p in CAT['products'] if p['category'] == key]
     label = cat_label(lang, key)
-    lo = min(p['price_min'] for p in prods)
+    priced = [p['price_min'] for p in prods if p['price_min'] > 0]
+    lo = min(priced) if priced else 0
     sizes = sum(len(p['variants']) for p in prods)
     grp = CAT_OF.get(key, '')
 
@@ -646,6 +656,8 @@ def build_group(lang, g):
     label = group_label(lang, g['key'])
     lo = min(p['price_min'] for p in prods)
     sizes = sum(len(p['variants']) for p in prods)
+    priced = [p['price_min'] for p in prods if p['price_min'] > 0]
+    lo = min(priced) if priced else 0
     title = {
         'ro': '%s Chișinău — %d produse, de la %s | Stefsotra',
         'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra',

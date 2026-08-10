@@ -203,6 +203,8 @@
   // appends /m for the products cut from a roll -- see UNIT_BY_CATEGORY in
   // build_catalogue.py for which categories those are.
   S.money = function (n, unit) {
+    // A product with no price says so. "0 lei" reads as free.
+    if (!Number(n)) return S.t('prod.onRequest');
     return Math.round(Number(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' lei' +
            (unit === 'm' ? S.t('unit.m') : '');
   };

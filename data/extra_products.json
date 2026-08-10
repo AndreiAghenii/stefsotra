@@ -1,0 +1,643 @@
+{
+  "_note": "Products Stefsotra sells that are not in the Shopify store. build_catalogue.py merges these into data/products.json on every run, so they survive a rebuild instead of being wiped by the next import from Shopify.",
+  "_provenance": "The TW entries below were added after a competitor's range (kamloki.ru, Ekaterinburg) was pointed out as a gap. Nothing was copied from that site: no photograph, no description, no price. What is used is the DIN 28450 TW/Tankwagen type and size matrix, which is a published industry standard and belongs to no one. The descriptions follow the wording already used on Stefsotra's own four aluminium TW products. Their prices are Russian retail in roubles and are meaningless here. The Guillemin entries were added the same way after hydropart.ru was pointed out: the NF E 29-573 type list is a published standard, the descriptions are ours, and no photograph, description or price was taken from that site either.",
+  "_before_publishing": "Every product below has price 0, which the site renders as 'price on request' rather than as free. Two things are needed from Stefsotra before these are real listings: (1) confirmation that the brass and stainless ranges are actually stocked or can be ordered, and (2) a price per size. Anything not stocked should simply be deleted from this file. Note also that the existing aluminium TW products are sized 50/75/100 mm while these are 50/80/100 mm, which is the DIN 28450 size; worth checking which is right for the aluminium ones.",
+  "_schema": {
+    "handle": "url slug, must be unique across the whole catalogue",
+    "title": "English name, matching the style of the Shopify titles",
+    "category": "one of the keys in CATEGORY_RULES in build_catalogue.py",
+    "vendor": "Stefsotra",
+    "tags": "list of strings",
+    "body_html": "description, written by us",
+    "option_name": "what the sizes are called",
+    "variants": "list of {title, sku, price, available}; price 0 means on request",
+    "images": "list of URLs; empty means the drawn placeholder is used"
+  },
+  "products": [
+    {
+      "handle": "tw-coupling-vb-stainless",
+      "title": "VB Coupling – Stainless Steel",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "stainless-steel",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra VB Coupling in stainless steel – TW (Tankwagen) coupling to DIN 28450 for road-tanker and bulk liquid transfer. The VB part is the male adapter with a male thread, and mates with the MK or MB half of the same size.</p><p>Stainless steel is chosen over aluminium where the medium is aggressive or where the coupling has to stay serviceable outdoors for years: acids, solvents, fertiliser, food-grade transfer and salt-laden air.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-coupling-mb-stainless",
+      "title": "MB Coupling – Stainless Steel",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "stainless-steel",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra MB Coupling in stainless steel – TW (Tankwagen) coupling to DIN 28450 for road-tanker and bulk liquid transfer. The MB part is the female coupling with a female thread, closing onto a VB or VK adapter of the same size.</p><p>Stainless steel is chosen over aluminium where the medium is aggressive or where the coupling has to stay serviceable outdoors for years: acids, solvents, fertiliser, food-grade transfer and salt-laden air.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-coupling-mk-stainless",
+      "title": "MK Coupling – Stainless Steel",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "stainless-steel",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra MK Coupling in stainless steel – TW (Tankwagen) coupling to DIN 28450 for road-tanker and bulk liquid transfer. The MK part is the female coupling with a hose tail, clamped onto the hose and closing onto a VB or VK adapter of the same size.</p><p>Stainless steel is chosen over aluminium where the medium is aggressive or where the coupling has to stay serviceable outdoors for years: acids, solvents, fertiliser, food-grade transfer and salt-laden air.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-coupling-vk-stainless",
+      "title": "VK Coupling – Stainless Steel",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "stainless-steel",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra VK Coupling in stainless steel – TW (Tankwagen) coupling to DIN 28450 for road-tanker and bulk liquid transfer. The VK part is the male adapter with a hose tail, clamped onto the hose and mating with the MK or MB half of the same size.</p><p>Stainless steel is chosen over aluminium where the medium is aggressive or where the coupling has to stay serviceable outdoors for years: acids, solvents, fertiliser, food-grade transfer and salt-laden air.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-coupling-vb-brass",
+      "title": "VB Coupling – Brass",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "brass",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra VB Coupling in brass – TW (Tankwagen) coupling to DIN 28450 for road-tanker and bulk liquid transfer. The VB part is the male adapter with a male thread, and mates with the MK or MB half of the same size.</p><p>Brass does not spark on impact, which is why it is specified for fuel, solvent and other flammable transfer where an aluminium or steel coupling is not permitted.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-coupling-mb-brass",
+      "title": "MB Coupling – Brass",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "brass",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra MB Coupling in brass – TW (Tankwagen) coupling to DIN 28450 for road-tanker and bulk liquid transfer. The MB part is the female coupling with a female thread, closing onto a VB or VK adapter of the same size.</p><p>Brass does not spark on impact, which is why it is specified for fuel, solvent and other flammable transfer where an aluminium or steel coupling is not permitted.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-coupling-mk-brass",
+      "title": "MK Coupling – Brass",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "brass",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra MK Coupling in brass – TW (Tankwagen) coupling to DIN 28450 for road-tanker and bulk liquid transfer. The MK part is the female coupling with a hose tail, clamped onto the hose and closing onto a VB or VK adapter of the same size.</p><p>Brass does not spark on impact, which is why it is specified for fuel, solvent and other flammable transfer where an aluminium or steel coupling is not permitted.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-coupling-vk-brass",
+      "title": "VK Coupling – Brass",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "brass",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra VK Coupling in brass – TW (Tankwagen) coupling to DIN 28450 for road-tanker and bulk liquid transfer. The VK part is the male adapter with a hose tail, clamped onto the hose and mating with the MK or MB half of the same size.</p><p>Brass does not spark on impact, which is why it is specified for fuel, solvent and other flammable transfer where an aluminium or steel coupling is not permitted.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-blind-cap-bk",
+      "title": "BK Blind Cap for TW Coupling",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "cap",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra BK Blind Cap – the closing half of a TW (Tankwagen) set to DIN 28450. It shuts a VB or VK adapter when the line is not connected, keeping the coupling face clean and the residual contents in.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-blind-adapter-bv",
+      "title": "BV Blind Adapter for TW Coupling",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "plug",
+        "coupling"
+      ],
+      "body_html": "<p>Stefsotra BV Blind Adapter – the plug half of a TW (Tankwagen) set to DIN 28450. It closes an MK or MB coupling when the line is not connected, protecting the sealing face in transit.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "tw-coupling-gasket",
+      "title": "TW Coupling Gasket",
+      "category": "tw-coupling",
+      "vendor": "Stefsotra",
+      "tags": [
+        "tw",
+        "tankwagen",
+        "din-28450",
+        "gasket",
+        "seal"
+      ],
+      "body_html": "<p>Stefsotra TW Coupling Gasket – the sealing ring that sits in the MK or MB half of a TW (Tankwagen) coupling to DIN 28450. It is the wear part of the set and should be replaced whenever the joint starts to weep.</p><p>State the medium when ordering: the material is chosen for what passes through the line.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "50 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "80 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "100 mm",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "guillemin-female-with-latch",
+      "title": "Guillemin Female with Latch",
+      "category": "guillemin",
+      "vendor": "Stefsotra",
+      "tags": [
+        "guillemin",
+        "nf-e-29-573",
+        "coupling",
+        "claw-coupling"
+      ],
+      "body_html": "<p>Stefsotra Guillemin coupling, female thread, with locking ring – symmetrical claw coupling to NF E 29-573 for water, irrigation and fire service. The locking ring holds the joint closed under pressure and is what distinguishes this part from the plain version.</p><p>Guillemin halves are identical, so any two of the same size connect to each other.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "DN40",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN50",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN65",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN80",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN100",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "guillemin-male-without-latch",
+      "title": "Guillemin Male without Latch",
+      "category": "guillemin",
+      "vendor": "Stefsotra",
+      "tags": [
+        "guillemin",
+        "nf-e-29-573",
+        "coupling",
+        "claw-coupling"
+      ],
+      "body_html": "<p>Stefsotra Guillemin coupling, male thread, without locking ring – symmetrical claw coupling to NF E 29-573. Used where the mating half carries the ring, so only one of the pair needs it.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "DN40",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN50",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN65",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN80",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN100",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "guillemin-hose-end-with-latch",
+      "title": "Guillemin Hose End with Latch",
+      "category": "guillemin",
+      "vendor": "Stefsotra",
+      "tags": [
+        "guillemin",
+        "nf-e-29-573",
+        "coupling",
+        "claw-coupling"
+      ],
+      "body_html": "<p>Stefsotra Guillemin hose tail with locking ring – symmetrical claw coupling to NF E 29-573, clamped onto the hose. The locking ring holds the joint closed under pressure.</p><p>Fit with two hose clamps and check the tail diameter against the hose bore, not its outside.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "DN40",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN50",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN65",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN80",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN100",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "guillemin-blind-cap",
+      "title": "Guillemin Blind Cap with Latch",
+      "category": "guillemin",
+      "vendor": "Stefsotra",
+      "tags": [
+        "guillemin",
+        "nf-e-29-573",
+        "coupling",
+        "claw-coupling"
+      ],
+      "body_html": "<p>Stefsotra Guillemin blind cap with locking ring – closes a Guillemin coupling of the same size to NF E 29-573, keeping the claw faces clean and the line shut when it is not connected.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "DN40",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN50",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN65",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN80",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN100",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    },
+    {
+      "handle": "guillemin-reducer",
+      "title": "Guillemin Reducing Adapter",
+      "category": "guillemin",
+      "vendor": "Stefsotra",
+      "tags": [
+        "guillemin",
+        "nf-e-29-573",
+        "coupling",
+        "claw-coupling"
+      ],
+      "body_html": "<p>Stefsotra Guillemin reducing adapter – joins two Guillemin couplings of different sizes to NF E 29-573, so a line can step down without changing hose.</p><p>State both sizes when ordering: the adapter is made for one pair at a time.</p>",
+      "option_name": "Size",
+      "variants": [
+        {
+          "title": "DN40 → DN50",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN50 → DN65",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN65 → DN80",
+          "sku": "",
+          "price": 0,
+          "available": true
+        },
+        {
+          "title": "DN80 → DN100",
+          "sku": "",
+          "price": 0,
+          "available": true
+        }
+      ],
+      "images": []
+    }
+  ]
+}

@@ -33,6 +33,23 @@ DATA = os.path.join(ROOT, 'data')
 # Longest phrases first; the substituter applies them in that order so "Hose Clamps"
 # wins over "Hose". Keys are matched case-insensitively on whole words.
 TERMS = [
+    # --- products added from data/extra_products.json. Longest phrases first, so these
+    #     resolve before the bare words 'coupling', 'latch' and 'gasket' below.
+    ('blind adapter for tw coupling', ('Adaptor orb pentru cuplaj TW', 'Ниппель-заглушка для соединения TW')),
+    ('blind cap for tw coupling',   ('Capac orb pentru cuplaj TW', 'Заглушка для соединения TW')),
+    ('tw coupling gasket',          ('Garnitură pentru cuplaj TW', 'Прокладка для соединения TW')),
+    ('guillemin hose end with latch', ('Racord Guillemin pentru furtun cu clichet',
+                                       'Guillemin наконечник для шланга с защёлкой')),
+    ('guillemin blind cap with latch', ('Capac orb Guillemin cu clichet', 'Заглушка Guillemin с защёлкой')),
+    ('guillemin reducing adapter',  ('Adaptor de reducție Guillemin', 'Редуцирующий переходник Guillemin')),
+    ('guillemin female with latch', ('Guillemin mamă cu clichet', 'Guillemin гайка с защёлкой')),
+    ('guillemin male without latch', ('Guillemin tată fără clichet', 'Guillemin ниппель без защёлки')),
+    ('vb coupling',                 ('Cuplaj VB', 'Соединение VB')),
+    ('mb coupling',                 ('Cuplaj MB', 'Соединение MB')),
+    ('mk coupling',                 ('Cuplaj MK', 'Соединение MK')),
+    ('vk coupling',                 ('Cuplaj VK', 'Соединение VK')),
+    ('stainless steel',             ('oțel inoxidabil', 'нержавеющая сталь')),
+    ('brass',                       ('alamă', 'латунь')),
     # --- multi-word technical phrases
     ('food-grade technical plate',  ('Placă tehnică alimentară', 'Пластина техническая пищевая')),
     ('rubber sheet (techno-plate)', ('Foaie de cauciuc (tehnoplacă)', 'Резина листовая (технопластина)')),

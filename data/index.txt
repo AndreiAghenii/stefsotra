@@ -112,3 +112,19 @@ return-valve | Return Valve | valve | 20-150mm | 135-1148 MDL | 10 sizes
 food-tech-plate | Food-Grade Technical Plate | sheet-material | 200 MDL | 1 sizes
 technical-plate | Rubber Sheet (Techno-Plate) | sheet-material | 80 MDL | 1 sizes
 fire-hoses | Fire Hose | industrial-hose | 50 MDL | 1 sizes
+tw-coupling-vb-stainless | VB Coupling – Stainless Steel | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-coupling-mb-stainless | MB Coupling – Stainless Steel | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-coupling-mk-stainless | MK Coupling – Stainless Steel | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-coupling-vk-stainless | VK Coupling – Stainless Steel | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-coupling-vb-brass | VB Coupling – Brass | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-coupling-mb-brass | MB Coupling – Brass | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-coupling-mk-brass | MK Coupling – Brass | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-coupling-vk-brass | VK Coupling – Brass | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-blind-cap-bk | BK Blind Cap for TW Coupling | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-blind-adapter-bv | BV Blind Adapter for TW Coupling | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+tw-coupling-gasket | TW Coupling Gasket | tw-coupling | 50-100mm | 0 MDL | 3 sizes
+guillemin-female-with-latch | Guillemin Female with Latch | guillemin | 0 MDL | 5 sizes
+guillemin-male-without-latch | Guillemin Male without Latch | guillemin | 0 MDL | 5 sizes
+guillemin-hose-end-with-latch | Guillemin Hose End with Latch | guillemin | 0 MDL | 5 sizes
+guillemin-blind-cap | Guillemin Blind Cap with Latch | guillemin | 0 MDL | 5 sizes
+guillemin-reducer | Guillemin Reducing Adapter | guillemin | 0 MDL | 4 sizes

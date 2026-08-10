@@ -15,6 +15,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, 'data')
 RAW = os.path.join(DATA, '_raw.json')
+EXTRA = os.path.join(DATA, 'extra_products.json')
 SRC = 'https://stefsotra.com/products.json?limit=250'
 
 # The Shopify feed quotes USD, but Stefsotra sells in Moldovan lei and the supplier
@@ -273,8 +274,34 @@ def main():
         os.makedirs(DATA, exist_ok=True)
         json.dump(raw, open(RAW, 'w', encoding='utf-8'), ensure_ascii=False)
 
+    # Products Stefsotra sells that are not in the Shopify store live in
+    # data/extra_products.json and are merged here, so an import from Shopify cannot
+    # wipe them. A handle already present in Shopify always wins -- the store is the
+    # source of truth for anything it knows about.
+    feed = list(raw['products'])
+    feed_handles = {p['handle'] for p in feed}
+    added = []
+    if os.path.exists(EXTRA):
+        extra = json.load(open(EXTRA, encoding='utf-8'))
+        for x in extra.get('products', []):
+            if x['handle'] in feed_handles:
+                print(f"  extra_products.json: '{x['handle']}' is already in Shopify, skipped")
+                continue
+            feed.append({
+                'handle': x['handle'], 'title': x['title'],
+                'vendor': x.get('vendor', 'Stefsotra'), 'tags': x.get('tags', []),
+                'body_html': x.get('body_html', ''),
+                'options': [{'name': x.get('option_name', 'Size')}],
+                'images': [{'src': u} for u in x.get('images', [])],
+                'variants': [{'id': 0, 'title': v['title'], 'sku': v.get('sku', ''),
+                              'price': v.get('price', 0), 'available': v.get('available', True)}
+                             for v in x['variants']],
+                '_forced_category': x.get('category'),
+            })
+            added.append(x['handle'])
+
     products, stats = [], {'variants': 0, 'unparsed': 0, 'no_image': 0}
-    for p in raw['products']:
+    for p in feed:
         attrs, spec = product_attrs(p['title'], p['tags'], p.get('body_html'))
         variants = []
         for v in p['variants']:
@@ -297,7 +324,7 @@ def main():
         if not imgs:
             stats['no_image'] += 1
         prices = [v['price'] for v in variants]   # already lei
-        cat = categorise(p['title'], p['tags'])
+        cat = p.get('_forced_category') or categorise(p['title'], p['tags'])
         products.append({
             'handle': p['handle'], 'title': p['title'],
             'category': cat, 'group': CAT_GROUP.get(cat, 'other'),
@@ -357,6 +384,14 @@ def main():
     for g in groups:
         print(f"  {g['key']:<10} {g['count']:>3}  " +
               ', '.join(f"{c['key']}({c['count']})" for c in g['categories']))
+    if added:
+        print(f"\nmerged from extra_products.json : {len(added)} products "
+              f"({', '.join(added[:4])}{'...' if len(added) > 4 else ''})")
+    onreq = [p for p in products if p['price_min'] <= 0]
+    if onreq:
+        print(f"priced on request       : {len(onreq)} products — they show "
+              f"'price on request', not '0 lei'")
+
     per_m = [p for p in products if p['unit'] == 'm']
     print(f"\npriced per metre        : {len(per_m)} products "
           f"({', '.join(sorted({p['category'] for p in per_m}))})")

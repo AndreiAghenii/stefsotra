@@ -260,5 +260,7 @@
 "mat.polypropylene": "полипропилен",
 "unit.m": "/м",
 "unit.perM": "цена за погонный метр",
-"prod.oneSize": "Товар в одном исполнении"
+"prod.oneSize": "Товар в одном исполнении",
+"prod.onRequest": "Цена по запросу",
+"prod.askPrice": "Запросить цену"
 }
