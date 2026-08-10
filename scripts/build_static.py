@@ -684,14 +684,31 @@ def build_group(lang, g):
            e(cat_label(lang, c['key'])), e(t(lang, 'cat.results', n=c['count'])))
         for c in g['categories'])
 
+    # Every product in the group, not a sample of eight. Sixty-four couplings in one
+    # undifferentiated wall would be worse than a sample, so they are laid out under
+    # their category with a jump list at the top.
+    sections = ''
+    for c in g['categories']:
+        in_cat = [p for p in prods if p['category'] == c['key']]
+        if not in_cat:
+            continue
+        sections += ('<section class="home-sec" id="c-%s">'
+                     '<div class="sec-head"><h2>%s</h2>'
+                     '<a class="small" href="%s/c/%s/">%s →</a></div>'
+                     '<p class="muted small">%s</p><div class="grid">%s</div></section>'
+                     % (c['key'], e(cat_label(lang, c['key'])), px, c['key'],
+                        e(t(lang, 'nav.allIn', n=c['count'])),
+                        e(t(lang, 'cat.results', n=len(in_cat))),
+                        ''.join(tile(lang, p) for p in in_cat)))
+
+    jump = '<nav class="chips sibs">' + ''.join(
+        '<a class="chip" href="#c-%s">%s <span>%d</span></a>' % (c['key'], e(cat_label(lang, c['key'])), c['count'])
+        for c in g['categories'] if any(p['category'] == c['key'] for p in prods)) + '</nav>'
+
     body = ('<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
-            '<div class="wrap"><div class="cards">%s</div>'
-            '<section class="home-sec"><h2>%s</h2><div class="grid">%s</div></section></div>'
+            '<div class="wrap">%s<p class="muted small">%s</p><div class="cards">%s</div>%s</div>'
             % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (label, '')]),
-               e(label), e(desc), cards, e(t(lang, 'home.popular')),
-               ''.join(tile(lang, p) for p in
-                       sorted([p for p in prods if p['images']],
-                              key=lambda p: -len(p['variants']))[:8])))
+               e(label), e(desc), jump, e(t(lang, 'cat.results', n=len(prods))), cards, sections))
     return page(lang, '/g/%s/' % g['key'], title, desc, body,
                 jsonld=[crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (label, '/g/%s/' % g['key'])])])
 

@@ -716,3 +716,8 @@ details.desc.orig > summary::after {
 details.desc.orig[open] > summary::after { transform: translateY(-30%) rotate(-135deg); }
 details.desc.orig > summary:hover { color: var(--brand); }
 details.desc.orig > *:not(summary) { margin-bottom: 14px; }
+
+/* jump links on a group page must not land under the sticky header */
+.home-sec[id] { scroll-margin-top: 80px; }
+.chips.sibs a.chip { text-decoration: none; }
+.chips.sibs a.chip span { color: var(--ink-3); font-size: .78rem; margin-left: 4px; }
