@@ -111,9 +111,14 @@ function render() {
     var img = S.img(r.p);
     return '<div class="cart-line">' +
       (img ? '<img src="' + S.esc(img) + '" alt="">' : '<div style="width:66px;height:66px"></div>') +
-      '<div><a href="product.html?h=' + encodeURIComponent(r.p.handle) + '">' + S.esc(r.p.title) + '</a>' +
-        '<div class="muted small">' + S.esc(S.dimLabel(r.v.dims) || r.v.title) + ' · ' +
-        S.money(r.v.price) + ' ' + S.esc(S.t('common.each')) + '</div>' +
+      '<div><a href="' + S.url('/p/' + encodeURIComponent(r.p.handle) + '/') + '">' +
+        S.esc(S.name(r.p)) + '</a>' +
+        // A product with one unnamed option has no size to print, and a per-metre item
+        // is not priced "each" -- the /m already says what the price is per.
+        '<div class="muted small">' +
+        (S.dimLabel(r.v.dims) ? S.esc(S.dimLabel(r.v.dims)) + ' · ' : '') +
+        S.money(r.v.price, r.p.unit) +
+        (r.p.unit === 'm' ? '' : ' ' + S.esc(S.t('common.each'))) + '</div>' +
         '<button class="linkish" data-rm="' + i + '">' + S.esc(S.t('cart.remove')) + '</button></div>' +
       '<input class="qty" type="number" min="1" max="9999" value="' + r.it.qty + '" data-q="' + i + '">' +
       '<strong>' + S.money(r.sum) + '</strong></div>';
@@ -123,7 +128,9 @@ function render() {
   document.getElementById('total').textContent = S.money(total);
   document.getElementById('totalField').value = S.money(total);
   document.getElementById('itemsField').value = L.map(function (r) {
-    return r.it.qty + ' × ' + r.p.title + ' [' + (S.dimLabel(r.v.dims) || r.v.title) + ']' +
+    var lbl = S.dimLabel(r.v.dims);
+    return r.it.qty + (r.p.unit === 'm' ? ' m' : ' ×') + ' ' + S.name(r.p) +
+           (lbl ? ' [' + lbl + ']' : '') +
            (r.v.sku ? ' SKU ' + r.v.sku : '') + ' — ' + S.money(r.sum);
   }).join('\n');
 

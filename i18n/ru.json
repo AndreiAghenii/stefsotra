@@ -257,5 +257,8 @@
 "sum.deliver": "Доставка по Кишинёву и всей Молдове.",
 "mat.silicone": "силикон",
 "mat.aluminium": "алюминий",
-"mat.polypropylene": "полипропилен"
+"mat.polypropylene": "полипропилен",
+"unit.m": "/м",
+"unit.perM": "цена за погонный метр",
+"prod.oneSize": "Товар в одном исполнении"
 }

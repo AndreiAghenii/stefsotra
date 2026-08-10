@@ -44,6 +44,7 @@
 
   function wireProduct() {
     var P = window.__PRODUCT;
+    var unit = P && P.unit;
     var sel = document.getElementById('variant');
     var add = document.querySelector('[data-add]');
     if (!P || !sel || !add) return;
@@ -61,7 +62,7 @@
       }
       var v = P.variants[i];
       add.disabled = false;
-      add.textContent = S.t('prod.add') + ' — ' + S.money(v.price);
+      add.textContent = S.t('prod.add') + ' — ' + S.money(v.price, unit);
       if (info) info.textContent = v.sku ? S.t('prod.sku') + ' ' + v.sku : '';
     }
 

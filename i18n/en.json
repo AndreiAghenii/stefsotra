@@ -257,5 +257,8 @@
 "sum.deliver": "Delivery in Chișinău and across Moldova.",
 "mat.silicone": "silicone",
 "mat.aluminium": "aluminium",
-"mat.polypropylene": "polypropylene"
+"mat.polypropylene": "polypropylene",
+"unit.m": "/m",
+"unit.perM": "price per metre",
+"prod.oneSize": "Single option"
 }

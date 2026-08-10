@@ -83,10 +83,14 @@ def e(s):
     return html.escape(str(s if s is not None else ''), quote=True)
 
 
-def money(n, lang=None):
-    """Whole Moldovan lei, spaced thousands. `lang` is accepted and ignored:
-    the currency label is written the same way in all three languages."""
-    return '{:,}'.format(int(round(n))).replace(',', ' ') + ' ' + CURRENCY
+def money(n, lang=None, unit=None):
+    """Whole Moldovan lei, spaced thousands. `lang` is accepted and ignored: the currency
+    label is written the same way in all three languages. `unit` appends /m for the
+    products that are cut from a roll -- see UNIT_BY_CATEGORY in build_catalogue.py."""
+    out = '{:,}'.format(int(round(n))).replace(',', ' ') + ' ' + CURRENCY
+    if unit == 'm':
+        out += t(lang or 'ro', 'unit.m')
+    return out
 
 
 def strip_tags(s, limit=None):
@@ -99,6 +103,8 @@ def strip_tags(s, limit=None):
 
 
 def dim_label(d):
+    if d.get('default'):
+        return ''          # Shopify's "Default Title" placeholder: not a size
     bits = []
     if d.get('id_mm') is not None and d.get('id2_mm') is not None:
         bits.append('Ø%g → %g mm' % (d['id_mm'], d['id2_mm']))
@@ -340,6 +346,7 @@ def product_ld(lang, p):
     # Google's structured-data policy and against consumer law here.
     d['offers'] = {
         '@type': 'AggregateOffer', 'priceCurrency': 'MDL',
+        'unitText': 'metre' if p.get('unit') == 'm' else 'piece',
         'lowPrice': min(prices), 'highPrice': max(prices),
         'offerCount': len(p['variants']),
         'availability': 'https://schema.org/InStock' if any(v['available'] for v in p['variants'])
@@ -425,7 +432,7 @@ def summary(lang, p):
     if p['spec'].get('standards'):
         out.append(t(lang, 'sum.std', s=', '.join(p['spec']['standards'])))
 
-    out.append(t(lang, 'sum.price', p=money(p['price_min'], lang)))
+    out.append(t(lang, 'sum.price', p=money(p['price_min'], lang, p['unit'])))
     if p['group'] == 'hoses':
         out.append(t(lang, 'sum.cut'))
     out.append(t(lang, 'sum.deliver'))
@@ -444,11 +451,13 @@ def tile(lang, p):
     sizes = '' if one else (
         '<select class="tile-size" aria-label="%s"><option value="">%s</option>%s</select>'
         % (e(t(lang, 'prod.variants')), e(t(lang, 'prod.choose')),
-           ''.join('<option value="%s">%s — %s</option>'
-                   % (e(v['title']), e(dim_label(v['dims']) or v['title']), e(money(v['price'], lang)))
+           ''.join('<option value="%s">%s</option>'
+                   % (e(v['title']),
+                      e(('%s — %s' % (dim_label(v['dims']), money(v['price'], lang, p['unit'])))
+                        if dim_label(v['dims']) else money(v['price'], lang, p['unit'])))
                    for v in p['variants'])))
-    price = (money(p['price_min'], lang) if p['price_min'] == p['price_max']
-             else '<small>%s</small> %s' % (e(t(lang, 'cat.from')), money(p['price_min'], lang)))
+    price = (money(p['price_min'], lang, p['unit']) if p['price_min'] == p['price_max']
+             else '<small>%s</small> %s' % (e(t(lang, 'cat.from')), money(p['price_min'], lang, p['unit'])))
     return (
         '<article class="tile" data-h="%s"><a class="tile-link" href="%s/p/%s/">'
         '%s<div class="meta"><div class="name">%s</div><div class="dims">%s</div>'
@@ -679,8 +688,9 @@ def build_product(lang, p):
     px = PREFIX[lang]
     label = cat_label(lang, p['category'])
     rng = range_label(p)
-    price = (money(p['price_min'], lang) if p['price_min'] == p['price_max']
-             else '%s %s – %s' % (t(lang, 'cat.from'), money(p['price_min'], lang), money(p['price_max'], lang)))
+    price = (money(p['price_min'], lang, p['unit']) if p['price_min'] == p['price_max']
+             else '%s %s – %s' % (t(lang, 'cat.from'), money(p['price_min'], lang, p['unit']),
+                                 money(p['price_max'], lang, p['unit'])))
 
     nm = name(lang, p)
     title = '%s — %s | Stefsotra %s' % (nm, rng or label, GEO[lang])
@@ -691,7 +701,7 @@ def build_product(lang, p):
         'ro': '%s. %s. Preț de la %s, %d dimensiuni pe stoc. %sLivrare în %s și în toată Moldova.',
         'ru': '%s. %s. Цена от %s, %d размеров в наличии. %sДоставка по %s и всей Молдове.',
         'en': '%s. %s. From %s, %d sizes in stock. %sDelivery in %s and across Moldova.',
-    }[lang] % (nm, rng or label, money(p['price_min'], lang), len(p['variants']),
+    }[lang] % (nm, rng or label, money(p['price_min'], lang, p['unit']), len(p['variants']),
                body_txt + '. ' if body_txt else '', CITY[lang])
 
     imgs = p['images']
@@ -725,19 +735,25 @@ def build_product(lang, p):
         '<tr><th>%s</th><td>%s</td></tr>' % (e(k), e(v)) for k, v in rows)
 
     one = len(p['variants']) == 1
+    unnamed = one and p['variants'][0]['dims'].get('default')
+    def vlabel(v):
+        lbl = dim_label(v['dims'])
+        if lbl:
+            return '%s — %s' % (lbl, money(v['price'], lang, p['unit']))
+        return money(v['price'], lang, p['unit'])
+
     opts = ('' if one else '<option value="">%s</option>' % e(t(lang, 'prod.choose'))) + ''.join(
-        '<option value="%d">%s — %s</option>'
-        % (i, e(dim_label(v['dims']) or v['title']), e(money(v['price'], lang)))
+        '<option value="%d">%s</option>' % (i, e(vlabel(v)))
         for i, v in enumerate(p['variants']))
 
     # A plain list of every size, in the HTML. This is what makes "Ø38 mm silicone hose"
     # findable at all -- the sizes are the search terms, and inside a <select> alone they
     # carry much less weight.
-    sizetable = '<details class="sizelist"%s><summary>%s (%d)</summary><ul>%s</ul></details>' % (
+    sizetable = '' if unnamed else '<details class="sizelist"%s><summary>%s (%d)</summary><ul>%s</ul></details>' % (
         ' open' if len(p['variants']) <= 12 else '',
         e(t(lang, 'prod.variants')), len(p['variants']),
         ''.join('<li><span>%s</span><b>%s</b>%s</li>'
-                % (e(dim_label(v['dims']) or v['title']), e(money(v['price'], lang)),
+                % (e(dim_label(v['dims'])), e(money(v['price'], lang, p['unit'])),
                    ('<i>%s %s</i>' % (e(t(lang, 'prod.sku')), e(v['sku']))) if v.get('sku') else '')
                 for v in p['variants']))
 
@@ -750,11 +766,14 @@ def build_product(lang, p):
                           (group_label(lang, p['group']), '/g/%s/' % p['group']),
                           (label, '/c/%s/' % p['category']), (nm, '')]) +
         '<div class="pdp"><div class="gallery">%s</div><div>' % gallery +
-        '<h1>%s</h1>%s<p class="price big">%s</p>'
+        '<h1>%s</h1>%s<p class="price big">%s</p>%s'
         % (e(nm), ('<p class="altname small muted">%s</p>' % e(p['title'])) if nm != p['title'] else '',
-           e(price)) +
-        '<div class="field" style="margin-top:20px"><label for="variant">%s</label>'
-        '<select id="variant">%s</select></div>' % (e(t(lang, 'prod.variants')), opts) +
+           e(price),
+           ('<p class="small muted perm">%s</p>' % e(t(lang, 'unit.perM'))) if p['unit'] == 'm' else '') +
+        ('<div class="field" style="margin-top:20px"><label for="variant">%s</label>'
+         '<select id="variant">%s</select></div>' % (e(t(lang, 'prod.variants')), opts)
+         if not unnamed else
+         '<select id="variant" hidden>%s</select>' % opts) +
         '<p class="muted small" id="selInfo" style="margin:-6px 0 12px"></p>'
         '<button class="btn" id="add" style="width:100%%" data-add>%s</button>'
         '<ul class="reassure">%s</ul>' % (
@@ -776,7 +795,7 @@ def build_product(lang, p):
         '</div>')
 
     embed = ('<script>window.__PRODUCT=%s;</script>'
-             % json.dumps({'handle': p['handle'],
+             % json.dumps({'handle': p['handle'], 'unit': p['unit'],
                            'variants': [{'title': v['title'], 'price': v['price'],
                                          'sku': v.get('sku', '')} for v in p['variants']],
                            'images': p['images']}, ensure_ascii=False, separators=(',', ':')))

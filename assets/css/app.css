@@ -698,3 +698,4 @@ body.noscroll { overflow: hidden; }
 @media (min-width: 841px) { .drawer, .drawer-back { display: none !important; } }
 .desc .summary { font-size: 1rem; color: var(--ink); }
 .desc.orig { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); }
+.perm { margin: 2px 0 0; }

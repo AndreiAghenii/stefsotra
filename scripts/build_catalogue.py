@@ -191,6 +191,25 @@ def has(t, *words):
     return any(w in t for w in words)
 
 
+# How each category is sold. Hose is cut from a roll and priced by the metre; a moulded
+# silicone elbow, a coupling or a clamp is one item. Nothing in the Shopify data records
+# this -- exactly one description of 114 mentions a metre -- so it is a rule stated here
+# rather than something derived, and it is the first place to correct if a category is
+# actually sold the other way.
+#
+# Silicone hoses are deliberately PIECES: they are moulded fittings of a fixed length
+# (L102, L1000), not cut lengths.
+UNIT_BY_CATEGORY = {
+    'industrial-hose': 'm',
+    'pvc-hose':        'm',
+    'rubber-profile':  'm',
+    'plastic-stock':   'm',
+}
+UNIT_OVERRIDE = {
+    'pvc-curtains': 'pc',        # sold as a made-up curtain, not off the roll
+}
+
+
 CATEGORY_RULES = [
     # --- couplings and fittings
     ('camlock',        lambda t: has(t, 'camlock')),
@@ -282,6 +301,7 @@ def main():
         products.append({
             'handle': p['handle'], 'title': p['title'],
             'category': cat, 'group': CAT_GROUP.get(cat, 'other'),
+            'unit': UNIT_OVERRIDE.get(p['handle'], UNIT_BY_CATEGORY.get(cat, 'pc')),
             'vendor': p['vendor'], 'tags': p['tags'],
             'body_html': p.get('body_html') or '',
             'option_name': p['options'][0]['name'] if p['options'] else '',
@@ -337,6 +357,10 @@ def main():
     for g in groups:
         print(f"  {g['key']:<10} {g['count']:>3}  " +
               ', '.join(f"{c['key']}({c['count']})" for c in g['categories']))
+    per_m = [p for p in products if p['unit'] == 'm']
+    print(f"\npriced per metre        : {len(per_m)} products "
+          f"({', '.join(sorted({p['category'] for p in per_m}))})")
+    print(f"priced per piece        : {len(products) - len(per_m)} products")
     if cats.get('other'):
         print(f"\nWARNING: {cats['other']} products still uncategorised:")
         for p in products:

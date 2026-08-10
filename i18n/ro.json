@@ -257,5 +257,8 @@
 "sum.deliver": "Livrare în Chișinău și în toată Moldova.",
 "mat.silicone": "silicon",
 "mat.aluminium": "aluminiu",
-"mat.polypropylene": "polipropilenă"
+"mat.polypropylene": "polipropilenă",
+"unit.m": "/m",
+"unit.perM": "preț pe metru liniar",
+"prod.oneSize": "Produs cu o singură variantă"
 }

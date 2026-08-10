@@ -346,7 +346,7 @@
         return '<a class="ai-card" href="product.html?h=' + encodeURIComponent(p.handle) + '">' +
           (img ? '<img src="' + S.esc(img) + '" alt="">' : '<span class="ai-card-ph"></span>') +
           '<span><b>' + S.esc(p.title) + '</b>' +
-          '<i>' + S.esc(S.rangeLabel(p)) + ' · ' + S.money(p.price_min) + '</i></span></a>';
+          '<i>' + S.esc(S.rangeLabel(p)) + ' · ' + S.money(p.price_min, p.unit) + '</i></span></a>';
       }).join('') + '</div>';
   }
 })();

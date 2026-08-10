@@ -199,14 +199,17 @@
 
   // Prices are whole Moldovan lei -- see MDL_PER_FEED_USD in build_catalogue.py for
   // how they are derived. Thousands are spaced, which is the local convention, and the
-  // currency label is the same in all three languages: these are Moldovan lei.
-  S.money = function (n) {
-    return Math.round(Number(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' lei';
+  // currency label is the same in all three languages: these are Moldovan lei. `unit`
+  // appends /m for the products cut from a roll -- see UNIT_BY_CATEGORY in
+  // build_catalogue.py for which categories those are.
+  S.money = function (n, unit) {
+    return Math.round(Number(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' lei' +
+           (unit === 'm' ? S.t('unit.m') : '');
   };
 
   // Human-readable dimensions, e.g. "Ø38 mm · aluminium" or "50 → 32 mm".
   S.dimLabel = function (dims) {
-    if (!dims) return '';
+    if (!dims || dims.default) return '';
     var bits = [];
     if (dims.id_mm != null && dims.id2_mm != null) bits.push('Ø' + dims.id_mm + ' → ' + dims.id2_mm + ' mm');
     else if (dims.id_mm != null) bits.push('Ø' + dims.id_mm + ' mm');
@@ -285,8 +288,8 @@
           '<div class="name">' + S.esc(S.name(p)) + '</div>' +
           '<div class="dims">' + S.esc(S.rangeLabel(p)) + '</div>' +
           '<div class="price">' +
-            (p.price_min === p.price_max ? S.money(p.price_min)
-              : '<small>' + S.esc(S.t('cat.from')) + '</small> ' + S.money(p.price_min)) +
+            (p.price_min === p.price_max ? S.money(p.price_min, p.unit)
+              : '<small>' + S.esc(S.t('cat.from')) + '</small> ' + S.money(p.price_min, p.unit)) +
           '</div>' +
         '</div>' +
       '</a>' +
@@ -295,8 +298,9 @@
           '<select class="tile-size" aria-label="' + S.esc(S.t('prod.variants')) + '">' +
             '<option value="">' + S.esc(S.t('prod.choose')) + '</option>' +
             p.variants.map(function (v) {
+              var lbl = S.dimLabel(v.dims);
               return '<option value="' + S.esc(v.title) + '">' +
-                S.esc(S.dimLabel(v.dims) || v.title) + ' — ' + S.money(v.price) + '</option>';
+                (lbl ? S.esc(lbl) + ' — ' : '') + S.money(v.price, p.unit) + '</option>';
             }).join('') +
           '</select>') +
         '<button type="button" class="btn tile-btn"' +
