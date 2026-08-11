@@ -267,5 +267,6 @@
 "prod.metre": "metre",
 "prod.metresU": "metres",
 "prod.total": "Total",
-"prod.cutNote": "We cut to the length you choose, at no charge. For over 100 m, get in touch."
+"prod.cutNote": "We cut to the length you choose, at no charge. For over 100 m, get in touch.",
+"ct.openMap": "Open in maps"
 }

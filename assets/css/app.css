@@ -732,3 +732,13 @@ details.desc.orig > *:not(summary) { margin-bottom: 14px; }
 .lennum span { color: var(--ink-2); font-size: .9rem; }
 .lenquick { margin: 12px 0 8px; }
 .lenpick p.small { margin: 0; }
+
+/* address */
+.maplink { display: block; margin-top: 4px; }
+.maplink a { font-size: .86rem; font-weight: 600; }
+.drawer > footer { flex-direction: column; align-items: stretch; gap: 10px; }
+.draddr { color: var(--ink-2); line-height: 1.4; }
+.drrow { display: flex; align-items: center; gap: 12px; }
+.drrow .btn { flex: 1; }
+.foot-brand a[target] { color: var(--ink-2); }
+.foot-brand a[target]:hover { color: var(--brand); }

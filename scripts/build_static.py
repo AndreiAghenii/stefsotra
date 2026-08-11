@@ -281,7 +281,8 @@ def footer_html(lang, path):
         '</footer>\n'
         % (e(t(lang, 'site.tagline')), e(c['phone_href']), e(c['phone']),
            e(c['email']), e(c['email']),
-           ('<p class="small">%s</p>' % e(c['address'])) if c.get('address') else '',
+           ('<p class="small"><a href="%s" target="_blank" rel="noopener">%s</a></p>'
+            % (e(c.get('maps', '')), e(c['address']))) if c.get('address') else '',
            colhtml, catlinks, e(t(lang, 'foot.by'))))
 
 
@@ -292,7 +293,8 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
            '<main>' + body + '</main>' +
            footer_html(lang, path) +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
-               {k: CONTACT[k] for k in ('email', 'phone', 'phone_href')},
+               {k: CONTACT.get(k, '') for k in
+                ('email', 'phone', 'phone_href', 'address', 'maps')},
                ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'
@@ -315,8 +317,14 @@ def org_ld():
         'areaServed': {'@type': 'Country', 'name': 'Moldova'},
     }
     if CONTACT.get('address'):
-        d['address'] = {'@type': 'PostalAddress', 'streetAddress': CONTACT['address'],
-                        'addressLocality': 'Chișinău', 'addressCountry': 'MD'}
+        d['address'] = {
+            '@type': 'PostalAddress',
+            'streetAddress': CONTACT.get('street', CONTACT['address']),
+            'postalCode': CONTACT.get('postal_code', ''),
+            'addressLocality': CONTACT.get('locality', 'Chișinău'),
+            'addressCountry': CONTACT.get('country', 'MD'),
+        }
+        d['hasMap'] = CONTACT.get('maps', '')
     return d
 
 
@@ -964,10 +972,10 @@ def build_content(lang, slug, url):
 def build_contact(lang):
     px = PREFIX[lang]
     c = CONTACT
-    addr = (e(c['address']) + ' · <a target="_blank" rel="noopener" '
-            'href="https://www.google.com/maps/search/?api=1&amp;query=%s">Google Maps</a>'
-            % e(c['address'].replace(' ', '+'))) if c.get('address') else \
-           '<span class="muted">%s</span>' % e(t(lang, 'ct.noAddr'))
+    addr = ('<a href="%s" target="_blank" rel="noopener">%s</a>'
+            '<span class="maplink"><a href="%s" target="_blank" rel="noopener">%s</a></span>'
+            % (e(c['maps']), e(c['address']), e(c['maps']), e(t(lang, 'ct.openMap')))) \
+           if c.get('address') else '<span class="muted">%s</span>' % e(t(lang, 'ct.noAddr'))
 
     facts = ''.join(
         '<div class="fact"><span class="small muted">%s</span><div>%s</div></div>' % (e(k), v)
@@ -1030,7 +1038,8 @@ def build_404():
            header_html(lang).replace('{PATH}', '/') + '<main>' + body + '</main>' +
            footer_html(lang, '/') +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
-               {k: CONTACT[k] for k in ('email', 'phone', 'phone_href')},
+               {k: CONTACT.get(k, '') for k in
+                ('email', 'phone', 'phone_href', 'address', 'maps')},
                ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'

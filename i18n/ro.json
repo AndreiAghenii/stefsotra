@@ -267,5 +267,6 @@
 "prod.metre": "metru",
 "prod.metresU": "metri",
 "prod.total": "Total",
-"prod.cutNote": "Tăiem la lungimea aleasă, fără cost. Pentru peste 100 m, scrie-ne."
+"prod.cutNote": "Tăiem la lungimea aleasă, fără cost. Pentru peste 100 m, scrie-ne.",
+"ct.openMap": "Deschide în hărți"
 }

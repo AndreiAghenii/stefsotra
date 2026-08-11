@@ -422,7 +422,8 @@
         '<p class="small">' + S.esc(S.t('site.tagline')) + '</p>' +
         (c.phone ? '<p class="small"><a href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a></p>' : '') +
         (c.email ? '<p class="small"><a href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a></p>' : '') +
-        (c.address ? '<p class="small">' + S.esc(c.address) + '</p>' : '') +
+        (c.address ? '<p class="small"><a href="' + S.esc(c.maps || '#') +
+          '" target="_blank" rel="noopener">' + S.esc(c.address) + '</a></p>' : '') +
       '</div>' + cols +
     '</div><div class="wrap foot-legal small">' +
       '<span>© ' + new Date().getFullYear() + ' STEFSOTRA · ' +
@@ -630,8 +631,12 @@
           '<div class="dlinks">' + pages + '</div>' +
         '</nav>' +
         '<footer>' +
-          '<a class="btn" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' +
-          '<div class="langs">' + langs + '</div>' +
+          (c.address ? '<a class="draddr small" href="' + S.esc(c.maps || '#') +
+            '" target="_blank" rel="noopener">' + S.esc(c.address) + '</a>' : '') +
+          '<div class="drrow">' +
+            '<a class="btn" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' +
+            '<div class="langs">' + langs + '</div>' +
+          '</div>' +
         '</footer>' +
       '</aside>');
 
