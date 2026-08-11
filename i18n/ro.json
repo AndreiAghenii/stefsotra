@@ -262,5 +262,10 @@
 "unit.perM": "preț pe metru liniar",
 "prod.oneSize": "Produs cu o singură variantă",
 "prod.onRequest": "Preț la cerere",
-"prod.askPrice": "Cere prețul"
+"prod.askPrice": "Cere prețul",
+"prod.metres": "De câți metri ai nevoie?",
+"prod.metre": "metru",
+"prod.metresU": "metri",
+"prod.total": "Total",
+"prod.cutNote": "Tăiem la lungimea aleasă, fără cost. Pentru peste 100 m, scrie-ne."
 }

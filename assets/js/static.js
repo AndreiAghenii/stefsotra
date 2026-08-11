@@ -52,6 +52,15 @@
     var chosen = null;
     var info = document.getElementById('selInfo');
 
+    // Hose is priced per metre, so the button has to show the total for the length
+    // chosen, not the price of one metre. Everything else is bought by the piece and
+    // has no length control at all.
+    var rng = document.getElementById('metres');
+    var num = document.getElementById('metresN');
+    function metres() {
+      return unit === 'm' ? Math.max(1, Number(num && num.value) || 1) : 1;
+    }
+
     function pick(i) {
       chosen = i;
       if (i == null) {
@@ -61,9 +70,32 @@
         return;
       }
       var v = P.variants[i];
+      var m = metres();
       add.disabled = false;
-      add.textContent = S.t('prod.add') + ' — ' + S.money(v.price, unit);
+      add.textContent = S.t('prod.add') + ' — ' + S.money(v.price * m) +
+        (m > 1 ? '  (' + m + ' m × ' + S.money(v.price, unit) + ')' : '');
       if (info) info.textContent = v.sku ? S.t('prod.sku') + ' ' + v.sku : '';
+    }
+
+    if (rng && num) {
+      var sync = function (val, from) {
+        val = Math.max(1, Math.min(9999, Math.round(Number(val) || 1)));
+        num.value = val;
+        // the slider stops at 100; a longer run is typed and the slider parks at its end
+        rng.value = Math.min(val, Number(rng.max));
+        if (chosen != null) pick(chosen);
+      };
+      rng.addEventListener('input', function () { sync(rng.value); });
+      num.addEventListener('input', function () { sync(num.value); });
+      document.querySelectorAll('.lenquick .size-chip').forEach(function (b) {
+        b.addEventListener('click', function () {
+          sync(b.dataset.m);
+          document.querySelectorAll('.lenquick .size-chip').forEach(function (x) {
+            x.removeAttribute('aria-pressed');
+          });
+          b.setAttribute('aria-pressed', 'true');
+        });
+      });
     }
 
     sel.addEventListener('change', function (e) {
@@ -71,7 +103,7 @@
     });
     add.addEventListener('click', function () {
       if (chosen == null) { sel.focus(); return; }
-      S.cart.add(P.handle, P.variants[chosen].title, 1);
+      S.cart.add(P.handle, P.variants[chosen].title, metres());
       add.textContent = S.t('prod.added') + ' ✓';
       add.classList.add('added');
       setTimeout(function () { add.classList.remove('added'); pick(chosen); }, 1500);

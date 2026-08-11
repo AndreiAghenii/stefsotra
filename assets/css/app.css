@@ -721,3 +721,14 @@ details.desc.orig > *:not(summary) { margin-bottom: 14px; }
 .home-sec[id] { scroll-margin-top: 80px; }
 .chips.sibs a.chip { text-decoration: none; }
 .chips.sibs a.chip span { color: var(--ink-3); font-size: .78rem; margin-left: 4px; }
+
+/* length picker, on the products sold by the metre */
+.lenpick { border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); padding: 14px 16px; margin: 0 0 14px; }
+.lenpick > label { margin-bottom: 10px; }
+.lenrow { display: flex; align-items: center; gap: 14px; }
+.lenrow input[type=range] { flex: 1; min-width: 0; }
+.lennum { display: flex; align-items: center; gap: 6px; flex: none; }
+.lennum input { width: 82px; text-align: right; font-weight: 600; }
+.lennum span { color: var(--ink-2); font-size: .9rem; }
+.lenquick { margin: 12px 0 8px; }
+.lenpick p.small { margin: 0; }

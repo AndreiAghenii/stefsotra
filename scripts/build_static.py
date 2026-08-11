@@ -803,7 +803,21 @@ def build_product(lang, p):
          '<select id="variant">%s</select></div>' % (e(t(lang, 'prod.variants')), opts)
          if not unnamed else
          '<select id="variant" hidden>%s</select>' % opts) +
-        '<p class="muted small" id="selInfo" style="margin:-6px 0 12px"></p>'
+        '<p class="muted small" id="selInfo" style="margin:-6px 0 12px"></p>' +
+        # Hose is cut from a roll, so the thing a customer actually chooses is a length.
+        # A slider with a number beside it: the slider is quick on a phone, the box is
+        # exact, and the running total updates as either moves.
+        ('<div class="lenpick"><label for="metres">%s</label>'
+         '<div class="lenrow">'
+         '<input type="range" id="metres" min="1" max="100" step="1" value="1">'
+         '<div class="lennum"><input type="number" id="metresN" min="1" max="9999" step="1" value="1">'
+         '<span>m</span></div></div>'
+         '<p class="chips lenquick">%s</p>'
+         '<p class="small muted">%s</p></div>'
+         % (e(t(lang, 'prod.metres')),
+            ''.join('<button type="button" class="size-chip" data-m="%d">%d m</button>' % (m, m)
+                    for m in (5, 10, 20, 50, 100)),
+            e(t(lang, 'prod.cutNote'))) if p['unit'] == 'm' else '') +
         '<button class="btn" id="add" style="width:100%%" data-add>%s</button>'
         '<ul class="reassure">%s</ul>' % (
             e(t(lang, 'prod.choose')),
