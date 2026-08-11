@@ -13,3 +13,6 @@ data/_raw.json
 # Downloaded originals used to draw the preview cards. Regenerate with:
 #   python3 scripts/build_og.py
 data/_img_cache/
+
+# contact sheets built by the image audit; regenerate when needed
+data/_audit/
