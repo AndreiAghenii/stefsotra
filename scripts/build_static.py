@@ -228,8 +228,6 @@ def header_html(lang, current=''):
         '<input type="search" name="q" aria-label="%s" placeholder="%s">'
         '<button type="submit" aria-label="%s">⌕</button></form>'
         '<div class="bar-end">'
-        '<button type="button" class="iconbtn" data-ai-open title="%s"><span aria-hidden="true">✦</span>'
-        '<span class="lbl">%s</span></button>'
         '<a class="iconbtn cartlink" href="%s/cart.html"><span aria-hidden="true">🛒</span>'
         '<span class="lbl">%s</span><span class="badge" data-cart-badge style="display:none">0</span></a>'
         '<div class="langs">%s</div>'
@@ -239,7 +237,6 @@ def header_html(lang, current=''):
         '</header>\n'
         % (px, e(t(lang, 'nav.products')), links, px,
            e(t(lang, 'nav.search')), e(t(lang, 'srch.ph')), e(t(lang, 'srch.go')),
-           e(t(lang, 'ai.open')), e(t(lang, 'nav.assistant')),
            px, e(t(lang, 'nav.cart')), langs, e(t(lang, 'nav.menu')), mega))
 
 

@@ -388,8 +388,6 @@
           '<button type="submit" aria-label="' + S.esc(S.t('srch.go')) + '">⌕</button>' +
         '</form>' +
         '<div class="bar-end">' +
-          '<button type="button" class="iconbtn" data-ai-open title="' + S.esc(S.t('ai.open')) + '">' +
-            '<span aria-hidden="true">✦</span><span class="lbl">' + S.esc(S.t('nav.assistant')) + '</span></button>' +
           '<a class="iconbtn cartlink" href="' + S.url('/cart.html') + '"' + (current === '/cart.html' ? ' aria-current="page"' : '') + '>' +
             '<span aria-hidden="true">🛒</span><span class="lbl">' + S.esc(S.t('nav.cart')) + '</span>' +
             '<span class="badge" data-cart-badge style="display:none">0</span></a>' +
