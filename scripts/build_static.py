@@ -307,12 +307,22 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
 # ---------------------------------------------------------------- structured data
 
 def org_ld():
+    # HardwareStore rather than Organization: it is a LocalBusiness subtype, so the shop
+    # is eligible for local results, which a bare Organization is not. Everything that
+    # consumed this as an Organization still works -- HardwareStore inherits from it.
+    # No geo or openingHours here on purpose: CONTACT carries no coordinates and its
+    # hours field is empty, and invented values in structured data are worse than none.
     d = {
-        '@context': 'https://schema.org', '@type': 'Organization',
+        '@context': 'https://schema.org', '@type': 'HardwareStore',
         'name': 'Stefsotra', 'url': SITE, 'logo': SITE + '/assets/img/logo.png',
+        'image': SITE + '/assets/img/logo.png',
         'telephone': CONTACT['phone'], 'email': CONTACT['email'],
-        'areaServed': {'@type': 'Country', 'name': 'Moldova'},
+        'currenciesAccepted': 'MDL',
+        'areaServed': [{'@type': 'City', 'name': 'Chișinău'},
+                       {'@type': 'Country', 'name': 'Moldova'}],
     }
+    if CONTACT.get('hours'):
+        d['openingHours'] = CONTACT['hours']
     if CONTACT.get('address'):
         d['address'] = {
             '@type': 'PostalAddress',
@@ -500,10 +510,14 @@ def crumb_html(lang, items):
 def build_home(lang):
     px = PREFIX[lang]
     variants = sum(len(p['variants']) for p in CAT['products'])
+    # The city belongs in the title, not only in the description. Google ranked the home
+    # page for "furtun chisinau" and then printed "Missing: chisinau" under the result,
+    # because "Chișinău" appeared in the body but never in the title. Moldova stays in
+    # the description, which still carries the national queries.
     title = {
-        'ro': 'Furtunuri industriale, cuplaje și cauciuc tehnic în Moldova | Stefsotra',
-        'ru': 'Промышленные шланги, соединения и резинотехнические изделия в Молдове | Stefsotra',
-        'en': 'Industrial hoses, couplings and technical rubber in Moldova | Stefsotra',
+        'ro': 'Furtunuri, cuplaje și cauciuc tehnic în Chișinău | Stefsotra',
+        'ru': 'Промышленные шланги и соединения в Кишинёве | Stefsotra',
+        'en': 'Industrial hoses and couplings in Chișinău | Stefsotra',
     }[lang]
     desc = {
         'ro': 'Furtun din silicon și PVC, cuplaje Camlock, Storz, Guillemin și Bauer, coliere '
