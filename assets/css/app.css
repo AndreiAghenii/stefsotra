@@ -636,7 +636,9 @@ body.noscroll { overflow: hidden; }
 }
 .drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 61;
-  width: min(390px, 92vw); background: var(--bg);
+  /* 86vw not 92vw: it leaves about 55px of backdrop showing on a 390px phone, which
+     is a usable "tap outside to close" target. At 92vw only 31px showed. */
+  width: min(390px, 86vw); background: var(--bg);
   display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
   animation: drawerIn .18s ease-out;
 }
