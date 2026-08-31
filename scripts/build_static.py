@@ -29,6 +29,8 @@ of picking one and treating the others as duplicates.
 import html
 import json
 import os
+import datetime
+import hashlib
 import re
 import shutil
 
@@ -36,6 +38,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, 'data')
 SITE = 'https://stefsotra.md'          # change if the new site gets its own domain
+
+# <lastmod> has to mean something or Google stops reading it. Writing today's date on all
+# 483 URLs at every build is the usual way to make it meaningless. Instead each page's HTML
+# is hashed as it is written and compared with data/lastmod.json from the previous build:
+# a page whose bytes did not change keeps the date it already had.
+PAGE_HASH = {}
+PAGE_IMAGES = {}
 
 LANGS = ['ro', 'ru', 'en']
 PREFIX = {'ro': '', 'ru': '/ru', 'en': '/en'}
@@ -104,6 +113,24 @@ def strip_tags(s, limit=None):
     return s
 
 
+# Google renders roughly 70 characters of a title and roughly 160 of a description, and
+# cuts the rest off mid-word. A page whose description is cut at "Livrare in Chisin" reads
+# as careless in the one place a customer decides whether to click, so both are trimmed
+# here, on a word boundary, before they are written.
+TITLE_MAX = 70
+DESC_MAX = 165
+
+
+def clamp(text, limit):
+    if len(text) <= limit:
+        return text
+    cut = text[:limit - 1].rstrip()
+    sp = cut.rfind(' ')
+    if sp > limit * 0.6:
+        cut = cut[:sp]
+    return cut.rstrip(' ,.;:-–—·') + '…'
+
+
 def dim_label(d):
     if d.get('default'):
         return ''          # Shopify's "Default Title" placeholder: not a size
@@ -143,7 +170,8 @@ def range_label(p):
 
 # ---------------------------------------------------------------- page shell
 
-def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
+def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
+         og_type='website', extra_meta=''):
     """<head> for one page, including the hreflang set and structured data."""
     alts = ''.join(
         '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], path)
@@ -168,7 +196,7 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
          '<meta name="robots" content="index,follow,max-image-preview:large">\n') +
         '<link rel="canonical" href="%s">\n' % e(canonical) +
         alts + '\n'
-        '<meta property="og:type" content="website">\n'
+        '<meta property="og:type" content="%s">\n' % og_type +
         '<meta property="og:site_name" content="Stefsotra">\n'
         '<meta property="og:title" content="%s">\n' % e(title) +
         '<meta property="og:description" content="%s">\n' % e(desc) +
@@ -178,7 +206,8 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
         '<meta property="og:image:height" content="630">\n'
         '<meta property="og:image:alt" content="%s">\n' % e(title) +
         '<meta property="og:locale" content="%s">\n' % {'ro': 'ro_MD', 'ru': 'ru_MD', 'en': 'en_US'}[lang] +
-        '<meta name="twitter:card" content="summary_large_image">\n'
+        '<meta name="twitter:card" content="summary_large_image">\n' +
+        extra_meta +
         '<meta name="theme-color" content="#bf2c2c">\n'
         '<link rel="icon" href="/favicon.ico" sizes="32x32">\n'
         '<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">\n'
@@ -284,8 +313,9 @@ def footer_html(lang, path):
 
 
 def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
-         current='', scripts=''):
-    doc = (head(lang, title, desc, path, image, jsonld, noindex) +
+         current='', scripts='', og_type='website', extra_meta=''):
+    title, desc = clamp(title, TITLE_MAX), clamp(desc, DESC_MAX)
+    doc = (head(lang, title, desc, path, image, jsonld, noindex, og_type, extra_meta) +
            header_html(lang, current).replace('{PATH}', path) +
            '<main>' + body + '</main>' +
            footer_html(lang, path) +
@@ -301,7 +331,9 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, 'w', encoding='utf-8') as f:
         f.write(doc)
-    return SITE + PREFIX[lang] + path
+    url = SITE + PREFIX[lang] + path
+    PAGE_HASH[url] = hashlib.sha1(doc.encode('utf-8')).hexdigest()
+    return url
 
 
 # ---------------------------------------------------------------- structured data
@@ -321,8 +353,25 @@ def org_ld():
         'areaServed': [{'@type': 'City', 'name': 'Chișinău'},
                        {'@type': 'Country', 'name': 'Moldova'}],
     }
+    # For a trade counter, opening hours and coordinates are most of what decides whether
+    # the shop appears in the local pack at all. Both are emitted the moment the data
+    # exists in data/pages.json and stay absent until then -- a guessed pair of coordinates
+    # puts the pin in the wrong street, and guessed hours send someone to a closed door.
     if CONTACT.get('hours'):
         d['openingHours'] = CONTACT['hours']
+    if CONTACT.get('opening_hours'):
+        # [["Mo","Tu","We","Th","Fr"], "08:00", "17:00"] per row.
+        d['openingHoursSpecification'] = [
+            {'@type': 'OpeningHoursSpecification', 'dayOfWeek': row[0],
+             'opens': row[1], 'closes': row[2]}
+            for row in CONTACT['opening_hours']]
+    if CONTACT.get('geo'):
+        d['geo'] = {'@type': 'GeoCoordinates',
+                    'latitude': CONTACT['geo'][0], 'longitude': CONTACT['geo'][1]}
+    if CONTACT.get('same_as'):
+        d['sameAs'] = CONTACT['same_as']
+    if CONTACT.get('price_range'):
+        d['priceRange'] = CONTACT['price_range']
     if CONTACT.get('address'):
         d['address'] = {
             '@type': 'PostalAddress',
@@ -343,6 +392,11 @@ def crumbs_ld(lang, items):
                 for i, (name, url) in enumerate(items)]}
 
 
+def brand_name(vendor):
+    v = (vendor or '').strip()
+    return 'Stefsotra' if v.lower().replace('-shop', '') in ('stefsotra', '') else v
+
+
 def product_ld(lang, p):
     prices = [v['price'] for v in p['variants'] if v['price']]
     d = {
@@ -351,7 +405,7 @@ def product_ld(lang, p):
         'alternateName': p['title'],
         'description': strip_tags(summary(lang, p), 300),
         'category': cat_label(lang, p['category']),
-        'brand': {'@type': 'Brand', 'name': p['vendor'] or 'Stefsotra'},
+        'brand': {'@type': 'Brand', 'name': brand_name(p['vendor'])},
         'url': SITE + PREFIX[lang] + '/p/%s/' % p['handle'],
     }
     if p['images']:
@@ -373,8 +427,34 @@ def product_ld(lang, p):
         'availability': 'https://schema.org/InStock' if any(v['available'] for v in p['variants'])
                         else 'https://schema.org/PreOrder',
         'seller': {'@type': 'Organization', 'name': 'Stefsotra'},
+        'hasMerchantReturnPolicy': RETURN_POLICY,
+        'shippingDetails': SHIPPING_CHISINAU,
     }
     return d
+
+
+# Google flags a Product offer with no return and no delivery terms, and the two blocks
+# it wants are on the site already in prose: /returns/ says 30 days for a refund with the
+# customer sending the item back, /delivery/ says a flat 200 lei by courier in Chișinău.
+# Only those two are stated here. Delivery outside Chișinău is quoted per address and
+# delivery time is confirmed when the request is answered, so neither is asserted: a made-up
+# handling time in structured data is a promise the shop has not made.
+RETURN_POLICY = {
+    '@type': 'MerchantReturnPolicy',
+    'applicableCountry': 'MD',
+    'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+    'merchantReturnDays': 30,
+    'returnMethod': 'https://schema.org/ReturnByMail',
+    'returnFees': 'https://schema.org/ReturnShippingFees',
+    'refundType': 'https://schema.org/FullRefund',
+}
+
+SHIPPING_CHISINAU = {
+    '@type': 'OfferShippingDetails',
+    'shippingDestination': {'@type': 'DefinedRegion', 'addressCountry': 'MD',
+                            'addressRegion': 'Chișinău'},
+    'shippingRate': {'@type': 'MonetaryAmount', 'value': 200, 'currency': 'MDL'},
+}
 
 
 def faq_ld(faq):
@@ -408,11 +488,25 @@ def placeholder(lang, prod):
             % (art, e(prod['title']), e(t(lang, 'ph.none'))))
 
 
+# The manufacturer copy is Shopify's, and some of it was pasted out of a Word document:
+# the seven Camlock descriptions each open with their own <h1>, which gave those pages two
+# first-level headings, the second one in Russian on the Romanian page. Every heading
+# inside the description is pushed two levels down so the product name stays the only h1,
+# and align="..." is dropped with it -- it is a presentational attribute the stylesheet
+# already overrides, and it was the only thing forcing centred text into a left-aligned page.
+_H_IN_DESC = re.compile(r'<(/?)h([1-4])\b([^>]*)>', re.I)
+_ALIGN = re.compile(r'\s+align="[^"]*"', re.I)
+
+
+def _demote(m):
+    return '<%sh%d%s>' % (m.group(1), min(int(m.group(2)) + 2, 6), _ALIGN.sub('', m.group(3)))
+
+
 def desc_html(lang, p):
     """Description in the page's language. Falls back to the original whenever a
     translation is absent or was held back by the verifier in
     translate_descriptions.py -- an English description beats a wrong number."""
-    return p.get('body_' + lang) or p['body_html']
+    return _H_IN_DESC.sub(_demote, p.get('body_' + lang) or p['body_html'])
 
 
 def summary(lang, p):
@@ -753,13 +847,23 @@ def build_product(lang, p):
                body_txt + '. ' if body_txt else '', CITY[lang])
 
     imgs = p['images']
+    # The photograph is the largest thing on the page and it is what the browser measures
+    # as the LCP, so it is fetched at high priority rather than in queue order. The alt was
+    # the English product title on all three languages; it is the page's own name for the
+    # product now, which is both what a screen reader should read out and what Google Images
+    # matches a Romanian or Russian query against.
+    size_only = ' · '.join(x for x in (rng or '').split(' · ') if not x.endswith('×'))
+    alt_txt = '%s — %s' % (nm, size_only) if size_only else nm
     gallery = (
-        '<div class="main"><img id="mainImg" src="%s" alt="%s" width="1200" height="1200"></div>'
-        % (e(imgs[0]), e(p['title'])) +
+        '<div class="main"><img id="mainImg" src="%s" alt="%s" width="1200" height="1200" '
+        'fetchpriority="high" decoding="async"></div>'
+        % (e(imgs[0]), e(alt_txt)) +
         ('<div class="thumbs">%s</div>' % ''.join(
-            '<button type="button" data-i="%d" aria-pressed="%s"><img src="%s" alt="" '
-            'loading="lazy" width="1200" height="1200"></button>'
-            % (i, 'true' if i == 0 else 'false', e(u)) for i, u in enumerate(imgs))
+            '<button type="button" data-i="%d" aria-pressed="%s"><img src="%s" alt="%s" '
+            'loading="lazy" decoding="async" width="1200" height="1200"></button>'
+            % (i, 'true' if i == 0 else 'false', e(u),
+               e('%s %d' % (nm, i + 1)) if i else e(alt_txt))
+            for i, u in enumerate(imgs))
          if len(imgs) > 1 else '')
     ) if imgs else ('<div class="main ph none">%s</div>'
                     % placeholder(lang, p).replace('<div class="ph none">', '').replace('</div>', ''))
@@ -866,12 +970,29 @@ def build_product(lang, p):
                                          'sku': v.get('sku', '')} for v in p['variants']],
                            'images': p['images']}, ensure_ascii=False, separators=(',', ':')))
 
+    PAGE_IMAGES['/p/%s/' % p['handle']] = p['images'][:4]
+    og_extra = (
+        '<meta property="product:price:amount" content="%g">\n'
+        '<meta property="product:price:currency" content="MDL">\n'
+        '<meta property="product:availability" content="%s">\n'
+        % (p['price_min'],
+           'in stock' if any(v['available'] for v in p['variants']) else 'preorder')
+    ) if p['price_min'] else ''
+    # A preload for the photograph the page is about. The browser finds it in <head>
+    # instead of waiting for the stylesheet and the gallery markup below it.
+    if imgs:
+        og_extra += ('<link rel="preload" as="image" href="%s" fetchpriority="high">\n'
+                     % e(imgs[0]))
+
     return page(lang, '/p/%s/' % p['handle'], title, desc, body,
                 image=SITE + '/assets/og/%s.png' % p['handle'],
+                og_type='product', extra_meta=og_extra,
                 jsonld=[product_ld(lang, p),
+                        # Google prints the breadcrumb under the result, and the last crumb
+                        # was the English product title on the Romanian and Russian pages.
                         crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
                                          (label, '/c/%s/' % p['category']),
-                                         (p['title'], '/p/%s/' % p['handle'])])],
+                                         (nm, '/p/%s/' % p['handle'])])],
                 scripts=embed)
 
 
@@ -1039,6 +1160,114 @@ def build_contact(lang):
                 current='/contact/')
 
 
+# ------------------------------------------------------------------ tool pages
+
+# catalog / search / vehicle / cart are drawn in the browser, so they used to be copied
+# byte for byte to /, /ru/ and /en/. That left twelve URLs carrying the same empty shell,
+# every one of them lang="ro", with no canonical, no hreflang, no description and no
+# header a crawler could read. Google had three identical addresses per tool and no
+# instruction about which to keep. They are now built like every other page: one head per
+# language, a self-referencing canonical, the hreflang set, and the real header and footer
+# so the navigation is in the HTML rather than assembled by JavaScript after load.
+TOOLS = {
+    'catalog.html': {
+        'current': '/catalog.html', 'index': True, 'h1': 'cat.h1',
+        'seed': {'<h1 id="h1">&nbsp;</h1>': '<h1 id="h1">%(h1)s</h1>'},
+        'title': {
+            'ro': 'Catalog — %(n)d produse tehnice din cauciuc | Stefsotra Chișinău',
+            'ru': 'Каталог — %(n)d технических резиновых изделий | Stefsotra Кишинёв',
+            'en': 'Catalogue — %(n)d technical rubber products | Stefsotra Chișinău',
+        },
+        'desc': {
+            'ro': 'Filtrează după diametru, material, unghi și tip de cuplaj. %(n)d produse în '
+                  '%(v)d dimensiuni, prețuri în lei. Livrare în Chișinău și în toată Moldova.',
+            'ru': 'Фильтр по диаметру, материалу, углу и типу соединения. %(n)d товаров в '
+                  '%(v)d размерах, цены в леях. Доставка по Кишинёву и всей Молдове.',
+            'en': 'Filter by diameter, material, angle and coupling type. %(n)d products in '
+                  '%(v)d sizes, priced in lei. Delivery in Chișinău and across Moldova.',
+        }},
+    'vehicle.html': {
+        'current': '/vehicle.html', 'index': True, 'h1': 'veh.h1',
+        'seed': {'<div class="wrap" id="root"></div>':
+                 '<div class="wrap" id="root"><h1>%(h1)s</h1><p class="lead">%(lead)s</p></div>'},
+        'title': {
+            'ro': 'Caută piese după vehicul — furtunuri de silicon | Stefsotra',
+            'ru': 'Подбор по автомобилю — силиконовые шланги | Stefsotra',
+            'en': 'Find parts by vehicle — silicone hoses | Stefsotra',
+        },
+        'desc': {
+            'ro': 'Alege marca, modelul și motorul și vezi furtunurile și piesele care se '
+                  'potrivesc. Stoc în Chișinău, livrare în toată Moldova.',
+            'ru': 'Выберите марку, модель и двигатель и посмотрите подходящие шланги и детали. '
+                  'Склад в Кишинёве, доставка по всей Молдове.',
+            'en': 'Pick the make, model and engine and see the hoses and parts that fit. '
+                  'Stock in Chișinău, delivery across Moldova.',
+        }},
+    # A results page and a basket. Neither has content of its own, and an indexed search
+    # page is the classic way to fill an index with near-duplicates, so both say noindex.
+    # "follow" so the links on them still pass through.
+    'search.html': {
+        'current': '', 'index': False, 'h1': 'srch.h1',
+        'seed': {'<div class="wrap" id="root"></div>':
+                 '<div class="wrap" id="root"><h1>%(h1)s</h1><p class="lead">%(lead)s</p></div>'},
+        'title': {'ro': 'Căutare | Stefsotra', 'ru': 'Поиск | Stefsotra',
+                  'en': 'Search | Stefsotra'},
+        'desc': {l: strip_tags(STR[l].get('srch.lead', '')) for l in LANGS}},
+    'cart.html': {
+        'current': '', 'index': False, 'h1': 'cart.h1',
+        'seed': {'<h1 data-t="cart.h1">&nbsp;</h1>': '<h1 data-t="cart.h1">%(h1)s</h1>'},
+        'title': {'ro': 'Cererea ta | Stefsotra', 'ru': 'Ваша заявка | Stefsotra',
+                  'en': 'Your request | Stefsotra'},
+        'desc': {l: strip_tags(STR[l].get('cart.note', '')) for l in LANGS}},
+}
+
+
+def build_tool(lang, filename):
+    """One interactive tool page, wrapped in the same chrome as every other page."""
+    spec = TOOLS[filename]
+    path = '/' + filename
+    fill = {'n': CAT['count'], 'v': sum(len(p['variants']) for p in CAT['products'])}
+    fmt = lambda x: x % fill if '%(' in x else x
+    title = clamp(fmt(spec['title'][lang]), TITLE_MAX)
+    desc = clamp(fmt(spec['desc'][lang]), DESC_MAX)
+    body = open(os.path.join(ROOT, 'templates', filename), encoding='utf-8').read()
+    # These two pages draw themselves, so what a crawler was served was an empty <h1> on
+    # the catalogue and no <h1> at all on the vehicle finder. Both headings are seeded
+    # into the HTML in the page's own language, in the element the page's JavaScript
+    # rewrites a moment later with the same text -- so nothing on screen changes, and the
+    # heading is there for whatever does not run the script.
+    for marker, seed in spec.get('seed', {}).items():
+        assert marker in body, (filename, marker)
+        body = body.replace(marker, seed % {'h1': e(t(lang, spec['h1'])), 'lead': e(desc)}, 1)
+    # The fragment is markup followed by the page's own script, and that script calls into
+    # app.js the moment it runs, so app.js has to be emitted between the two rather than
+    # after both. Split at the first <script and the footer goes in the gap as well.
+    cut = body.find('<script')
+    markup, inline = (body[:cut], body[cut:]) if cut >= 0 else (body, '')
+
+    jsonld = [crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (title.split(' — ')[0].split(' | ')[0], path)])] \
+        if spec['index'] else None
+    doc = (head(lang, title, desc, path, None, jsonld, noindex=not spec['index']) +
+           header_html(lang, spec['current']).replace('{PATH}', path) +
+           markup +
+           footer_html(lang, path) +
+           '<script>window.__CONTACT=%s;</script>' % json.dumps(
+               {k: CONTACT.get(k, '') for k in
+                ('email', 'phone', 'phone_href', 'address', 'maps')},
+               ensure_ascii=False, separators=(',', ':')) +
+           '<script src="/assets/js/app.js"></script>'
+           '<script src="/assets/js/assistant.js"></script>\n' +
+           inline +
+           '\n</body>\n</html>\n')
+    out = os.path.join(ROOT, PREFIX[lang].lstrip('/'), filename)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, 'w', encoding='utf-8') as f:
+        f.write(doc)
+    url = SITE + PREFIX[lang] + path
+    PAGE_HASH[url] = hashlib.sha1(doc.encode('utf-8')).hexdigest()
+    return url
+
+
 def build_404():
     lang = 'ro'
     body = ('<div class="wrap" style="padding:60px 20px;text-align:center">'
@@ -1066,6 +1295,11 @@ def main():
     for d in ('p', 'c', 'g', 'ru', 'en', 'about', 'delivery', 'partners', 'returns',
               'warranty', 'contact'):
         shutil.rmtree(os.path.join(ROOT, d), ignore_errors=True)
+    for f in TOOLS:
+        try:
+            os.remove(os.path.join(ROOT, f))
+        except FileNotFoundError:
+            pass
 
     urls = []
     for lang in LANGS:
@@ -1083,43 +1317,77 @@ def main():
         urls.append((build_contact(lang), lang, '/contact/'))
     build_404()
 
-    # The interactive tools live at one address each, but the header on a Russian page
-    # must link to a Russian tool page, so each gets a copy under the language prefix.
-    for lang in ('ru', 'en'):
-        for tool in ('catalog.html', 'search.html', 'vehicle.html', 'cart.html'):
-            src = os.path.join(ROOT, tool)
-            dst = os.path.join(ROOT, lang, tool)
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            shutil.copyfile(src, dst)
+    # The interactive tools live at one address per language. They are built, not copied:
+    # see TOOLS above for why. Only the two with content of their own go in the sitemap.
+    tool_urls = []
+    for lang in LANGS:
+        for tool in TOOLS:
+            loc = build_tool(lang, tool)
+            if TOOLS[tool]['index']:
+                tool_urls.append((loc, lang, '/' + tool))
 
     # sitemap, with the hreflang set repeated on every entry as Google requires
     by_path = {}
-    for loc, lang, path in urls:
+    for loc, lang, path in urls + tool_urls:
         by_path.setdefault(path, {})[lang] = loc
+    # lastmod: today only for the pages whose HTML actually changed since the last build.
+    # A missing or unreadable store means a first build -- everything is dated today, which
+    # is true, because everything was just written.
+    store_path = os.path.join(DATA, 'lastmod.json')
+    try:
+        store = json.load(open(store_path, encoding='utf-8'))
+    except (OSError, ValueError):
+        store = {}
+    today = datetime.date.today().isoformat()
+    fresh = {}
+    for url, h in PAGE_HASH.items():
+        prev = store.get(url)
+        fresh[url] = {'h': h, 'd': prev['d'] if prev and prev.get('h') == h else today}
+    with open(store_path, 'w', encoding='utf-8') as f:
+        json.dump(fresh, f, ensure_ascii=False, indent=0, sort_keys=True)
+
     entries = []
     for path, locs in by_path.items():
         prio = '1.0' if path == '/' else '0.9' if path.startswith('/c/') else \
-               '0.8' if path.startswith('/p/') else '0.7'
+               '0.8' if path.startswith('/p/') else '0.6' if path.endswith('.html') else '0.7'
+        # Product photographs are a real share of the traffic for parts like these: someone
+        # searches an image of a Camlock type and lands on the page that sells it. Naming
+        # them here means Google Images does not have to render the page to find them, and
+        # that the ones sitting behind the gallery are seen at all.
+        imgs = ''.join('<image:image><image:loc>%s</image:loc></image:image>' % e(u)
+                       for u in PAGE_IMAGES.get(path, []))
         for lang, loc in locs.items():
             alts = ''.join('<xhtml:link rel="alternate" hreflang="%s" href="%s"/>' % (l, u)
                            for l, u in locs.items())
             alts += '<xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % locs['ro']
-            entries.append('<url><loc>%s</loc>%s<changefreq>weekly</changefreq>'
-                           '<priority>%s</priority></url>' % (loc, alts, prio))
-    # the interactive tools, indexable but lower priority
-    for tool in ('/catalog.html', '/vehicle.html', '/search.html'):
-        entries.append('<url><loc>%s%s</loc><priority>0.6</priority></url>' % (SITE, tool))
+            entries.append('<url><loc>%s</loc>%s<lastmod>%s</lastmod>%s'
+                           '<changefreq>weekly</changefreq><priority>%s</priority></url>'
+                           % (loc, alts, fresh[loc]['d'], imgs, prio))
 
     with open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8') as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
-                'xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
+                'xmlns:xhtml="http://www.w3.org/1999/xhtml" '
+                'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' +
                 '\n'.join(entries) + '\n</urlset>\n')
 
+    # Disallow and noindex do not combine: a page a crawler is forbidden to fetch is a
+    # page whose noindex tag it never reads, so it can stay in the index as a bare URL.
+    # /search.html and /cart.html carry noindex in the HTML and are therefore left
+    # crawlable here on purpose, so the tag is actually seen and obeyed.
+    #
+    # The filtered views of the catalogue (/catalog.html?cat=...) are the one place the
+    # site can generate unbounded near-duplicate URLs. They are not blocked either --
+    # every one of them carries a canonical pointing back at /catalog.html, and a blocked
+    # URL is a canonical Google never gets to read. Yandex is named separately because it
+    # is a large share of Russian-language search in Moldova and it does read Clean-param,
+    # which folds those query strings onto one address at the crawler instead.
     with open(os.path.join(ROOT, 'robots.txt'), 'w', encoding='utf-8') as f:
-        f.write('User-agent: *\nAllow: /\n'
-                'Disallow: /cart.html\n'
-                'Disallow: /*?q=\n\n'
+        f.write('User-agent: *\n'
+                'Allow: /\n\n'
+                'User-agent: Yandex\n'
+                'Allow: /\n'
+                'Clean-param: q&cat&group&sort&dia&clamp&angle&material&type\n\n'
                 'Sitemap: %s/sitemap.xml\n' % SITE)
 
     print('%d pages, %d URLs in the sitemap' % (len(urls), len(entries)))

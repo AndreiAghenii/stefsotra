@@ -10,7 +10,11 @@
     "postal_code": "MD-2002",
     "locality": "Chișinău",
     "country": "MD",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Soseaua+Muncesti+271,+MD-2002,+Chisinau,+Moldova"
+    "maps": "https://www.google.com/maps/search/?api=1&query=Soseaua+Muncesti+271,+MD-2002,+Chisinau,+Moldova",
+    "opening_hours": [],
+    "geo": [],
+    "same_as": [],
+    "price_range": ""
   },
   "about": {
     "ro": {

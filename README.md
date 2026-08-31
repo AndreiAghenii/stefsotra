@@ -27,18 +27,23 @@ per page. JavaScript then attaches the basket and the assistant to the page that
 there; it does not redraw anything, and it does not download the 395 KB catalogue.
 
 **Interactive pages** — `catalog.html` (filters), `search.html`, `vehicle.html`, `cart.html`.
-These need to react to input, so they are drawn in the browser and do fetch the catalogue.
+These need to react to input, so their contents are drawn in the browser and they do fetch
+the catalogue. Their bodies live in `templates/`; the build wraps each one in a head, a
+header and a footer per language and writes the `/`, `/ru/` and `/en/` copies. They used to
+be copied byte for byte, which left twelve URLs carrying the same shell, all of them
+`lang="ro"`, none with a canonical.
 
 ```
 /                       /ru/                /en/              home
 /c/<category>/          17 categories                         category listing
 /g/<group>/             5 groups                              group landing
-/p/<handle>/            114 products                          product
+/p/<handle>/            130 products                          product
 /about/ /delivery/ /partners/ /returns/ /warranty/ /contact/   company
 /catalog.html /search.html /vehicle.html /cart.html            tools
 ```
 
-429 pre-rendered pages in total.
+477 pre-rendered pages, plus the four tool pages in three languages: 489 HTML files
+and 483 indexable URLs.
 
 ## Building
 
@@ -47,12 +52,22 @@ python3 scripts/build_catalogue.py --offline   # data/products.json from the cac
 python3 scripts/build_catalogue.py             # ...or refetch from the live store
 python3 scripts/build_vehicles.py              # vehicle tree (slow, ~10 min)
 python3 scripts/build_static.py                # THE SITE — run this after any of the above
+python3 scripts/audit_seo.py                   # ...then check it: exits non-zero on a fault
 ```
 
-`build_static.py` deletes and rewrites `/p`, `/c`, `/g`, `/ru`, `/en` and the company page
-folders, so a withdrawn product cannot survive as a live URL. **Run it after editing
-`data/pages.json`, `data/reviews.json` or any `i18n/*.json`** — those files feed the
-pre-rendered HTML, and editing them alone changes nothing that a visitor sees.
+`audit_seo.py` reads the built site the way a crawler would and fails on the things that
+cost rankings quietly: a missing or wrong canonical, two pages claiming the same one, an
+incomplete `hreflang` set, a title over 70 characters or a description outside 60–165, a
+second `<h1>`, JSON-LD that does not parse, a header that is not in the HTML, a sitemap
+entry with no file behind it, an indexable page missing from the sitemap. Run it before a
+deploy; it currently reports no problems across 489 pages.
+
+`build_static.py` deletes and rewrites `/p`, `/c`, `/g`, `/ru`, `/en`, the company page
+folders and the four tool pages at the root, so a withdrawn product cannot survive as a
+live URL. Edit the tool pages in `templates/`, not at the root: the root copies are output.
+**Run it after editing `data/pages.json`, `data/reviews.json` or any `i18n/*.json`** —
+those files feed the pre-rendered HTML, and editing them alone changes nothing that a
+visitor sees.
 
 `build_catalogue.py` fails loudly: it prints any product it could not categorise and counts
 variant sizes it could not parse. Both should be zero.
@@ -64,18 +79,36 @@ What is in place:
 - **Real HTML for crawlers.** This is the one that matters. Everything below is wasted if
   the page is an empty `<div>`, which is what it was before this build step existed.
 - **A separate URL per language** with a full `hreflang` set (ro / ru / en / x-default) on
-  all 429 pages and in the sitemap, so Google serves the Russian page to a Russian searcher
+  all 489 pages and in the sitemap, so Google serves the Russian page to a Russian searcher
   instead of picking one and treating the rest as duplicates.
 - **Structured data**: Organization, WebSite with SearchAction, Product with AggregateOffer
   in MDL, ItemList on category pages, BreadcrumbList everywhere, FAQPage on delivery,
   returns and warranty.
 - **Titles and descriptions** written per page from real figures — product count, size
   count, lowest price, city — rather than one template repeated 400 times.
-- **Every size in the HTML.** People search "furtun silicon 38 mm", so all 957 variant
+- **Every size in the HTML.** People search "furtun silicon 38 mm", so all 1,014 variant
   sizes are written out as text, not left inside a `<select>`.
 - Canonical tags, Open Graph and Twitter cards, `sitemap.xml`, `robots.txt`, a 404 page,
   301 redirects from the old Shopify `/pages/...` and `/products/...` addresses, image
   `width`/`height` to stop layout shift, and about 107 KB of page weight before images.
+- **One canonical per address, including the four interactive pages.** See above.
+- **`<lastmod>` that means something.** Each page's HTML is hashed as it is written and
+  compared with `data/lastmod.json` from the last build, so a page that did not change
+  keeps the date it had. Stamping today's date on all 483 URLs every build is the usual way
+  to make Google stop reading the field. `data/lastmod.json` is committed; deleting it only
+  costs the history, not correctness.
+- **An image sitemap.** All 339 product photographs are named, including the ones sitting
+  behind the gallery that a crawler would otherwise have to render the page to find.
+- **Delivery and return terms in the Product markup** — 30 days for a refund, 200 lei by
+  courier in Chișinău — taken from what `/returns/` and `/delivery/` already say. Delivery
+  time and out-of-city rates are quoted per order, so neither is asserted.
+- **`search.html` and `cart.html` say `noindex,follow`** and are deliberately left
+  crawlable in `robots.txt`: a page a crawler may not fetch is a page whose `noindex` it
+  never reads. The filtered catalogue URLs are handled by their canonical for the same
+  reason, and by `Clean-param` for Yandex, which does read it.
+- **The photograph the page is about is preloaded** and marked `fetchpriority="high"`; it
+  is the LCP element on every product page. Its `alt` is the product's name in the page's
+  own language, which is also what Google Images matches a Romanian or Russian query on.
 
 What this cannot do, and it is worth being straight about it: ranking first for "rubber
 products in Moldova" is not something a website alone decides. The technical side is now as
@@ -83,9 +116,15 @@ good as it reasonably gets. The rest is off-page and needs you:
 
 1. **Google Business Profile** — free, and for local trade searches it usually outranks
    everything else on the page. It needs the street address.
-2. **The address.** `data/pages.json` → `_contact.address` is still empty because nothing
-   on stefsotra.md publishes one. Consistent name/address/phone across the site, Google,
-   and directories is a large part of local ranking.
+2. **Opening hours and map coordinates.** The address is in `data/pages.json` and in the
+   `HardwareStore` markup. `_contact.opening_hours`, `_contact.geo`, `_contact.same_as`
+   (the Google Business, Facebook and Instagram addresses) and `_contact.price_range` are
+   still empty, and each one goes straight into that markup the moment it is filled in —
+   see `org_ld()`. They are left empty rather than guessed: wrong coordinates put the pin
+   in the wrong street and invented hours send someone to a closed door. Format is
+   `[[["Mo","Tu","We","Th","Fr"], "08:00", "17:00"]]` for the hours and `[lat, lon]` for
+   the coordinates. Hours and a consistent name/address/phone across the site, Google and
+   the local directories are a large part of whether the shop shows up in the map pack.
 3. **Search Console and Yandex Webmaster** — submit `sitemap.xml` to both. Yandex is a
    significant share of Russian-language search here.
 4. **Which domain.** `SITE` at the top of `build_static.py` says `https://stefsotra.md`. If

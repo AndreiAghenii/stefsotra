@@ -1,0 +1,191 @@
+<!-- Body fragment for /cart.html. scripts/build_static.py wraps this in the head,
+     header and footer for each language and writes /, /ru/ and /en/ copies, so the
+     three copies stop being byte-identical pages with no canonical between them.
+     app.js and assistant.js are added by the builder; do not add them here. -->
+<main><div class="wrap" style="max-width:820px">
+  <h1 data-t="cart.h1">&nbsp;</h1>
+  <p class="lead" data-t="empty.cartP">&nbsp;</p>
+  <div id="lines"></div>
+  <div id="checkout" hidden>
+    <div class="totals"><span data-t="cart.total">&nbsp;</span><span id="total"></span></div>
+    <div class="note" data-t="cart.note">&nbsp;</div>
+    <h2 style="margin-top:26px" data-t="flow.h">&nbsp;</h2>
+    <ol class="flowsteps">
+      <li><b></b><div><h3 data-t="flow.1">&nbsp;</h3></div></li>
+      <li><b></b><div><h3 data-t="flow.2">&nbsp;</h3></div></li>
+      <li><b></b><div><h3 data-t="flow.3">&nbsp;</h3></div></li>
+      <li><b></b><div><h3 data-t="flow.4">&nbsp;</h3></div></li>
+    </ol>
+
+    <!-- Netlify Forms: the host captures this on deploy, emails a copy and keeps a
+         searchable submissions list. No backend code, no third-party script. -->
+    <form name="quote-request" method="POST" data-netlify="true"
+          netlify-honeypot="bot-field" id="form">
+      <input type="hidden" name="form-name" value="quote-request">
+      <p hidden><label>Do not fill: <input name="bot-field"></label></p>
+      <input type="hidden" name="items" id="itemsField">
+      <input type="hidden" name="total" id="totalField">
+      <input type="hidden" name="language" id="langField">
+
+      <div class="row">
+        <div class="field"><label data-t="cart.name">&nbsp;</label>
+          <input type="text" name="name" id="f-name" required></div>
+        <div class="field"><label data-t="cart.company">&nbsp;</label>
+          <input type="text" name="company"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label data-t="cart.phone">&nbsp;</label>
+          <input type="tel" name="phone" id="f-phone" required></div>
+        <div class="field"><label data-t="cart.email">&nbsp;</label>
+          <input type="email" name="email" id="f-email" required></div>
+      </div>
+      <div class="field"><label data-t="cart.message">&nbsp;</label>
+        <textarea name="message" rows="3"></textarea></div>
+      <p id="err" class="small" style="color:var(--bad)" hidden></p>
+      <button class="btn" type="submit" id="submit" style="width:100%" data-t="cart.submit">&nbsp;</button>
+      <p class="small muted" id="orEmail" style="margin-top:10px;text-align:center"></p>
+    </form>
+  </div>
+</div></main>
+<script>
+S.load(['catalogue']).then(function () {
+  S.chrome('/cart.html');
+  S.applyStatic();
+  document.getElementById('langField').value = S.lang;
+  render();
+  document.getElementById('form').addEventListener('submit', submit);
+  var oe = document.getElementById('orEmail');
+  oe.innerHTML = S.esc(S.t('cart.orEmail', { e: '' })).replace(/\s*$/, '') +
+    ' <a href="#" id="mailLink">' + S.esc(S.contact().email) + '</a>';
+  document.getElementById('mailLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    sendByEmail();
+  });
+}).catch(S.fail);
+
+function lines() {
+  return S.cart.read().map(function (it) {
+    var p = S.byHandle(it.handle);
+    if (!p) return null;                       // product withdrawn since it was added
+    var v = p.variants.filter(function (x) { return x.title === it.variant; })[0]
+            || p.variants[0];
+    return { it: it, p: p, v: v, sum: v.price * it.qty };
+  }).filter(Boolean);
+}
+
+function render() {
+  var L = lines();
+  var box = document.getElementById('lines');
+  document.getElementById('checkout').hidden = !L.length;
+
+  if (!L.length) {
+    document.querySelector('.lead').hidden = true;
+    box.innerHTML =
+      '<div class="emptybox"><h2>' + S.esc(S.t('empty.cartH')) + '</h2>' +
+      '<p class="muted">' + S.esc(S.t('empty.cartP')) + '</p>' +
+      '<p><a class="btn" href="' + S.url('/catalog.html') + '">' + S.esc(S.t('cart.emptyCta')) + '</a> ' +
+      '<a class="btn ghost" href="' + S.url('/vehicle.html') + '">' + S.esc(S.t('nav.vehicle')) + '</a></p></div>' +
+      '<h2 style="margin-top:34px">' + S.esc(S.t('empty.browse')) + '</h2>' +
+      '<div class="cards">' + S.catalogue.groups.map(function (g) {
+        return '<a class="gcard" href="' + S.url('/g/' + encodeURIComponent(g.key) + '/') + '">' +
+          '<span class="gcard-t">' + S.esc(S.groupLabel(g.key)) +
+          '<i>' + S.esc(S.t('cat.results', { n: g.count })) + '</i></span></a>';
+      }).join('') + '</div>';
+    return;
+  }
+  document.querySelector('.lead').hidden = false;
+
+  box.innerHTML = L.map(function (r, i) {
+    var img = S.img(r.p);
+    return '<div class="cart-line">' +
+      (img ? '<img src="' + S.esc(img) + '" alt="">' : '<div style="width:66px;height:66px"></div>') +
+      '<div><a href="' + S.url('/p/' + encodeURIComponent(r.p.handle) + '/') + '">' +
+        S.esc(S.name(r.p)) + '</a>' +
+        // A product with one unnamed option has no size to print, and a per-metre item
+        // is not priced "each" -- the /m already says what the price is per.
+        '<div class="muted small">' +
+        (S.dimLabel(r.v.dims) ? S.esc(S.dimLabel(r.v.dims)) + ' · ' : '') +
+        S.money(r.v.price, r.p.unit) +
+        (r.p.unit === 'm' ? '' : ' ' + S.esc(S.t('common.each'))) + '</div>' +
+        '<button class="linkish" data-rm="' + i + '">' + S.esc(S.t('cart.remove')) + '</button></div>' +
+      '<input class="qty" type="number" min="1" max="9999" value="' + r.it.qty + '" data-q="' + i + '">' +
+      '<strong>' + S.money(r.sum) + '</strong></div>';
+  }).join('');
+
+  var total = L.reduce(function (n, r) { return n + r.sum; }, 0);
+  document.getElementById('total').textContent = S.money(total);
+  document.getElementById('totalField').value = S.money(total);
+  document.getElementById('itemsField').value = L.map(function (r) {
+    var lbl = S.dimLabel(r.v.dims);
+    return r.it.qty + (r.p.unit === 'm' ? ' m' : ' ×') + ' ' + S.name(r.p) +
+           (lbl ? ' [' + lbl + ']' : '') +
+           (r.v.sku ? ' SKU ' + r.v.sku : '') + ' — ' + S.money(r.sum);
+  }).join('\n');
+
+  box.querySelectorAll('[data-q]').forEach(function (inp) {
+    inp.addEventListener('change', function () {
+      S.cart.setQty(Number(inp.dataset.q), Number(inp.value)); render();
+    });
+  });
+  box.querySelectorAll('[data-rm]').forEach(function (b) {
+    b.addEventListener('click', function () { S.cart.remove(Number(b.dataset.rm)); render(); });
+  });
+}
+
+// The request written out as plain text, so an email carries exactly what the form
+// would have carried.
+function orderText() {
+  var f = document.getElementById('form');
+  return [
+    S.t('cart.name') + ': ' + f.name.value,
+    S.t('cart.company') + ': ' + (f.company.value || '-'),
+    S.t('cart.phone') + ': ' + f.phone.value,
+    S.t('cart.email') + ': ' + f.email.value,
+    '',
+    document.getElementById('itemsField').value,
+    '',
+    S.t('cart.total') + ': ' + document.getElementById('totalField').value,
+    '',
+    f.message.value || ''
+  ].join('\n');
+}
+
+function sendByEmail() {
+  location.href = S.mailto('Comandă Stefsotra — ' + document.getElementById('totalField').value,
+                           orderText());
+  var err = document.getElementById('err');
+  err.style.color = 'var(--ink-2)';
+  err.textContent = S.t('cart.mailOpened');
+  err.hidden = false;
+}
+
+function submit(e) {
+  e.preventDefault();
+  var f = e.target, err = document.getElementById('err');
+  if (!f.name.value.trim() || !f.phone.value.trim() || !f.email.value.trim()) {
+    err.textContent = S.t('cart.required'); err.hidden = false; return;
+  }
+  err.hidden = true;
+  var btn = document.getElementById('submit');
+  btn.disabled = true; btn.textContent = S.t('cart.sending');
+
+  fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(new FormData(f)).toString()
+  }).then(function (r) {
+    if (!r.ok) throw new Error(r.status);
+    S.cart.clear();
+    document.querySelector('main .wrap').innerHTML =
+      '<div class="note ok"><strong>' + S.esc(S.t('cart.ok')) + '</strong><br>' +
+      S.esc(S.t('cart.sentTo', { e: S.contact().email })) + '</div>' +
+      '<a class="btn ghost" href="' + S.url('/catalog.html') + '">' + S.esc(S.t('cart.emptyCta')) + '</a>';
+  }).catch(function () {
+    // Netlify only handles the POST on a deployed site, so this is the expected path
+    // when testing locally -- and the safety net if it is ever misconfigured. The order
+    // must not be lost either way, so it goes to the shop's address by mail instead.
+    btn.disabled = false; btn.textContent = S.t('cart.submit');
+    sendByEmail();
+  });
+}
+</script>
