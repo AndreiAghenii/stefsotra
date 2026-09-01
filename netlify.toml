@@ -67,9 +67,32 @@
   to = "/p/:handle/"
   status = 301
 
+# publish = "." means the build inputs ship with the site: /templates/*.html are body
+# fragments with no <head>, and /scripts/* is the Python that generates the pages. Nothing
+# links to either, but Netlify will serve them to anything that asks, so say plainly that
+# they are not pages. /data and /i18n stay indexable-quiet the same way -- the site fetches
+# them at runtime, so they must keep returning 200, but a JSON blob in the index helps
+# nobody and competes with the page that presents the same catalogue as HTML.
+[[headers]]
+  for = "/templates/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/scripts/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/i18n/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+    Cache-Control = "public, max-age=3600"
+
 [[headers]]
   for = "/data/*"
   [headers.values]
+    X-Robots-Tag = "noindex"
     Cache-Control = "public, max-age=3600"
 
 [[headers]]

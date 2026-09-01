@@ -132,6 +132,12 @@ What is in place:
   and regenerated only when the artwork changes. `logo.png` stays for the Organization
   markup and the preview cards, which both want the large one. That is 25 KB off every page.
 - **No broken internal links**, checked across all 489 pages.
+- **The build inputs are not pages.** `publish = "."` ships the whole folder, so
+  `/templates/*.html` (body fragments with no `<head>`) and `/scripts/*` are served to
+  anything that asks for them. Nothing links to either, but `netlify.toml` now sends
+  `X-Robots-Tag: noindex` for both, and for `/data` and `/i18n` — those must keep returning
+  200 because the site fetches them, but a JSON blob in the index helps nobody and competes
+  with the page that presents the same catalogue as HTML.
 
 What this cannot do, and it is worth being straight about it: ranking first for "rubber
 products in Moldova" is not something a website alone decides. The technical side is now as
