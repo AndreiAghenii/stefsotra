@@ -50,11 +50,19 @@ and 483 indexable URLs.
 ```
 python3 scripts/build_catalogue.py --offline   # data/products.json from the cached feed
 python3 scripts/build_catalogue.py             # ...or refetch from the live store
+python3 scripts/translate_titles.py --write    # ALWAYS after either of those two
 python3 scripts/build_vehicles.py              # vehicle tree (slow, ~10 min)
 python3 scripts/build_static.py                # THE SITE — run this after any of the above
 python3 scripts/audit_seo.py                   # ...then check it: exits non-zero on a fault
 python3 scripts/build_logo.py                  # only after replacing assets/img/logo.png
 ```
+
+**`translate_titles.py` is not optional and `build_catalogue.py` does not call it.**
+`build_catalogue.py` rewrites `data/products.json` from the feed, and the feed carries no
+`title_ro`, `title_ru` or `title_en` — so skipping this step silently drops every
+translated product name and puts the site back to English titles, which is the one thing
+the Romanian and Russian pages cannot rank without. Run it with `--write`, and read what
+it prints: it reports any term it did not recognise rather than guessing at it.
 
 `audit_seo.py` reads the built site the way a crawler would and fails on the things that
 cost rankings quietly: a missing or wrong canonical, two pages claiming the same one, an
@@ -89,6 +97,13 @@ What is in place:
   count, lowest price, city — rather than one template repeated 400 times.
 - **Every size in the HTML.** People search "furtun silicon 38 mm", so all 1,014 variant
   sizes are written out as text, not left inside a `<select>`.
+- **A product name in each of the three languages, with no Russian left in the other two.**
+  Five products arrive from the feed titled in Russian. They had no English name at all, so
+  `/en/` was headed in Russian capitals, and their Romanian was half-done: the product name
+  was translated and the sheet size and hardness after it were not. `title_en` is written
+  now and those trailing halves are translated too — words only, every number and dimension
+  passes through untouched, and `translate_titles.py` reports any Cyrillic still standing in
+  a Romanian or English title instead of letting it ship.
 - Canonical tags, Open Graph and Twitter cards, `sitemap.xml`, `robots.txt`, a 404 page,
   301 redirects from the old Shopify `/pages/...` and `/products/...` addresses, image
   `width`/`height` to stop layout shift, and 144 KB of page weight before product photos —
@@ -140,7 +155,8 @@ good as it reasonably gets. The rest is off-page and needs you:
    point at the old store.
 5. **Links from real Moldovan sites** — suppliers, trade directories, customers. This is
    the slowest part and the one competitors cannot copy.
-6. **Descriptions in Romanian and Russian.** See below.
+6. **Descriptions in Romanian and Russian.** See below. The product *names* are done
+   in all three languages, the five the feed titles in Russian included.
 
 ## Prices
 
