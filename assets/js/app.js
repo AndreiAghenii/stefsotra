@@ -374,7 +374,7 @@
     var onCat = current === '/catalog.html';
     return '<header class="site">' +
       '<div class="wrap bar">' +
-        '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo.png" alt="STEFSOTRA"></a>' +
+        '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" width="400" height="98"></a>' +
         '<nav class="main" id="mainnav">' +
           '<button type="button" class="menu-trigger" id="prodBtn" aria-expanded="false"' +
             (onCat ? ' aria-current="page"' : '') + '>' +
@@ -416,7 +416,7 @@
 
     return '<footer class="site"><div class="wrap foot">' +
       '<div class="foot-brand">' +
-        '<img src="/assets/img/logo.png" alt="STEFSOTRA" class="foot-logo">' +
+        '<img src="/assets/img/logo-400.png" alt="STEFSOTRA" class="foot-logo" width="400" height="98" loading="lazy" decoding="async">' +
         '<p class="small">' + S.esc(S.t('site.tagline')) + '</p>' +
         (c.phone ? '<p class="small"><a href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a></p>' : '') +
         (c.email ? '<p class="small"><a href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a></p>' : '') +
@@ -616,7 +616,7 @@
       '<div class="drawer-back" id="drawerBack" hidden></div>' +
       '<aside class="drawer" id="drawer" hidden aria-label="' + S.esc(S.t('nav.menu')) + '">' +
         '<header>' +
-          '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo.png" alt="STEFSOTRA"></a>' +
+          '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" width="400" height="98"></a>' +
           '<button type="button" class="ai-x" id="drawerClose" aria-label="' + S.esc(S.t('nav.close')) + '">✕</button>' +
         '</header>' +
         '<form class="drawer-search" action="' + S.url('/search.html') + '" method="get" role="search">' +

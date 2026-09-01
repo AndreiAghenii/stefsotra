@@ -53,6 +53,7 @@ python3 scripts/build_catalogue.py             # ...or refetch from the live sto
 python3 scripts/build_vehicles.py              # vehicle tree (slow, ~10 min)
 python3 scripts/build_static.py                # THE SITE — run this after any of the above
 python3 scripts/audit_seo.py                   # ...then check it: exits non-zero on a fault
+python3 scripts/build_logo.py                  # only after replacing assets/img/logo.png
 ```
 
 `audit_seo.py` reads the built site the way a crawler would and fails on the things that
@@ -90,7 +91,8 @@ What is in place:
   sizes are written out as text, not left inside a `<select>`.
 - Canonical tags, Open Graph and Twitter cards, `sitemap.xml`, `robots.txt`, a 404 page,
   301 redirects from the old Shopify `/pages/...` and `/products/...` addresses, image
-  `width`/`height` to stop layout shift, and about 107 KB of page weight before images.
+  `width`/`height` to stop layout shift, and 144 KB of page weight before product photos —
+  measured in a browser, cumulative layout shift 0.000, one render-blocking file.
 - **One canonical per address, including the four interactive pages.** See above.
 - **`<lastmod>` that means something.** Each page's HTML is hashed as it is written and
   compared with `data/lastmod.json` from the last build, so a page that did not change
@@ -109,6 +111,12 @@ What is in place:
 - **The photograph the page is about is preloaded** and marked `fetchpriority="high"`; it
   is the LCP element on every product page. Its `alt` is the product's name in the page's
   own language, which is also what Google Images matches a Romanian or Russian query on.
+- **A logo the size it is drawn at.** `logo.png` is 1620×395 and 30 KB and was being shown
+  at 123×30 in the header, above the fold, on all 489 pages. The header and footer use
+  `logo-400.png` — 4 KB, still better than 3× on a phone, written by `scripts/build_logo.py`
+  and regenerated only when the artwork changes. `logo.png` stays for the Organization
+  markup and the preview cards, which both want the large one. That is 25 KB off every page.
+- **No broken internal links**, checked across all 489 pages.
 
 What this cannot do, and it is worth being straight about it: ranking first for "rubber
 products in Moldova" is not something a website alone decides. The technical side is now as
