@@ -191,7 +191,7 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
 
 
 def announce_html(lang):
-    """Trade custom, said once at the top of every page, in the brand's red."""
+    """The company is for sale: said once at the top of every page, in red."""
     px = PREFIX[lang]
     # Escape the sentence first, then drop the two links in: the copy is translatable,
     # the markup around it is not.
