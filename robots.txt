@@ -3,4 +3,4 @@ Allow: /
 Disallow: /cart.html
 Disallow: /*?q=
 
-Sitemap: https://stefsotra.md/sitemap.xml
+Sitemap: https://www.stefsotra.md/sitemap.xml

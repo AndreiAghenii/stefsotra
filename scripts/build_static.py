@@ -35,7 +35,9 @@ import shutil
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, 'data')
-SITE = 'https://stefsotra.md'          # change if the new site gets its own domain
+SITE = 'https://www.stefsotra.md'      # the host Netlify serves: the apex 308s to www,
+                                       # so canonicals must name www or every page
+                                       # declares a canonical that redirects elsewhere
 
 LANGS = ['ro', 'ru', 'en']
 PREFIX = {'ro': '', 'ru': '/ru', 'en': '/en'}
@@ -286,7 +288,7 @@ def footer_html(lang, path):
         '<p class="small"><a href="mailto:%s">%s</a></p>%s</div>%s</div>'
         '<div class="wrap foot-cats small">%s</div>'
         '<div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · '
-        '<a href="https://stefsotra.md">stefsotra.md</a></span>'
+        '<a href="https://www.stefsotra.md">stefsotra.md</a></span>'
         '<span class="madeby"><a href="https://aggento.com" target="_blank" '
         'rel="noopener">%s</a></span></div>'
         '</footer>\n'
