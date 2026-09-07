@@ -49,6 +49,15 @@ img { max-width: 100%; display: block; }
 .hint { margin: 10px 0; }
 
 /* ---------------------------------------------------------------- header */
+/* Trade custom, at the very top of every page. It sits above the sticky header rather
+   than inside it, so it scrolls away and the navigation still reaches the top edge. */
+.announce { background: var(--bad); color: #fff; font-size: .87rem; }
+.announce .wrap { padding: 7px 20px; text-align: center; line-height: 1.45; }
+.announce a { color: #fff; text-decoration: underline; text-underline-offset: 2px; font-weight: 600; }
+.announce a:hover { text-decoration: none; }
+.announce a[href^="tel:"] { white-space: nowrap; }
+@media (max-width: 560px) { .announce { font-size: .8rem; } }
+
 header.site {
   border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40;
   background: rgba(255, 255, 255, .92);

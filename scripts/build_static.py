@@ -190,6 +190,19 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
         '\n</head>\n<body>\n')
 
 
+def announce_html(lang):
+    """Trade custom, said once at the top of every page, in the brand's red."""
+    px = PREFIX[lang]
+    # Escape the sentence first, then drop the two links in: the copy is translatable,
+    # the markup around it is not.
+    line = e(t(lang, 'biz.bar'))
+    line = line.replace('{form}', '<a href="%s/contact/">%s</a>'
+                        % (px, e(t(lang, 'biz.form'))))
+    line = line.replace('{phone}', '<a href="tel:%s">%s</a>'
+                        % (e(CONTACT['phone_href']), e(CONTACT['phone'])))
+    return '<div class="announce"><div class="wrap">%s</div></div>' % line
+
+
 def header_html(lang, current=''):
     """The navigation, written out rather than injected, so a crawler can follow it."""
     px = PREFIX[lang]
@@ -219,6 +232,7 @@ def header_html(lang, current=''):
         for l in LANGS)
 
     return (
+        announce_html(lang) +
         '<header class="site"><div class="wrap bar">'
         '<a class="logo" href="%s/"><img src="/assets/img/logo.png" alt="STEFSOTRA" width="1620" height="395"></a>'
         '<nav class="main" id="mainnav">'
@@ -1019,11 +1033,11 @@ def build_contact(lang):
         '<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
         '<div class="wrap"><div class="contact-grid">'
         '<div class="contact-facts">%s</div>'
-        '<div class="contact-form"><h2>%s</h2>%s</div></div>'
+        '<div class="contact-form"><h2>%s</h2><p class="note">%s</p>%s</div></div>'
         '<section class="home-sec"><h2>%s</h2>%s</section></div>'
         % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (t(lang, 'ct.h1'), '')]),
            e(t(lang, 'ct.h1')), e(t(lang, 'ct.lead')), facts,
-           e(t(lang, 'ct.formH')), form, e(t(lang, 'flow.h')), flow))
+           e(t(lang, 'ct.formH')), e(t(lang, 'ct.biz')), form, e(t(lang, 'flow.h')), flow))
 
     title = '%s — Stefsotra %s | %s' % (t(lang, 'ct.h1'), GEO[lang], CONTACT['phone'])
     desc = {'ro': 'Contactează Stefsotra: telefon %s, e-mail %s. Furnizor de furtunuri industriale '

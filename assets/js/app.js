@@ -372,7 +372,15 @@
     }).join('');
 
     var onCat = current === '/catalog.html';
-    return '<header class="site">' +
+    // The same red strip the pre-rendered pages carry -- see announce_html() in
+    // scripts/build_static.py. Escape the sentence, then drop the two links in.
+    var c = S.contact();
+    var bar = S.esc(S.t('biz.bar'))
+      .replace('{form}', '<a href="' + S.url('/contact/') + '">' + S.esc(S.t('biz.form')) + '</a>')
+      .replace('{phone}', '<a href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>');
+
+    return '<div class="announce"><div class="wrap">' + bar + '</div></div>' +
+      '<header class="site">' +
       '<div class="wrap bar">' +
         '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo.png" alt="STEFSOTRA"></a>' +
         '<nav class="main" id="mainnav">' +
