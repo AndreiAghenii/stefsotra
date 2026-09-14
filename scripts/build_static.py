@@ -304,7 +304,7 @@ def footer_html(lang, path):
         '<div class="foot-brand"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" class="foot-logo" '
         'width="400" height="98" loading="lazy" decoding="async">'
         '<p class="small">%s</p>'
-        '<p class="small"><a href="tel:%s">%s</a></p>'
+        '%s'
         '<p class="small"><a href="mailto:%s">%s</a></p>%s</div>%s</div>'
         '<div class="wrap foot-cats small">%s</div>'
         '<div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · '
@@ -312,7 +312,8 @@ def footer_html(lang, path):
         '<span class="madeby"><a href="https://aggento.com" target="_blank" '
         'rel="noopener">%s</a></span></div>'
         '</footer>\n'
-        % (e(t(lang, 'site.tagline')), e(c['phone_href']), e(c['phone']),
+        % (e(t(lang, 'site.tagline')),
+           phone_links('<p class="small"><a href="tel:%s">%s</a></p>'),
            e(c['email']), e(c['email']),
            ('<p class="small"><a href="%s" target="_blank" rel="noopener">%s</a></p>'
             % (e(c.get('maps', '')), e(c['address']))) if c.get('address') else '',
@@ -328,7 +329,8 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
            footer_html(lang, path) +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
                {k: CONTACT.get(k, '') for k in
-                ('email', 'phone', 'phone_href', 'address', 'maps')},
+                ('email', 'phone', 'phone_href', 'phone2', 'phone2_href',
+                 'address', 'maps')},
                ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'
@@ -355,7 +357,11 @@ def org_ld():
         '@context': 'https://schema.org', '@type': 'HardwareStore',
         'name': 'Stefsotra', 'url': SITE, 'logo': SITE + '/assets/img/logo.png',
         'image': SITE + '/assets/img/logo.png',
-        'telephone': CONTACT['phone'], 'email': CONTACT['email'],
+        # schema.org takes a list here. Google reads the first, so the landline leads,
+        # matching the Google Business listing; the mobile is published alongside it.
+        'telephone': ([CONTACT['phone'], CONTACT['phone2']] if CONTACT.get('phone2')
+                      else CONTACT['phone']),
+        'email': CONTACT['email'],
         'currenciesAccepted': 'MDL',
         'areaServed': [{'@type': 'City', 'name': 'Chișinău'},
                        {'@type': 'Country', 'name': 'Moldova'}],
@@ -389,6 +395,28 @@ def org_ld():
         }
         d['hasMap'] = CONTACT.get('maps', '')
     return d
+
+
+def sales_phone(lang):
+    """The sales number as a button for the call-us band. Empty when none is configured."""
+    if not CONTACT.get('phone2'):
+        return ''
+    return ('<a class="btn ghost ask-tel" href="tel:%s" aria-label="%s %s">%s</a>'
+            % (e(CONTACT['phone2_href']), e(t(lang, 'ct.phone')),
+               e(CONTACT['phone2']), e(CONTACT['phone2'])))
+
+
+def phone_links(fmt, sep=''):
+    """Both numbers, landline first, each wrapped in `fmt` with (href, text).
+
+    The mobile is the sales line and the landline is what the Google listing and the trade
+    directories carry, so the landline stays first: a visitor comparing the two sees the
+    same order in both places. Everything degrades to one number if phone2 is cleared.
+    """
+    out = [fmt % (e(CONTACT['phone_href']), e(CONTACT['phone']))]
+    if CONTACT.get('phone2'):
+        out.append(fmt % (e(CONTACT['phone2_href']), e(CONTACT['phone2'])))
+    return sep.join(out)
 
 
 def crumbs_ld(lang, items):
@@ -702,9 +730,13 @@ def build_home(lang):
         % (e(t(lang, 'home.popular')), px, e(t(lang, 'home.seeAll')),
            ''.join(tile(lang, p) for p in featured)) +
 
+        # "Ask the assistant or call us" and then no number to call. The sales line goes
+        # here, as a real tel: link, so a phone taps it and a desktop can read it off.
         '<section class="home-sec ask"><div><h2>%s</h2><p class="muted">%s</p></div>'
-        '<button class="btn" type="button" data-ai-open>%s ✦</button></section>'
-        % (e(t(lang, 'home.askH')), e(t(lang, 'home.askP')), e(t(lang, 'nav.assistant'))) +
+        '<div class="ask-actions">%s'
+        '<button class="btn" type="button" data-ai-open>%s ✦</button></div></section>'
+        % (e(t(lang, 'home.askH')), e(t(lang, 'home.askP')), sales_phone(lang),
+           e(t(lang, 'nav.assistant'))) +
         '</div>')
 
     site_ld = {'@context': 'https://schema.org', '@type': 'WebSite', 'url': SITE,
@@ -1080,11 +1112,12 @@ def build_content(lang, slug, url):
               ('/warranty/', 'nav.warranty'), ('/contact/', 'nav.contact')]
     side = (
         '<div class="sidecard"><h3>%s</h3><p class="small">%s</p>'
-        '<a class="bigphone" href="tel:%s">%s</a><a class="small" href="mailto:%s">%s</a>'
+        '%s<a class="small" href="mailto:%s">%s</a>'
         '<button type="button" class="btn ghost small-btn" data-ai-open>%s ✦</button></div>'
         '<div class="sidecard"><h3>%s</h3><ul class="sidelinks">%s</ul></div>'
         % (e(t(lang, 'pg.help')), e(t(lang, 'pg.helpText')),
-           e(CONTACT['phone_href']), e(CONTACT['phone']), e(CONTACT['email']), e(CONTACT['email']),
+           phone_links('<a class="bigphone" href="tel:%s">%s</a>'),
+           e(CONTACT['email']), e(CONTACT['email']),
            e(t(lang, 'nav.assistant')), e(t(lang, 'pg.more')),
            ''.join('<li><a href="%s%s">%s</a></li>' % (px, u, e(t(lang, k)))
                    for u, k in others if u != url)))
@@ -1094,11 +1127,12 @@ def build_content(lang, slug, url):
         '<div class="wrap pagebody"><article class="prose">%s</article>'
         '<aside class="pageside">%s</aside></div>'
         '<div class="wrap"><section class="home-sec ask"><div><h2>%s</h2>'
-        '<p class="muted">%s</p></div><a class="btn" href="%s/catalog.html">%s</a></section></div>'
+        '<p class="muted">%s</p></div><div class="ask-actions">%s'
+        '<a class="btn" href="%s/catalog.html">%s</a></div></section></div>'
         % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (d['title'], '')]),
            e(d['title']), ''.join(parts), side,
            e(t(lang, 'pg.ctaH')), e(t(lang, 'pg.ctaP', n=CAT['count'], v=variants)),
-           px, e(t(lang, 'nav.catalog'))))
+           sales_phone(lang), px, e(t(lang, 'nav.catalog'))))
 
     title = '%s | Stefsotra %s' % (d['title'], GEO[lang])
     desc = strip_tags(d.get('lead', '') + ' ' + (d.get('body') or [''])[0], 158)
@@ -1119,7 +1153,7 @@ def build_contact(lang):
     facts = ''.join(
         '<div class="fact"><span class="small muted">%s</span><div>%s</div></div>' % (e(k), v)
         for k, v in [
-            (t(lang, 'ct.phone'), '<a href="tel:%s">%s</a>' % (e(c['phone_href']), e(c['phone']))),
+            (t(lang, 'ct.phone'), phone_links('<a href="tel:%s">%s</a>', '<br>')),
             (t(lang, 'ct.email'), '<a href="mailto:%s">%s</a>' % (e(c['email']), e(c['email']))),
             (t(lang, 'ct.address'), addr),
         ] + ([(t(lang, 'ct.hours'), e(c['hours']))] if c.get('hours') else []))
@@ -1139,9 +1173,15 @@ def build_contact(lang):
         '<div class="field"><label for="message">%s</label>'
         '<textarea id="message" name="message" rows="5" required></textarea></div>'
         '<button class="btn" type="submit">%s</button></form>'
-        '<p class="note ok" id="ok" hidden>%s</p>'
+        '<p class="note ok" id="ok" hidden>%s</p>%s'
         % (e(t(lang, 'ct.name')), e(t(lang, 'cart.phone')), e(t(lang, 'ct.email')),
-           e(t(lang, 'ct.msg')), e(t(lang, 'ct.send')), e(t(lang, 'ct.sent'))))
+           e(t(lang, 'ct.msg')), e(t(lang, 'ct.send')), e(t(lang, 'ct.sent')),
+           # Under the form, the same offer the order form makes: not everyone wants to
+           # type their question into a box and wait.
+           ('<p class="small muted" style="margin-top:10px">%s</p>'
+            % t(lang, 'form.orCall',
+                p='<a href="tel:%s">%s</a>' % (e(c['phone2_href']), e(c['phone2'])))
+            ) if c.get('phone2') else ''))
 
     body = (
         '<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
@@ -1260,7 +1300,8 @@ def build_tool(lang, filename):
            footer_html(lang, path) +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
                {k: CONTACT.get(k, '') for k in
-                ('email', 'phone', 'phone_href', 'address', 'maps')},
+                ('email', 'phone', 'phone_href', 'phone2', 'phone2_href',
+                 'address', 'maps')},
                ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>\n' +
@@ -1286,7 +1327,8 @@ def build_404():
            footer_html(lang, '/') +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
                {k: CONTACT.get(k, '') for k in
-                ('email', 'phone', 'phone_href', 'address', 'maps')},
+                ('email', 'phone', 'phone_href', 'phone2', 'phone2_href',
+                 'address', 'maps')},
                ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'

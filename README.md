@@ -131,6 +131,12 @@ What is in place:
   `logo-400.png` — 4 KB, still better than 3× on a phone, written by `scripts/build_logo.py`
   and regenerated only when the artwork changes. `logo.png` stays for the Organization
   markup and the preview cards, which both want the large one. That is 25 KB off every page.
+- **Two phone numbers, one order.** `_contact.phone` is the landline and `_contact.phone2`
+  the mobile sales line. The landline leads everywhere — footer, contact page, sidecards,
+  `telephone` in the Organization markup — because it is the number on the Google listing
+  and in the trade directories, and a visitor comparing the two has to see them agree.
+  Clearing `phone2` removes the second number from every one of those places, including
+  the call-us band and both forms, with no other edit.
 - **No broken internal links**, checked across all 489 pages.
 - **The build inputs are not pages.** `publish = "."` ships the whole folder, so
   `/templates/*.html` (body fragments with no `<head>`) and `/scripts/*` are served to

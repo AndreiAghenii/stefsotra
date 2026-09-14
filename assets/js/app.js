@@ -131,7 +131,8 @@
   // literal is only a last resort so a form can never lose its destination.
   S.contact = function () {
     return (window.__CONTACT) || S.pagesContact ||
-           { email: 'stefsotra@mail.ru', phone: '+373 (22) 55-39-54', phone_href: '+37322553954' };
+           { email: 'stefsotra@mail.ru', phone: '+373 (22) 55-39-54', phone_href: '+37322553954',
+             phone2: '+373 69 12 72 12', phone2_href: '+37369127212' };
   };
 
   // A mailto with the whole request already written out. This is the fallback when
@@ -419,6 +420,7 @@
         '<img src="/assets/img/logo-400.png" alt="STEFSOTRA" class="foot-logo" width="400" height="98" loading="lazy" decoding="async">' +
         '<p class="small">' + S.esc(S.t('site.tagline')) + '</p>' +
         (c.phone ? '<p class="small"><a href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a></p>' : '') +
+        (c.phone2 ? '<p class="small"><a href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a></p>' : '') +
         (c.email ? '<p class="small"><a href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a></p>' : '') +
         (c.address ? '<p class="small"><a href="' + S.esc(c.maps || '#') +
           '" target="_blank" rel="noopener">' + S.esc(c.address) + '</a></p>' : '') +
@@ -536,6 +538,7 @@
         '<h3>' + S.esc(S.t('pg.help')) + '</h3>' +
         '<p class="small">' + S.esc(S.t('pg.helpText')) + '</p>' +
         (c.phone ? '<a class="bigphone" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' : '') +
+        (c.phone2 ? '<a class="bigphone" href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a>' : '') +
         (c.email ? '<a class="small" href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a>' : '') +
         '<button type="button" class="btn ghost small-btn" data-ai-open>' +
           S.esc(S.t('nav.assistant')) + ' ✦</button>' +
@@ -633,6 +636,7 @@
             '" target="_blank" rel="noopener">' + S.esc(c.address) + '</a>' : '') +
           '<div class="drrow">' +
             '<a class="btn" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' +
+            (c.phone2 ? '<a class="btn" href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a>' : '') +
             '<div class="langs">' + langs + '</div>' +
           '</div>' +
         '</footer>' +

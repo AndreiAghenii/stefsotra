@@ -44,6 +44,7 @@
       <p id="err" class="small" style="color:var(--bad)" hidden></p>
       <button class="btn" type="submit" id="submit" style="width:100%" data-t="cart.submit">&nbsp;</button>
       <p class="small muted" id="orEmail" style="margin-top:10px;text-align:center"></p>
+      <p class="small muted" id="orCall" style="margin-top:4px;text-align:center"></p>
     </form>
   </div>
 </div></main>
@@ -57,6 +58,14 @@ S.load(['catalogue']).then(function () {
   var oe = document.getElementById('orEmail');
   oe.innerHTML = S.esc(S.t('cart.orEmail', { e: '' })).replace(/\s*$/, '') +
     ' <a href="#" id="mailLink">' + S.esc(S.contact().email) + '</a>';
+  // The sales line, next to the email one: sending an order is a request for a quote,
+  // and some customers would rather say it out loud than fill the form in.
+  var c = S.contact();
+  if (c.phone2) {
+    document.getElementById('orCall').innerHTML =
+      S.esc(S.t('form.orCall', { p: '' })).replace(/\s*$/, '') +
+      ' <a href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a>';
+  }
   document.getElementById('mailLink').addEventListener('click', function (e) {
     e.preventDefault();
     sendByEmail();
