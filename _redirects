@@ -1,0 +1,39 @@
+# Generated from what netlify.toml used to declare. That file is not reaching the
+# CDN on this site -- neither its redirects nor its headers were ever applied, so
+# every old Shopify address has been answering 404 since launch. _redirects is read
+# from the published output itself, which is why these are here and not there.
+# First match wins, so the blocks come before the tidy-up 301s.
+
+/scripts/*                   /404.html                          404!
+/netlify/*                   /404.html                          404!
+/data/_*                     /404.html                          404!
+
+/product.html                /catalog.html                      301
+/about.html                  /about/                            301
+/contact.html                /contact/                          301
+/delivery.html               /delivery/                         301
+/partners.html               /partners/                         301
+/returns.html                /returns/                          301
+/warranty.html               /warranty/                         301
+/pages/about-us              /about/                            301
+/pages/delivery              /delivery/                         301
+/pages/contact               /contact/                          301
+/pages/partners              /partners/                         301
+/pages/return-policy         /returns/                          301
+/pages/warranty-plicy        /warranty/                         301
+/products/:handle            /p/:handle/                        301
+/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/ /p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/ 301
+/ru/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/ /ru/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/ 301
+/en/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/ /en/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/ 301
+/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/ /p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/ 301
+/ru/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/ /ru/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/ 301
+/en/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/ /en/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/ 301
+/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/ /p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/ 301
+/ru/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/ /ru/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/ 301
+/en/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/ /en/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/ 301
+/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/ /p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/ 301
+/ru/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/ /ru/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/ 301
+/en/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/ /en/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/ 301
+/p/капралон-графитонаполненный/ /p/kapralon-grafitonapolnennyy/    301
+/ru/p/капралон-графитонаполненный/ /ru/p/kapralon-grafitonapolnennyy/ 301
+/en/p/капралон-графитонаполненный/ /en/p/kapralon-grafitonapolnennyy/ 301
