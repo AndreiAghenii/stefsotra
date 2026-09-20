@@ -67,6 +67,85 @@
   to = "/p/:handle/"
   status = 301
 
+
+# Five products carried Cyrillic handles out of Shopify, so their addresses
+# percent-encoded into an unreadable mess. The handles are transliterated now;
+# these keep the old addresses working for anything already linking to them.
+[[redirects]]
+  from = "/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/"
+  to = "/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/"
+  status = 301
+
+[[redirects]]
+  from = "/ru/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/"
+  to = "/ru/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/"
+  status = 301
+
+[[redirects]]
+  from = "/en/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/"
+  to = "/en/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/"
+  status = 301
+
+[[redirects]]
+  from = "/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/"
+  to = "/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/"
+  status = 301
+
+[[redirects]]
+  from = "/ru/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/"
+  to = "/ru/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/"
+  status = 301
+
+[[redirects]]
+  from = "/en/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/"
+  to = "/en/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/"
+  status = 301
+
+[[redirects]]
+  from = "/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/"
+  to = "/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/"
+  status = 301
+
+[[redirects]]
+  from = "/ru/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/"
+  to = "/ru/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/"
+  status = 301
+
+[[redirects]]
+  from = "/en/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/"
+  to = "/en/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/"
+  status = 301
+
+[[redirects]]
+  from = "/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/"
+  to = "/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/"
+  status = 301
+
+[[redirects]]
+  from = "/ru/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/"
+  to = "/ru/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/"
+  status = 301
+
+[[redirects]]
+  from = "/en/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/"
+  to = "/en/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/"
+  status = 301
+
+[[redirects]]
+  from = "/p/капралон-графитонаполненный/"
+  to = "/p/kapralon-grafitonapolnennyy/"
+  status = 301
+
+[[redirects]]
+  from = "/ru/p/капралон-графитонаполненный/"
+  to = "/ru/p/kapralon-grafitonapolnennyy/"
+  status = 301
+
+[[redirects]]
+  from = "/en/p/капралон-графитонаполненный/"
+  to = "/en/p/kapralon-grafitonapolnennyy/"
+  status = 301
+
 [[headers]]
   for = "/data/*"
   [headers.values]
