@@ -146,6 +146,27 @@
   to = "/en/p/kapralon-grafitonapolnennyy/"
   status = 301
 
+# publish = "." means the whole repository is the site, so everything committed is
+# downloadable -- including the build scripts. scripts/build_catalogue.py names the
+# source store and the exact multiplier that turns feed dollars into our lei prices,
+# which is not something to hand a competitor, or a buyer, as a static asset. The
+# functions directory is served as source too, which is how we found the AI assistant
+# was never deployed as a function at all.
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/netlify/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/data/_*"
+  to = "/404.html"
+  status = 404
+
 [[headers]]
   for = "/data/*"
   [headers.values]
