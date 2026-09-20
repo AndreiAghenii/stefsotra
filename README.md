@@ -137,6 +137,15 @@ What is in place:
   and in the trade directories, and a visitor comparing the two has to see them agree.
   Clearing `phone2` removes the second number from every one of those places, including
   the call-us band and both forms, with no other edit.
+- **Which vehicles a part fits, on the page.** `data/fitment.json` records exact-fit OE
+  numbers per vehicle. It was written for the vehicle finder and read by nothing else, so
+  none of it reached the HTML: "Mercedes-Benz" appeared nowhere on the Sprinter page — only
+  "Sprinter" — and three of the nine KAMAZ models it covers (53212, 65115, 43118) appeared
+  nowhere on the site at all; the other six were there only by accident, because an OE code
+  like `53205-1170245` happens to contain the model number. Product pages with fitment now
+  carry a "Fits" section with the make, every model, and the OE cross-references, plus
+  `isAccessoryOrSparePartFor` in the Product markup. Someone searching a make and model is
+  the readiest-to-buy visitor this shop gets.
 - **No broken internal links**, checked across all 489 pages.
 - **The build inputs are not pages.** `publish = "."` ships the whole folder, so
   `/templates/*.html` (body fragments with no `<head>`) and `/scripts/*` are served to

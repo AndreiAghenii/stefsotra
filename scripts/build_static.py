@@ -64,9 +64,38 @@ STR = {l: json.load(open(os.path.join(ROOT, 'i18n', l + '.json'), encoding='utf-
 CAT = json.load(open(os.path.join(DATA, 'products.json'), encoding='utf-8'))
 PAGES = json.load(open(os.path.join(DATA, 'pages.json'), encoding='utf-8'))
 REVIEWS = json.load(open(os.path.join(DATA, 'reviews.json'), encoding='utf-8'))
+FITMENT = json.load(open(os.path.join(DATA, 'fitment.json'), encoding='utf-8'))
 CONTACT = PAGES['_contact']
 
 BY_HANDLE = {p['handle']: p for p in CAT['products']}
+
+# data/fitment.json records which vehicles a part is an exact fit for, by OE number. It
+# was written for the vehicle finder and read by nothing else, so none of it reached the
+# HTML: "Mercedes-Benz" appeared nowhere on the Sprinter page -- only "Sprinter" -- and
+# three of the nine KAMAZ models it covers, 53212, 65115 and 43118, appeared nowhere on
+# the site at all. The other six were present only by accident, because an OE code like
+# 53205-1170245 happens to contain the model number. Someone searching a make and model
+# is the most ready-to-buy visitor this shop gets; the words have to be on the page.
+FITS = {}
+for _f in FITMENT['entries']:
+    _mk = FITS.setdefault(_f['handle'], {})
+    _md = _mk.setdefault(_f['make'], {'models': [], 'oe': []})
+    for _m in _f['models']:
+        if _m not in _md['models']:
+            _md['models'].append(_m)
+    if _f['oe'] not in _md['oe']:
+        _md['oe'].append(_f['oe'])
+# Truck model names are numbers, so a plain string sort reads as nonsense: 4308, 43118,
+# 5320. Sort on the leading digits where there are any.
+def _natural(x):
+    m = re.match(r'(\d+)', x)
+    return (0, int(m.group(1)), x) if m else (1, 0, x.lower())
+
+
+for _v in FITS.values():
+    for _d in _v.values():
+        _d['models'].sort(key=_natural)
+        _d['oe'].sort(key=_natural)
 CAT_OF = {}
 for g in CAT['groups']:
     for c in g['categories']:
@@ -448,6 +477,9 @@ def product_ld(lang, p):
     skus = [v['sku'] for v in p['variants'] if v.get('sku')]
     if skus:
         d['sku'] = skus[0]
+    fits = fitment_ld(p)
+    if fits:
+        d['isAccessoryOrSparePartFor'] = fits
     # No aggregateRating: there are no reviews yet, and inventing one is both against
     # Google's structured-data policy and against consumer law here.
     if not prices:
@@ -986,6 +1018,7 @@ def build_product(lang, p):
             ''.join('<li>%s</li>' % e(t(lang, k))
                     for k in ('prod.noPay', 'prod.cut'))) +
         '<h2 style="margin-top:26px">%s</h2>%s</div></div>' % (e(t(lang, 'prod.spec')), spec) +
+        fitment_html(lang, p) +
         sizetable +
         ('<div class="desc"><h2>%s</h2><p class="summary">%s</p></div>'
          % (e(t(lang, 'prod.summary')), e(summary(lang, p)))) +
@@ -1033,6 +1066,41 @@ def build_product(lang, p):
                                          (label, '/c/%s/' % p['category']),
                                          (nm, '/p/%s/' % p['handle'])])],
                 scripts=embed)
+
+
+def fitment_html(lang, p):
+    """"Fits" section: the make, every model it covers, and the OE cross-references."""
+    fits = FITS.get(p['handle'])
+    if not fits:
+        return ''
+    rows = ''.join(
+        '<li><b>%s</b>%s</li>'
+        % (e(mk), (' — ' + e(', '.join(d['models']))) if d['models'] else '')
+        for mk, d in sorted(fits.items()))
+    oe = sorted({o for d in fits.values() for o in d['oe']})
+    return (
+        '<section class="fitment"><h2>%s</h2><ul class="fitlist">%s</ul>'
+        '<p class="small"><b>%s:</b> <span class="oelist">%s</span></p>'
+        '<p class="small muted">%s <a href="%s/vehicle.html">%s →</a></p></section>'
+        % (e(t(lang, 'prod.fits')), rows,
+           e(t(lang, 'prod.fitsOe')), e(', '.join(oe)),
+           e(t(lang, 'prod.fitsNote')), PREFIX[lang], e(t(lang, 'prod.fitsCta'))))
+
+
+def fitment_ld(p):
+    """schema.org Vehicle entries for the Product this part fits."""
+    fits = FITS.get(p['handle'])
+    if not fits:
+        return None
+    out = []
+    for mk, d in sorted(fits.items()):
+        for md in (d['models'] or [None]):
+            v = {'@type': 'Vehicle', 'manufacturer': {'@type': 'Organization', 'name': mk},
+                 'name': '%s %s' % (mk, md) if md else mk}
+            if md:
+                v['model'] = md
+            out.append(v)
+    return out
 
 
 def review_block(lang, p):
