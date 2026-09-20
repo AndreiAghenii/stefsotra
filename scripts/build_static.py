@@ -147,10 +147,15 @@ def range_label(p):
 
 def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
     """<head> for one page, including the hreflang set and structured data."""
-    alts = ''.join(
-        '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], path)
-        for l in LANGS)
-    alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, path)
+    # A noindex page -- the 404 -- gets neither: its address is whatever was mistyped,
+    # so a canonical and an hreflang set could only name URLs that do not exist.
+    if noindex:
+        alts = ''
+    else:
+        alts = ''.join(
+            '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], path)
+            for l in LANGS)
+        alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, path)
     canonical = SITE + PREFIX[lang] + path
     # 1.91:1 preview card. A square product photo was being cropped through the middle
     # by every chat app; these are drawn by scripts/build_og.py.
@@ -168,7 +173,7 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
         '<meta name="description" content="%s">\n' % e(desc) +
         ('<meta name="robots" content="noindex,follow">\n' if noindex else
          '<meta name="robots" content="index,follow,max-image-preview:large">\n') +
-        '<link rel="canonical" href="%s">\n' % e(canonical) +
+        ('' if noindex else '<link rel="canonical" href="%s">\n' % e(canonical)) +
         alts + '\n'
         '<meta property="og:type" content="website">\n'
         '<meta property="og:site_name" content="Stefsotra">\n'
@@ -1060,7 +1065,7 @@ def build_404():
             '<h1>%s</h1><p class="lead" style="margin:0 auto 22px">%s</p>'
             '<a class="btn" href="/catalog.html">%s</a></div>'
             % (e(t(lang, 'nf.h')), e(t(lang, 'nf.p')), e(t(lang, 'nf.cta'))))
-    doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404', noindex=True) +
+    doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404.html', noindex=True) +
            header_html(lang).replace('{PATH}', '/') + '<main>' + body + '</main>' +
            footer_html(lang, '/') +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
