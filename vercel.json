@@ -2,6 +2,81 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "source": "/p/%D0%BF%D0%BE%D0%BB%D1%83%D1%80%D0%B5%D1%82%D0%B0%D0%BD-%D0%B2-%D1%81%D1%82%D0%B5%D1%80%D0%B6%D0%BD%D1%8F%D1%85-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-40-%D0%BC%D0%BC-50-%D0%BC%D0%BC-60-%D0%BC%D0%BC-70-%D0%BC%D0%BC-80-%D0%BC%D0%BC-90-%D0%BC%D0%BC-100%D0%BC%D0%BC/",
+      "destination": "/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/",
+      "permanent": true
+    },
+    {
+      "source": "/ru/p/%D0%BF%D0%BE%D0%BB%D1%83%D1%80%D0%B5%D1%82%D0%B0%D0%BD-%D0%B2-%D1%81%D1%82%D0%B5%D1%80%D0%B6%D0%BD%D1%8F%D1%85-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-40-%D0%BC%D0%BC-50-%D0%BC%D0%BC-60-%D0%BC%D0%BC-70-%D0%BC%D0%BC-80-%D0%BC%D0%BC-90-%D0%BC%D0%BC-100%D0%BC%D0%BC/",
+      "destination": "/ru/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/",
+      "permanent": true
+    },
+    {
+      "source": "/en/p/%D0%BF%D0%BE%D0%BB%D1%83%D1%80%D0%B5%D1%82%D0%B0%D0%BD-%D0%B2-%D1%81%D1%82%D0%B5%D1%80%D0%B6%D0%BD%D1%8F%D1%85-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-40-%D0%BC%D0%BC-50-%D0%BC%D0%BC-60-%D0%BC%D0%BC-70-%D0%BC%D0%BC-80-%D0%BC%D0%BC-90-%D0%BC%D0%BC-100%D0%BC%D0%BC/",
+      "destination": "/en/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/",
+      "permanent": true
+    },
+    {
+      "source": "/p/%D1%81%D0%B8%D0%BB%D0%B8%D0%BA%D0%BE%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-%D1%88%D0%BD%D1%83%D1%80-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC/",
+      "destination": "/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/",
+      "permanent": true
+    },
+    {
+      "source": "/ru/p/%D1%81%D0%B8%D0%BB%D0%B8%D0%BA%D0%BE%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-%D1%88%D0%BD%D1%83%D1%80-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC/",
+      "destination": "/ru/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/",
+      "permanent": true
+    },
+    {
+      "source": "/en/p/%D1%81%D0%B8%D0%BB%D0%B8%D0%BA%D0%BE%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-%D1%88%D0%BD%D1%83%D1%80-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC/",
+      "destination": "/en/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/",
+      "permanent": true
+    },
+    {
+      "source": "/p/%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BE%D0%BB%D0%B8%D1%82-%D0%B2-%D0%BB%D0%B8%D1%81%D1%82%D0%B0%D1%852-%D0%BC%D0%BC-3-%D0%BC%D0%BC-4-%D0%BC%D0%BC-5-%D0%BC%D0%BC-6-%D0%BC%D0%BC-7-%D0%BC%D0%BC-10-%D0%BC%D0%BC-12-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80-%D0%BB%D0%B8%D1%81%D1%82%D0%B0-1000%D1%852000-%D0%BC%D0%BC/",
+      "destination": "/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/",
+      "permanent": true
+    },
+    {
+      "source": "/ru/p/%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BE%D0%BB%D0%B8%D1%82-%D0%B2-%D0%BB%D0%B8%D1%81%D1%82%D0%B0%D1%852-%D0%BC%D0%BC-3-%D0%BC%D0%BC-4-%D0%BC%D0%BC-5-%D0%BC%D0%BC-6-%D0%BC%D0%BC-7-%D0%BC%D0%BC-10-%D0%BC%D0%BC-12-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80-%D0%BB%D0%B8%D1%81%D1%82%D0%B0-1000%D1%852000-%D0%BC%D0%BC/",
+      "destination": "/ru/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/",
+      "permanent": true
+    },
+    {
+      "source": "/en/p/%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BE%D0%BB%D0%B8%D1%82-%D0%B2-%D0%BB%D0%B8%D1%81%D1%82%D0%B0%D1%852-%D0%BC%D0%BC-3-%D0%BC%D0%BC-4-%D0%BC%D0%BC-5-%D0%BC%D0%BC-6-%D0%BC%D0%BC-7-%D0%BC%D0%BC-10-%D0%BC%D0%BC-12-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80-%D0%BB%D0%B8%D1%81%D1%82%D0%B0-1000%D1%852000-%D0%BC%D0%BC/",
+      "destination": "/en/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/",
+      "permanent": true
+    },
+    {
+      "source": "/p/%D0%BF%D0%BE%D0%BB%D0%B8%D0%BF%D1%80%D0%BE%D0%BF%D0%B8%D0%BB%D0%B5%D0%BD-%D0%BB%D0%B8%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B9-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15%D0%BC%D0%BC-20%D0%BC%D0%BC-25%D0%BC%D0%BC-30%D0%BC%D0%BC-40%D0%BC%D0%BC-50%D0%BC%D0%BC-60%D0%BC%D0%BC-70%D0%BC%D0%BC-%D0%BB%D0%B8%D1%81%D1%82%D1%8B-1000%D1%852000-%D0%BC%D0%BC-%D1%82%D0%B2%D1%91%D1%80%D0%B4%D0%BE%D1%81%D1%82%D1%8C-75/",
+      "destination": "/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/",
+      "permanent": true
+    },
+    {
+      "source": "/ru/p/%D0%BF%D0%BE%D0%BB%D0%B8%D0%BF%D1%80%D0%BE%D0%BF%D0%B8%D0%BB%D0%B5%D0%BD-%D0%BB%D0%B8%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B9-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15%D0%BC%D0%BC-20%D0%BC%D0%BC-25%D0%BC%D0%BC-30%D0%BC%D0%BC-40%D0%BC%D0%BC-50%D0%BC%D0%BC-60%D0%BC%D0%BC-70%D0%BC%D0%BC-%D0%BB%D0%B8%D1%81%D1%82%D1%8B-1000%D1%852000-%D0%BC%D0%BC-%D1%82%D0%B2%D1%91%D1%80%D0%B4%D0%BE%D1%81%D1%82%D1%8C-75/",
+      "destination": "/ru/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/",
+      "permanent": true
+    },
+    {
+      "source": "/en/p/%D0%BF%D0%BE%D0%BB%D0%B8%D0%BF%D1%80%D0%BE%D0%BF%D0%B8%D0%BB%D0%B5%D0%BD-%D0%BB%D0%B8%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B9-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15%D0%BC%D0%BC-20%D0%BC%D0%BC-25%D0%BC%D0%BC-30%D0%BC%D0%BC-40%D0%BC%D0%BC-50%D0%BC%D0%BC-60%D0%BC%D0%BC-70%D0%BC%D0%BC-%D0%BB%D0%B8%D1%81%D1%82%D1%8B-1000%D1%852000-%D0%BC%D0%BC-%D1%82%D0%B2%D1%91%D1%80%D0%B4%D0%BE%D1%81%D1%82%D1%8C-75/",
+      "destination": "/en/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/",
+      "permanent": true
+    },
+    {
+      "source": "/p/%D0%BA%D0%B0%D0%BF%D1%80%D0%B0%D0%BB%D0%BE%D0%BD-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%82%D0%BE%D0%BD%D0%B0%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9/",
+      "destination": "/p/kapralon-grafitonapolnennyy/",
+      "permanent": true
+    },
+    {
+      "source": "/ru/p/%D0%BA%D0%B0%D0%BF%D1%80%D0%B0%D0%BB%D0%BE%D0%BD-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%82%D0%BE%D0%BD%D0%B0%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9/",
+      "destination": "/ru/p/kapralon-grafitonapolnennyy/",
+      "permanent": true
+    },
+    {
+      "source": "/en/p/%D0%BA%D0%B0%D0%BF%D1%80%D0%B0%D0%BB%D0%BE%D0%BD-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%82%D0%BE%D0%BD%D0%B0%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9/",
+      "destination": "/en/p/kapralon-grafitonapolnennyy/",
+      "permanent": true
+    },
+    {
       "source": "/product.html",
       "destination": "/catalog.html",
       "permanent": true
