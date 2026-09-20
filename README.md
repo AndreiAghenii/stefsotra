@@ -67,6 +67,27 @@ pre-rendered HTML, and editing them alone changes nothing that a visitor sees.
 `build_catalogue.py` fails loudly: it prints any product it could not categorise and counts
 variant sizes it could not parse. Both should be zero.
 
+## Where this is hosted
+
+**Vercel.** `server: Vercel` on every response. This matters because the repository was
+written against Netlify and none of it was doing anything:
+
+* `netlify.toml` was never applied — all 29 redirects answered 404, so every old Shopify
+  address and every stale search result landed on a dead page from launch until Sept 2026.
+  The security headers never appeared and assets were served `max-age=0`. It is deleted;
+  `vercel.json` carries the same rules in the form this host reads.
+* `_redirects` / `_headers` are Netlify-only and were served as plain files. Also deleted.
+* **The AI assistant cannot work as built.** It calls `/.netlify/functions/assistant`,
+  which does not exist here. `netlify/functions/assistant.js` is kept as the reference
+  implementation; a port to `/api/assistant.js` plus `ANTHROPIC_API_KEY` in the Vercel
+  project would bring it back. Until then the front end falls back to rule-based search,
+  which is why nothing looks broken.
+* **The forms do not reach a server.** Both the contact form and the product-review form
+  are `data-netlify="true"` and POST to `/`, which answers 405 here. `static.js` catches
+  the failure and opens a pre-filled `mailto:` instead, so a message can still arrive —
+  but the page shows "message sent" either way, including when the visitor has no mail
+  client. This needs a real endpoint.
+
 ## SEO
 
 What is in place:
