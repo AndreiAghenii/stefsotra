@@ -151,21 +151,25 @@
 # source store and the exact multiplier that turns feed dollars into our lei prices,
 # which is not something to hand a competitor, or a buyer, as a static asset. The
 # functions directory is served as source too, which is how we found the AI assistant
-# was never deployed as a function at all.
+# was never deployed as a function at all. force = true is required: without it
+# Netlify serves a file that exists and ignores the rule.
 [[redirects]]
   from = "/scripts/*"
   to = "/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/netlify/*"
   to = "/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/data/_*"
   to = "/404.html"
   status = 404
+  force = true
 
 [[headers]]
   for = "/data/*"
