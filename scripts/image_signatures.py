@@ -32,6 +32,10 @@ CACHE = os.path.join(DATA, '_img_cache')
 
 
 def fetch(url):
+    # Photographs live in assets/products/ since scripts/mirror_images.py stopped the
+    # site borrowing them from Shopify. A site-absolute path is a file, not a download.
+    if url.startswith('/'):
+        return os.path.join(ROOT, url.lstrip('/'))
     os.makedirs(CACHE, exist_ok=True)
     name = re.sub(r'[^A-Za-z0-9._-]', '_', url.split('/')[-1])[:120]
     path = os.path.join(CACHE, name)

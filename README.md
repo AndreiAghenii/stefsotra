@@ -45,9 +45,19 @@ These need to react to input, so they are drawn in the browser and do fetch the 
 ```
 python3 scripts/build_catalogue.py --offline   # data/products.json from the cached feed
 python3 scripts/build_catalogue.py             # ...or refetch from the live store
+python3 scripts/translate_titles.py --write    # ALWAYS after the two above — see below
+python3 scripts/image_signatures.py --write    # ALWAYS after the two above — see below
+python3 scripts/mirror_images.py               # pull any new photo off Shopify, onto us
 python3 scripts/build_vehicles.py              # vehicle tree (slow, ~10 min)
 python3 scripts/build_static.py                # THE SITE — run this after any of the above
 ```
+
+**`build_catalogue.py` rewrites `data/products.json` from the feed, and the feed knows
+nothing about `title_ro`, `title_ru` or `img_sig`.** Running it alone silently drops all
+260 Romanian and Russian product names — the single thing the shop's local search traffic
+depends on — and the image hashes that keep four near-identical photographs off the home
+page. Both are deterministic and cost nothing to regenerate, so just always run the two
+scripts after it. Neither needs a network or an API key.
 
 `build_static.py` deletes and rewrites `/p`, `/c`, `/g`, `/ru`, `/en` and the company page
 folders, so a withdrawn product cannot survive as a live URL. **Run it after editing

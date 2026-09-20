@@ -186,7 +186,6 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
         '<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">\n'
         '<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">\n'
         '<link rel="manifest" href="/site.webmanifest">\n'
-        '<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>\n'
         '<link rel="stylesheet" href="/assets/css/app.css">\n' +
         blocks +
         '\n</head>\n<body>\n')
