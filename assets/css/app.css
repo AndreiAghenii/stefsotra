@@ -202,6 +202,9 @@ main > .wrap, main > div > .wrap:first-child { padding-top: 26px; }
 .home-sec.ask p { margin: 0; }
 /* The band is already a wrapping flex row with space-between, so the phone and the
    button need to travel together as one group rather than land on opposite edges. */
+.greview { margin-top: 22px; }
+.greview h3 { margin: 0 0 6px; }
+
 .fitment { margin-top: 26px; border: 1px solid var(--line); border-radius: var(--radius);
   background: var(--bg-2); padding: 18px 20px; }
 .fitment h2 { margin: 0 0 10px; font-size: 1.12rem; }

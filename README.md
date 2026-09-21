@@ -178,7 +178,15 @@ good as it reasonably gets. The rest is off-page and needs you:
 
 1. **Google Business Profile** — free, and for local trade searches it usually outranks
    everything else on the page. It needs the street address.
-2. **Opening hours and map coordinates.** The address is in `data/pages.json` and in the
+2. **Reviews, and the only lawful way to get them.** `data/reviews.json` and the star
+   ratings stay empty until real customers write something. The lever that matters is the
+   Business Profile: the shop holding the top of "furtun chisinau" does it from a listing
+   with thousands of reviews, which is the box Google draws *above* the organic results —
+   no amount of HTML competes with it. So paste the profile's own "write a review" short
+   link into `_contact.review_url` and the ask appears in the three places a happy
+   customer actually is: the contact page, beside the on-site review form, and on the
+   screen confirming an order was sent. Nothing renders until that link is set.
+3. **Opening hours and map coordinates.** The address is in `data/pages.json` and in the
    `HardwareStore` markup. `_contact.opening_hours`, `_contact.geo`, `_contact.same_as`
    (the Google Business, Facebook and Instagram addresses) and `_contact.price_range` are
    still empty, and each one goes straight into that markup the moment it is filled in —
@@ -187,14 +195,14 @@ good as it reasonably gets. The rest is off-page and needs you:
    `[[["Mo","Tu","We","Th","Fr"], "08:00", "17:00"]]` for the hours and `[lat, lon]` for
    the coordinates. Hours and a consistent name/address/phone across the site, Google and
    the local directories are a large part of whether the shop shows up in the map pack.
-3. **Search Console and Yandex Webmaster** — submit `sitemap.xml` to both. Yandex is a
+4. **Search Console and Yandex Webmaster** — submit `sitemap.xml` to both. Yandex is a
    significant share of Russian-language search here.
-4. **Which domain.** `SITE` at the top of `build_static.py` says `https://stefsotra.md`. If
+5. **Which domain.** `SITE` at the top of `build_static.py` says `https://stefsotra.md`. If
    this site goes live somewhere else, change it and rebuild, or every canonical tag will
    point at the old store.
-5. **Links from real Moldovan sites** — suppliers, trade directories, customers. This is
+6. **Links from real Moldovan sites** — suppliers, trade directories, customers. This is
    the slowest part and the one competitors cannot copy.
-6. **Descriptions in Romanian and Russian.** See below. The product *names* are done
+7. **Descriptions in Romanian and Russian.** See below. The product *names* are done
    in all three languages, the five the feed titles in Russian included.
 
 ## Prices

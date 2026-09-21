@@ -425,7 +425,8 @@ def footer_html(lang, path):
 def contact_js():
     return '<script>window.__CONTACT=%s;</script>' % json.dumps(
         {k: CONTACT.get(k, '') for k in
-         ('email', 'phone', 'phone_href', 'phone2', 'phone2_href', 'address', 'maps')},
+         ('email', 'phone', 'phone_href', 'phone2', 'phone2_href', 'address', 'maps',
+          'review_url')},
         ensure_ascii=False, separators=(',', ':'))
 
 
@@ -480,6 +481,13 @@ def org_ld():
         '@context': 'https://schema.org', '@type': 'HardwareStore',
         'name': 'Stefsotra', 'url': SITE, 'logo': SITE + '/assets/img/logo.png',
         'image': SITE + '/assets/img/logo.png',
+        # Google matches a Business Profile to a website by the name, address and phone
+        # agreeing on both. The listing is "FURTUNE.MD - Stefsotra S.R.L"; the site brands
+        # itself "Stefsotra". Declaring the other names it trades under is what lets the
+        # two be recognised as one business rather than two.
+        'legalName': CONTACT.get('legal_name', ''),
+        'alternateName': [n for n in (CONTACT.get('gbp_name'), CONTACT.get('legal_name'))
+                          if n],
         # schema.org takes a list here. Google reads the first, so the landline leads,
         # matching the Google Business listing; the mobile is published alongside it.
         'telephone': ([CONTACT['phone'], CONTACT['phone2']] if CONTACT.get('phone2')
@@ -497,6 +505,9 @@ def org_ld():
     # the shop appears in the local pack at all. Both are emitted the moment the data
     # exists in data/pages.json and stay absent until then -- a guessed pair of coordinates
     # puts the pin in the wrong street, and guessed hours send someone to a closed door.
+    for k in ('legalName', 'alternateName'):
+        if not d.get(k):
+            d.pop(k, None)
     if CONTACT.get('hours'):
         d['openingHours'] = CONTACT['hours']
     if CONTACT.get('opening_hours'):
@@ -1202,6 +1213,30 @@ def fitment_ld(p):
     return out
 
 
+def google_review_cta(lang, compact=False):
+    """The ask that actually moves the needle.
+
+    The shop that owns the top of "furtun chisinau" does so from a Business Profile with
+    thousands of reviews, not from its HTML -- that is the box Google puts above the
+    organic results. Reviews there can only come from customers who were asked, so the ask
+    goes where a satisfied customer already is: on the contact page, next to the on-site
+    review form, and on the screen that confirms an order has been sent.
+
+    Nothing renders until _contact.review_url holds the Business Profile's own
+    "write a review" link. There is no default and no placeholder.
+    """
+    url = CONTACT.get('review_url')
+    if not url:
+        return ''
+    if compact:
+        return ('<p class="small"><a href="%s" target="_blank" rel="noopener">%s →</a></p>'
+                % (e(url), e(t(lang, 'rev.googleH'))))
+    return ('<div class="sidecard greview"><h3>%s</h3><p class="small">%s</p>'
+            '<a class="btn ghost small-btn" href="%s" target="_blank" rel="noopener">%s</a></div>'
+            % (e(t(lang, 'rev.googleH')), e(t(lang, 'rev.googleP')),
+               e(url), e(t(lang, 'rev.googleCta'))))
+
+
 def review_block(lang, p):
     rs = REVIEWS.get('products', {}).get(p['handle'], [])
     items = ''.join(
@@ -1229,10 +1264,10 @@ def review_block(lang, p):
                    for i in range(1, 6)),
            e(t(lang, 'ct.name')), e(t(lang, 'rev.text')),
            e(t(lang, 'rev.submit')), e(t(lang, 'rev.pending'))))
-    return ('<section id="reviews" class="reviews"><h2>%s</h2>%s%s</section>'
+    return ('<section id="reviews" class="reviews"><h2>%s</h2>%s%s%s</section>'
             % (e(t(lang, 'rev.h')),
                items or '<p class="muted">%s %s</p>' % (e(t(lang, 'rev.none')), e(t(lang, 'rev.first'))),
-               form))
+               form, google_review_cta(lang, compact=True)))
 
 
 def build_content(lang, slug, url):
@@ -1354,11 +1389,12 @@ def build_contact(lang):
         '<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
         '<div class="wrap"><div class="contact-grid">'
         '<div class="contact-facts">%s</div>'
-        '<div class="contact-form"><h2>%s</h2>%s</div></div>'
+        '<div class="contact-form"><h2>%s</h2>%s%s</div></div>'
         '<section class="home-sec"><h2>%s</h2>%s</section></div>'
         % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (t(lang, 'ct.h1'), '')]),
            e(t(lang, 'ct.h1')), e(t(lang, 'ct.lead')), facts,
-           e(t(lang, 'ct.formH')), form, e(t(lang, 'flow.h')), flow))
+           e(t(lang, 'ct.formH')), form, google_review_cta(lang),
+           e(t(lang, 'flow.h')), flow))
 
     title = '%s — Stefsotra %s | %s' % (t(lang, 'ct.h1'), GEO[lang], CONTACT['phone'])
     desc = {'ro': 'Contactează Stefsotra: telefon %s, e-mail %s. Furnizor de furtunuri industriale '

@@ -188,6 +188,15 @@ function submit(e) {
     document.querySelector('main .wrap').innerHTML =
       '<div class="note ok"><strong>' + S.esc(S.t('cart.ok')) + '</strong><br>' +
       S.esc(S.t('cart.sentTo', { e: S.contact().email })) + '</div>' +
+      // The one moment a customer is demonstrably happy with us. Reviews on the Business
+      // Profile are what put a shop in the box above the organic results, and they only
+      // come from customers who were asked. Nothing shows until review_url is set.
+      (S.contact().review_url
+        ? '<div class="note"><strong>' + S.esc(S.t('rev.googleH')) + '</strong><br>' +
+          S.esc(S.t('rev.googleP')) + '<br><a class="btn ghost small-btn" target="_blank" ' +
+          'rel="noopener" href="' + S.esc(S.contact().review_url) + '">' +
+          S.esc(S.t('rev.googleCta')) + '</a></div>'
+        : '') +
       '<a class="btn ghost" href="' + S.url('/catalog.html') + '">' + S.esc(S.t('cart.emptyCta')) + '</a>';
   }).catch(function () {
     // Netlify only handles the POST on a deployed site, so this is the expected path
