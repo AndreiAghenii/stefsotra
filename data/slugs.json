@@ -1,0 +1,178 @@
+{
+ "c/agri": {
+  "now": {
+   "en": "agriculture-garden",
+   "ro": "agro-si-gradina",
+   "ru": "агро-и-сад"
+  },
+  "was": {}
+ },
+ "c/bauer": {
+  "now": {
+   "en": "bauer-couplings",
+   "ro": "cuplaje-bauer",
+   "ru": "соединения-bauer"
+  },
+  "was": {}
+ },
+ "c/camlock": {
+  "now": {
+   "en": "camlock-couplings",
+   "ro": "cuplaje-camlock",
+   "ru": "соединения-camlock"
+  },
+  "was": {}
+ },
+ "c/clamp": {
+  "now": {
+   "en": "clamps",
+   "ro": "coliere",
+   "ru": "хомуты"
+  },
+  "was": {}
+ },
+ "c/gasket": {
+  "now": {
+   "en": "gaskets",
+   "ro": "garnituri",
+   "ru": "прокладки"
+  },
+  "was": {}
+ },
+ "c/guillemin": {
+  "now": {
+   "en": "guillemin-couplings",
+   "ro": "cuplaje-guillemin",
+   "ru": "соединения-guillemin"
+  },
+  "was": {}
+ },
+ "c/hose-fitting": {
+  "now": {
+   "en": "hose-heads-adapters",
+   "ro": "racorduri-si-adaptoare",
+   "ru": "головки-и-адаптеры"
+  },
+  "was": {}
+ },
+ "c/industrial-hose": {
+  "now": {
+   "en": "industrial-hose",
+   "ro": "furtunuri-industriale",
+   "ru": "промышленные-рукава"
+  },
+  "was": {}
+ },
+ "c/plastic-stock": {
+  "now": {
+   "en": "rods-tubes",
+   "ro": "bare-si-tuburi-tehnice",
+   "ru": "стержни-и-трубы"
+  },
+  "was": {}
+ },
+ "c/pvc-hose": {
+  "now": {
+   "en": "pvc-hose",
+   "ro": "furtun-pvc",
+   "ru": "пвх-шланги"
+  },
+  "was": {}
+ },
+ "c/rubber-profile": {
+  "now": {
+   "en": "rubber-cord-profile",
+   "ro": "snur-si-profil-de-cauciuc",
+   "ru": "шнур-и-профиль"
+  },
+  "was": {}
+ },
+ "c/sheet-material": {
+  "now": {
+   "en": "sheet-materials",
+   "ro": "placi-si-foi",
+   "ru": "листовые-материалы"
+  },
+  "was": {}
+ },
+ "c/silicone-hose": {
+  "now": {
+   "en": "silicone-hose",
+   "ro": "furtun-din-silicon",
+   "ru": "силиконовые-шланги"
+  },
+  "was": {}
+ },
+ "c/storz": {
+  "now": {
+   "en": "storz-couplings",
+   "ro": "cuplaje-storz",
+   "ru": "соединения-storz"
+  },
+  "was": {}
+ },
+ "c/tw-coupling": {
+  "now": {
+   "en": "tw-couplings",
+   "ro": "cuplaje-tw",
+   "ru": "соединения-tw"
+  },
+  "was": {}
+ },
+ "c/valve": {
+  "now": {
+   "en": "valves",
+   "ro": "robinete-si-supape",
+   "ru": "краны-и-клапаны"
+  },
+  "was": {}
+ },
+ "c/vehicle-part": {
+  "now": {
+   "en": "vehicle-parts",
+   "ro": "piese-auto",
+   "ru": "автозапчасти"
+  },
+  "was": {}
+ },
+ "g/couplings": {
+  "now": {
+   "en": "couplings-fittings",
+   "ro": "cuplaje-si-fitinguri",
+   "ru": "соединения-и-фитинги"
+  },
+  "was": {}
+ },
+ "g/hoses": {
+  "now": {
+   "en": "hoses",
+   "ro": "furtunuri",
+   "ru": "шланги-и-рукава"
+  },
+  "was": {}
+ },
+ "g/materials": {
+  "now": {
+   "en": "technical-materials",
+   "ro": "materiale-tehnice",
+   "ru": "технические-материалы"
+  },
+  "was": {}
+ },
+ "g/sealing": {
+  "now": {
+   "en": "clamps-sealing",
+   "ro": "coliere-si-etansari",
+   "ru": "хомуты-и-уплотнения"
+  },
+  "was": {}
+ },
+ "g/vehicle": {
+  "now": {
+   "en": "vehicle-agriculture",
+   "ro": "auto-si-agro",
+   "ru": "авто-и-агро"
+  },
+  "was": {}
+ }
+}

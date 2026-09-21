@@ -96,7 +96,7 @@ function render() {
       '<a class="btn ghost" href="' + S.url('/vehicle.html') + '">' + S.esc(S.t('nav.vehicle')) + '</a></p></div>' +
       '<h2 style="margin-top:34px">' + S.esc(S.t('empty.browse')) + '</h2>' +
       '<div class="cards">' + S.catalogue.groups.map(function (g) {
-        return '<a class="gcard" href="' + S.url('/g/' + encodeURIComponent(g.key) + '/') + '">' +
+        return '<a class="gcard" href="' + S.groupUrl(g.key) + '">' +
           '<span class="gcard-t">' + S.esc(S.groupLabel(g.key)) +
           '<i>' + S.esc(S.t('cat.results', { n: g.count })) + '</i></span></a>';
       }).join('') + '</div>';

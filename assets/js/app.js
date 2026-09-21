@@ -37,8 +37,23 @@
 
   // The same page in another language: strip any prefix, then add the new one.
   S.langUrl = function (lang) {
+    // A pre-rendered page's address in another language cannot be derived from this
+    // one's: the slug is the page's own name, so /c/coliere/ is /ru/c/хомуты/, not
+    // /ru/c/coliere/. The header already carries the real address for each language,
+    // written by the build; read it rather than guess. The JS-rendered tool pages have
+    // no per-language slug, so swapping the prefix is still right for them.
+    var a = document.querySelector('header.site .langs [data-lang="' + lang + '"]');
+    var href = a && a.getAttribute('href');
+    if (href) return href + location.search;
     var p = location.pathname.replace(/^\/(ru|en)(?=\/|$)/, '') || '/';
     return (lang === 'ro' ? '' : '/' + lang) + p + location.search;
+  };
+
+  // Group addresses are the group's own name in the page's language now, so a key is no
+  // longer a path. build_static.py inlines the map for whichever language this page is.
+  S.groupUrl = function (key) {
+    var m = window.__GSLUG || {};
+    return S.url('/g/' + encodeURIComponent(m[key] || key) + '/');
   };
 
   // Every internal link goes through here so the language prefix is never dropped.

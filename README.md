@@ -72,7 +72,7 @@ entry with no file behind it, an indexable page missing from the sitemap. Run it
 deploy; it currently reports no problems across 489 pages.
 
 `build_static.py` deletes and rewrites `/p`, `/c`, `/g`, `/ru`, `/en`, the company page
-folders and the four tool pages at the root, so a withdrawn product cannot survive as a
+folders, the four tool pages at the root and `_redirects`, so a withdrawn product cannot survive as a
 live URL. Edit the tool pages in `templates/`, not at the root: the root copies are output.
 **Run it after editing `data/pages.json`, `data/reviews.json` or any `i18n/*.json`** —
 those files feed the pre-rendered HTML, and editing them alone changes nothing that a
@@ -152,6 +152,18 @@ What is in place:
   the ordinary English spelling anyway, and `areaServed` names the city under both. The
   Romanian and Russian prose keeps its proper spelling — the answer to a cosmetic SERP
   label is not to misspell the language.
+- **Addresses in the language of the page.** Every competitor ranking above us for
+  "furtun chisinau" does it with a Romanian URL — `supraten.md/furtunuri-…`,
+  `volta.md/irigare/furtune`, `profmet.md/272-furtunuri` — while ours said
+  `/c/silicone-hose/`. Categories and groups are now named in the page's own language:
+  `/c/furtun-din-silicon/`, `/g/furtunuri/`, `/ru/c/силиконовые-шланги/`. Product
+  addresses are unchanged; see below.
+- **Slugs are permanent.** `data/slugs.json` records the assignment. The build hands out a
+  slug the first time it sees a key and never changes it again, even if the label it came
+  from is reworded, because a URL that moves on its own breaks other people's links. To
+  rename one deliberately, edit `now` and push the old value onto `was`; the next build
+  writes the 301. `_redirects` is generated from that history — 62 rules today, covering
+  every address the site published before the migration.
 - **No broken internal links**, checked across all 489 pages.
 - **The build inputs are not pages.** `publish = "."` ships the whole folder, so
   `/templates/*.html` (body fragments with no `<head>`) and `/scripts/*` are served to

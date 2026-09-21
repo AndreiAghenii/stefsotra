@@ -8,6 +8,19 @@
 [functions]
   included_files = ["data/index.txt"]
 
+# One hostname, decided here rather than left to chance. Google has the home page indexed
+# as www.stefsotra.md while every canonical tag the build writes says stefsotra.md, so the
+# site is telling Google two different things about its own address. This forces www to the
+# apex, which is the hostname all 483 canonicals, the hreflang set and the sitemap already
+# name. If www is not attached to this Netlify site the rule simply never matches.
+# To flip the whole site to www instead: change SITE at the top of scripts/build_static.py,
+# rebuild, and reverse the from/to below. Do not change one without the other.
+[[redirects]]
+  from = "https://www.stefsotra.md/*"
+  to = "https://stefsotra.md/:splat"
+  status = 301
+  force = true
+
 # Old Shopify-style addresses, so any existing link or bookmark still lands somewhere
 # useful instead of on a 404. 301 tells Google the address moved for good.
 [[redirects]]

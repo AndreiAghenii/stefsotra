@@ -107,11 +107,75 @@ for g in CAT['groups']:
         CAT_OF[c['key']] = g['key']
 
 
+# ---------------------------------------------------------------------- URL slugs
+#
+# Every competitor ranking above us for "furtun chisinau" does so with a Romanian URL --
+# supraten.md/furtunuri-..., volta.md/irigare/furtune, profmet.md/272-furtunuri -- while
+# ours said /c/silicone-hose/. The category and group addresses are now the page's own
+# name in the page's own language: /c/furtun-din-silicon/, /ru/c/силиконовые-шланги/.
+#
+# Once a slug is published it is permanent. The build assigns one the first time it sees a
+# key and then leaves it alone for good, even if the label it came from is later reworded,
+# because a URL that moves on its own is a URL that breaks other people's links. To rename
+# one deliberately: edit "now" in data/slugs.json and push the old value onto "was", and
+# the next build will 301 the old address to the new one.
+FOLD = {'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ş': 's', 'ț': 't', 'ţ': 't', 'ё': 'е'}
+
+
+def slugify(text, limit=60):
+    out = ''.join(FOLD.get(c, c) for c in (text or '').lower())
+    out = re.sub(r'[^a-z0-9\u0430-\u044f]+', '-', out.replace('×', 'x'))
+    out = re.sub(r'-+', '-', out).strip('-')
+    if len(out) > limit:
+        out = out[:limit]
+        if '-' in out:
+            out = out[:out.rfind('-')]
+    return out.strip('-')
+
+
+SLUG_PATH = os.path.join(DATA, 'slugs.json')
+try:
+    SLUGS = json.load(open(SLUG_PATH, encoding='utf-8'))
+except (OSError, ValueError):
+    SLUGS = {}
+
+
+def slug_for(kind, key, lang, label):
+    """The published slug for one key in one language, assigned once and then fixed."""
+    rec = SLUGS.setdefault('%s/%s' % (kind, key), {'now': {}, 'was': {}})
+    if not rec['now'].get(lang):
+        want = slugify(label) or key
+        taken = {r['now'].get(lang) for k, r in SLUGS.items()
+                 if k.startswith(kind + '/') and k != '%s/%s' % (kind, key)}
+        if want in taken:                      # never two pages at one address
+            want = '%s-%s' % (want, key)
+        rec['now'][lang] = want
+    return rec['now'][lang]
+
+
 def t(lang, key, **vars):
     s = STR[lang].get(key, key)
     for k, v in vars.items():
         s = s.replace('{' + k + '}', str(v))
     return s
+
+
+def cpath(lang, key):
+    """A category's path in one language, e.g. /c/furtun-din-silicon/."""
+    return '/c/%s/' % slug_for('c', key, lang, cat_label(lang, key))
+
+
+def gpath(lang, key):
+    return '/g/%s/' % slug_for('g', key, lang, group_label(lang, key))
+
+
+def cpaths(key):
+    """{lang: path} -- what the canonical and the hreflang set are built from."""
+    return {l: cpath(l, key) for l in LANGS}
+
+
+def gpaths(key):
+    return {l: gpath(l, key) for l in LANGS}
 
 
 def cat_label(lang, key):
@@ -207,11 +271,15 @@ def range_label(p):
 def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
          og_type='website', extra_meta=''):
     """<head> for one page, including the hreflang set and structured data."""
+    # `path` is either one path shared by every language, or {lang: path} once the
+    # languages stopped sharing a slug. Each language's alternate has to name that
+    # language's own address or the hreflang set points at pages that do not exist.
+    paths = path if isinstance(path, dict) else {l: path for l in LANGS}
     alts = ''.join(
-        '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], path)
+        '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], paths[l])
         for l in LANGS)
-    alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, path)
-    canonical = SITE + PREFIX[lang] + path
+    alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, paths['ro'])
+    canonical = SITE + PREFIX[lang] + paths[lang]
     # 1.91:1 preview card. A square product photo was being cropped through the middle
     # by every chat app; these are drawn by scripts/build_og.py.
     img = image or (SITE + '/assets/img/og-default.png')
@@ -266,11 +334,11 @@ def header_html(lang, current=''):
     mega = ''
     for g in CAT['groups']:
         items = ''.join(
-            '<li><a href="%s/c/%s/">%s<span>%d</span></a></li>' %
-            (px, c['key'], e(cat_label(lang, c['key'])), c['count'])
+            '<li><a href="%s%s">%s<span>%d</span></a></li>' %
+            (px, cpath(lang, c['key']), e(cat_label(lang, c['key'])), c['count'])
             for c in g['categories'])
-        mega += ('<div class="mega-col"><a class="mega-h" href="%s/g/%s/">%s</a><ul>%s</ul></div>'
-                 % (px, g['key'], e(group_label(lang, g['key'])), items))
+        mega += ('<div class="mega-col"><a class="mega-h" href="%s%s">%s</a><ul>%s</ul></div>'
+                 % (px, gpath(lang, g['key']), e(group_label(lang, g['key'])), items))
     total = sum(len(p['variants']) for p in CAT['products'])
     mega += ('<div class="mega-col mega-cta"><a class="mega-h" href="%s/catalog.html">%s</a>'
              '<p class="small muted">%s</p>'
@@ -329,7 +397,7 @@ def footer_html(lang, path):
     # Every group linked from the footer of every page: a small, honest internal link
     # graph that lets a crawler reach all 17 categories from anywhere on the site.
     catlinks = ' · '.join(
-        '<a href="%s/c/%s/">%s</a>' % (px, c['key'], e(cat_label(lang, c['key'])))
+        '<a href="%s%s">%s</a>' % (px, cpath(lang, c['key']), e(cat_label(lang, c['key'])))
         for g in CAT['groups'] for c in g['categories'])
 
     c = CONTACT
@@ -354,27 +422,48 @@ def footer_html(lang, path):
            colhtml, catlinks, e(t(lang, 'foot.by'))))
 
 
+def contact_js():
+    return '<script>window.__CONTACT=%s;</script>' % json.dumps(
+        {k: CONTACT.get(k, '') for k in
+         ('email', 'phone', 'phone_href', 'phone2', 'phone2_href', 'address', 'maps')},
+        ensure_ascii=False, separators=(',', ':'))
+
+
+def gslug_js(lang):
+    """Group slugs for this language. The catalogue and basket pages draw their own
+    category cards in the browser and used to build /g/<key>/ by hand, which stopped
+    being an address the day the slugs became Romanian."""
+    return '<script>window.__GSLUG=%s;</script>' % json.dumps(
+        {g['key']: slug_for('g', g['key'], lang, group_label(lang, g['key']))
+         for g in CAT['groups']}, ensure_ascii=False, separators=(',', ':'))
+
+
 def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
          current='', scripts='', og_type='website', extra_meta=''):
     title, desc = clamp(title, TITLE_MAX), clamp(desc, DESC_MAX)
-    doc = (head(lang, title, desc, path, image, jsonld, noindex, og_type, extra_meta) +
-           header_html(lang, current).replace('{PATH}', path) +
+    paths = path if isinstance(path, dict) else {l: path for l in LANGS}
+    own = paths[lang]
+    doc = (head(lang, title, desc, paths, image, jsonld, noindex, og_type, extra_meta) +
+           # the language switcher must point at the other language's slug, not this one's
+           header_html(lang, current).replace('{PATH}', '{LANGPATH}') +
            '<main>' + body + '</main>' +
-           footer_html(lang, path) +
-           '<script>window.__CONTACT=%s;</script>' % json.dumps(
-               {k: CONTACT.get(k, '') for k in
-                ('email', 'phone', 'phone_href', 'phone2', 'phone2_href',
-                 'address', 'maps')},
-               ensure_ascii=False, separators=(',', ':')) +
+           footer_html(lang, own) +
+           contact_js() + gslug_js(lang) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'
            '<script src="/assets/js/static.js"></script>' + scripts +
            '\n</body>\n</html>\n')
-    out = os.path.join(ROOT, (PREFIX[lang] + path).lstrip('/'), 'index.html')
+    # {LANGPATH} is per-language: the "ru" button on a Romanian page has to carry the
+    # Russian slug for the same page, which is no longer the Romanian one.
+    for l in LANGS:
+        doc = doc.replace('href="%s{LANGPATH}" data-lang="%s"' % (PREFIX[l], l),
+                          'href="%s%s" data-lang="%s"' % (PREFIX[l], paths[l], l))
+    doc = doc.replace('{LANGPATH}', own)
+    out = os.path.join(ROOT, (PREFIX[lang] + own).lstrip('/'), 'index.html')
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, 'w', encoding='utf-8') as f:
         f.write(doc)
-    url = SITE + PREFIX[lang] + path
+    url = SITE + PREFIX[lang] + own
     PAGE_HASH[url] = hashlib.sha1(doc.encode('utf-8')).hexdigest()
     return url
 
@@ -732,9 +821,9 @@ def build_home(lang):
         img = next((p['images'][0] for p in CAT['products']
                     if p['group'] == g['key'] and p['images']), None)
         gcards += (
-            '<a class="gcard" href="%s/g/%s/">%s<span class="gcard-t">%s<i>%s</i></span>'
+            '<a class="gcard" href="%s%s">%s<span class="gcard-t">%s<i>%s</i></span>'
             '<span class="gcard-list small muted">%s</span></a>'
-            % (px, g['key'],
+            % (px, gpath(lang, g['key']),
                ('<img loading="lazy" src="%s" alt="" width="1200" height="1200">' % e(img))
                if img else '<span class="gcard-ph"></span>',
                e(group_label(lang, g['key'])), e(t(lang, 'cat.results', n=g['count'])),
@@ -817,7 +906,7 @@ def build_category(lang, key, count):
 
     siblings = [c['key'] for c in next(g for g in CAT['groups'] if g['key'] == grp)['categories']]
     related = ''.join(
-        '<a class="chip%s" href="%s/c/%s/">%s</a>' % (' on' if k == key else '', px, k,
+        '<a class="chip%s" href="%s%s">%s</a>' % (' on' if k == key else '', px, cpath(lang, k),
                                                       e(cat_label(lang, k)))
         for k in siblings)
 
@@ -826,7 +915,7 @@ def build_category(lang, key, count):
             '<p class="muted small">%s</p><div class="grid">%s</div>'
             '<p style="margin-top:26px"><a class="btn ghost" href="%s/catalog.html">%s</a></p></div>'
             % (crumb_html(lang, [(t(lang, 'nav.home'), '/'),
-                                 (group_label(lang, grp), '/g/%s/' % grp), (label, '')]),
+                                 (group_label(lang, grp), gpath(lang, grp)), (label, '')]),
                e(label), e(desc.split('.')[0] + '.'), related,
                e(t(lang, 'cat.results', n=len(prods))),
                ''.join(tile(lang, p) for p in prods), px, e(t(lang, 'cat.all'))))
@@ -837,9 +926,9 @@ def build_category(lang, key, count):
                                 'url': SITE + PREFIX[lang] + '/p/%s/' % p['handle']}
                                for i, p in enumerate(prods)]}
     crumb = crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
-                             (group_label(lang, grp), '/g/%s/' % grp),
-                             (label, '/c/%s/' % key)])
-    return page(lang, '/c/%s/' % key, title, desc, body,
+                             (group_label(lang, grp), gpath(lang, grp)),
+                             (label, cpath(lang, key))])
+    return page(lang, cpaths(key), title, desc, body,
                 jsonld=[lst, crumb])
 
 
@@ -867,8 +956,8 @@ def build_group(lang, g):
                ', '.join(cat_label(lang, c['key']) for c in g['categories']))
 
     cards = ''.join(
-        '<a class="gcard" href="%s/c/%s/">%s<span class="gcard-t">%s<i>%s</i></span></a>'
-        % (px, c['key'],
+        '<a class="gcard" href="%s%s">%s<span class="gcard-t">%s<i>%s</i></span></a>'
+        % (px, cpath(lang, c['key']),
            ('<img loading="lazy" src="%s" alt="" width="1200" height="1200">'
             % e(next((p['images'][0] for p in CAT['products']
                       if p['category'] == c['key'] and p['images']), '')))
@@ -887,9 +976,9 @@ def build_group(lang, g):
             continue
         sections += ('<section class="home-sec" id="c-%s">'
                      '<div class="sec-head"><h2>%s</h2>'
-                     '<a class="small" href="%s/c/%s/">%s →</a></div>'
+                     '<a class="small" href="%s%s">%s →</a></div>'
                      '<p class="muted small">%s</p><div class="grid">%s</div></section>'
-                     % (c['key'], e(cat_label(lang, c['key'])), px, c['key'],
+                     % (c['key'], e(cat_label(lang, c['key'])), px, cpath(lang, c['key']),
                         e(t(lang, 'nav.allIn', n=c['count'])),
                         e(t(lang, 'cat.results', n=len(in_cat))),
                         ''.join(tile(lang, p) for p in in_cat)))
@@ -902,8 +991,9 @@ def build_group(lang, g):
             '<div class="wrap">%s<p class="muted small">%s</p><div class="cards">%s</div>%s</div>'
             % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (label, '')]),
                e(label), e(desc), jump, e(t(lang, 'cat.results', n=len(prods))), cards, sections))
-    return page(lang, '/g/%s/' % g['key'], title, desc, body,
-                jsonld=[crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (label, '/g/%s/' % g['key'])])])
+    return page(lang, gpaths(g['key']), title, desc, body,
+                jsonld=[crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
+                                         (label, gpath(lang, g['key']))])])
 
 
 def build_product(lang, p):
@@ -995,8 +1085,8 @@ def build_product(lang, p):
     body = (
         '<div class="wrap">' +
         crumb_html(lang, [(t(lang, 'nav.home'), '/'),
-                          (group_label(lang, p['group']), '/g/%s/' % p['group']),
-                          (label, '/c/%s/' % p['category']), (nm, '')]) +
+                          (group_label(lang, p['group']), gpath(lang, p['group'])),
+                          (label, cpath(lang, p['category'])), (nm, '')]) +
         '<div class="pdp"><div class="gallery">%s</div><div>' % gallery +
         '<h1>%s</h1>%s<p class="price big">%s</p>%s'
         % (e(nm), ('<p class="altname small muted">%s</p>' % e(p['title'])) if nm != p['title'] else '',
@@ -1072,7 +1162,7 @@ def build_product(lang, p):
                         # Google prints the breadcrumb under the result, and the last crumb
                         # was the English product title on the Romanian and Russian pages.
                         crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
-                                         (label, '/c/%s/' % p['category']),
+                                         (label, cpath(lang, p['category'])),
                                          (nm, '/p/%s/' % p['handle'])])],
                 scripts=embed)
 
@@ -1375,11 +1465,7 @@ def build_tool(lang, filename):
            header_html(lang, spec['current']).replace('{PATH}', path) +
            markup +
            footer_html(lang, path) +
-           '<script>window.__CONTACT=%s;</script>' % json.dumps(
-               {k: CONTACT.get(k, '') for k in
-                ('email', 'phone', 'phone_href', 'phone2', 'phone2_href',
-                 'address', 'maps')},
-               ensure_ascii=False, separators=(',', ':')) +
+           contact_js() + gslug_js(lang) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>\n' +
            inline +
@@ -1431,9 +1517,10 @@ def main():
     for lang in LANGS:
         urls.append((build_home(lang), lang, '/'))
         for g in CAT['groups']:
-            urls.append((build_group(lang, g), lang, '/g/%s/' % g['key']))
+            urls.append((build_group(lang, g), lang, 'g/%s' % g['key']))
             for c in g['categories']:
-                urls.append((build_category(lang, c['key'], c['count']), lang, '/c/%s/' % c['key']))
+                urls.append((build_category(lang, c['key'], c['count']), lang,
+                             'c/%s' % c['key']))
         for p in CAT['products']:
             urls.append((build_product(lang, p), lang, '/p/%s/' % p['handle']))
         for slug, url in (('about', '/about/'), ('delivery', '/delivery/'),
@@ -1474,8 +1561,14 @@ def main():
 
     entries = []
     for path, locs in by_path.items():
-        prio = '1.0' if path == '/' else '0.9' if path.startswith('/c/') else \
-               '0.8' if path.startswith('/p/') else '0.6' if path.endswith('.html') else '0.7'
+        # The three languages no longer share a category or group path, so those group by
+        # a language-neutral key ("c/silicone-hose") instead. Everything else still groups
+        # by its path, which is the same in all three.
+        prio = ('1.0' if path == '/' else
+                '0.9' if path.startswith('c/') else
+                '0.8' if path.startswith('/p/') else
+                '0.7' if path.startswith('g/') else
+                '0.6' if path.endswith('.html') else '0.7')
         # Product photographs are a real share of the traffic for parts like these: someone
         # searches an image of a Camlock type and lands on the page that sells it. Naming
         # them here means Google Images does not have to render the page to find them, and
@@ -1489,6 +1582,31 @@ def main():
             entries.append('<url><loc>%s</loc>%s<lastmod>%s</lastmod>%s'
                            '<changefreq>weekly</changefreq><priority>%s</priority></url>'
                            % (loc, alts, fresh[loc]['d'], imgs, prio))
+
+    # The slug assignments, so the next build reuses them rather than inventing new URLs.
+    with open(SLUG_PATH, 'w', encoding='utf-8') as f:
+        json.dump(SLUGS, f, ensure_ascii=False, indent=1, sort_keys=True)
+
+    # Every address the site ever published, pointed at the one it uses now. The old
+    # key-based URLs (/c/silicone-hose/) are indexed and linked; without these they would
+    # 404 the moment this deploys. A rule whose source equals its target is skipped --
+    # English slugs often match the key exactly, and a redirect to itself is a loop.
+    rules = []
+    for rec_key, rec in sorted(SLUGS.items()):
+        kind, key = rec_key.split('/', 1)
+        olds = {key} | {v for v in rec.get('was', {}).get('__all__', [])}
+        for lang in LANGS:
+            new_path = '%s/%s/%s/' % (PREFIX[lang], kind, rec['now'][lang])
+            for old_slug in sorted(olds | set(rec.get('was', {}).get(lang, []))):
+                src = '%s/%s/%s/' % (PREFIX[lang], kind, old_slug)
+                if src != new_path:
+                    rules.append('%s %s 301' % (src, new_path))
+    with open(os.path.join(ROOT, '_redirects'), 'w', encoding='utf-8') as f:
+        f.write('# Generated by scripts/build_static.py -- do not edit.\n'
+                '# Old category and group addresses, kept working after the slugs became\n'
+                '# Romanian and Russian. netlify.toml holds the hand-written rules.\n'
+                + '\n'.join(rules) + '\n')
+    print('%d redirect rules for retired addresses' % len(rules))
 
     with open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8') as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
