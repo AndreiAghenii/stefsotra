@@ -56,7 +56,12 @@ PREFIX = {'ro': '', 'ru': '/ru', 'en': '/en'}
 # Using one form for both produced titles that read as broken Russian.
 GEO = {'ro': 'Moldova', 'ru': 'Молдова', 'en': 'Moldova'}
 GEO_IN = {'ro': 'Moldova', 'ru': 'Молдове', 'en': 'Moldova'}
-CITY = {'ro': 'Chișinău', 'ru': 'Кишинёве', 'en': 'Chișinău'}
+# Romanian and Russian keep the local spellings. English uses "Chisinau", which is the
+# ordinary English spelling of the city and is also what someone types when their keyboard
+# has no Romanian diacritics -- Google printed "Missing: chisinau" under our own result for
+# "furtun chisinau" while ranking the page, because the plain form appeared nowhere on it.
+CITY = {'ro': 'Chișinău', 'ru': 'Кишинёве', 'en': 'Chisinau'}
+CITY_ASCII = 'Chisinau'
 CURRENCY = 'lei'
 
 STR = {l: json.load(open(os.path.join(ROOT, 'i18n', l + '.json'), encoding='utf-8'))
@@ -392,7 +397,11 @@ def org_ld():
                       else CONTACT['phone']),
         'email': CONTACT['email'],
         'currenciesAccepted': 'MDL',
+        # Both spellings of the city. This is the service area stated in structured data,
+        # not visible text, and "Chisinau" is a real name for the same place -- it is what
+        # the postal form, the Google Maps link below and an English speaker all use.
         'areaServed': [{'@type': 'City', 'name': 'Chișinău'},
+                       {'@type': 'City', 'name': CITY_ASCII},
                        {'@type': 'Country', 'name': 'Moldova'}],
     }
     # For a trade counter, opening hours and coordinates are most of what decides whether
@@ -678,7 +687,7 @@ def build_home(lang):
     title = {
         'ro': 'Furtunuri, cuplaje și cauciuc tehnic în Chișinău | Stefsotra',
         'ru': 'Промышленные шланги и соединения в Кишинёве | Stefsotra',
-        'en': 'Industrial hoses and couplings in Chișinău | Stefsotra',
+        'en': 'Industrial hoses and couplings in Chisinau | Stefsotra',
     }[lang]
     desc = {
         'ro': 'Furtun din silicon și PVC, cuplaje Camlock, Storz, Guillemin și Bauer, coliere '
@@ -688,7 +697,7 @@ def build_home(lang):
               'и технические материалы. %d товаров в %d размерах, цены в леях. Доставка по '
               'Кишинёву и Молдове.' % (CAT['count'], variants),
         'en': 'Silicone and PVC hose, Camlock, Storz, Guillemin and Bauer couplings, clamps and '
-              'technical materials. %d products in %d sizes, priced in lei. Delivery in Chișinău '
+              'technical materials. %d products in %d sizes, priced in lei. Delivery in Chisinau '
               'and across Moldova.' % (CAT['count'], variants),
     }[lang]
 
@@ -792,7 +801,7 @@ def build_category(lang, key, count):
     title = {
         'ro': '%s Chișinău — %d produse, de la %s | Stefsotra' % (label, len(prods), money(lo, lang)),
         'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra' % (label, len(prods), money(lo, lang)),
-        'en': '%s in Chișinău — %d products from %s | Stefsotra' % (label, len(prods), money(lo, lang)),
+        'en': '%s in Chisinau — %d products from %s | Stefsotra' % (label, len(prods), money(lo, lang)),
     }[lang]
     desc = {
         'ro': '%s pe stoc la Stefsotra: %d produse, %d dimensiuni, preț de la %s. Livrare în %s '
@@ -845,14 +854,14 @@ def build_group(lang, g):
     title = {
         'ro': '%s Chișinău — %d produse, de la %s | Stefsotra',
         'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra',
-        'en': '%s in Chișinău — %d products from %s | Stefsotra',
+        'en': '%s in Chisinau — %d products from %s | Stefsotra',
     }[lang] % (label, len(prods), money(lo, lang))
     desc = {
         'ro': '%s la Stefsotra Chișinău: %d produse în %d dimensiuni, preț de la %s. %s. '
               'Tăiem la dimensiune fără cost, livrare în Chișinău și în toată Moldova.',
         'ru': '%s в Stefsotra, Кишинёв: %d товаров в %d размерах, цена от %s. %s. '
               'Режем по размеру бесплатно, доставка по Кишинёву и всей Молдове.',
-        'en': '%s at Stefsotra in Chișinău: %d products in %d sizes, from %s. %s. '
+        'en': '%s at Stefsotra in Chisinau: %d products in %d sizes, from %s. %s. '
               'Cut to size free of charge, delivery in Chișinău and across Moldova.',
     }[lang] % (label, len(prods), sizes, money(lo, lang),
                ', '.join(cat_label(lang, c['key']) for c in g['categories']))
@@ -1291,7 +1300,7 @@ TOOLS = {
         'title': {
             'ro': 'Catalog — %(n)d produse tehnice din cauciuc | Stefsotra Chișinău',
             'ru': 'Каталог — %(n)d технических резиновых изделий | Stefsotra Кишинёв',
-            'en': 'Catalogue — %(n)d technical rubber products | Stefsotra Chișinău',
+            'en': 'Catalogue — %(n)d technical rubber products | Stefsotra Chisinau',
         },
         'desc': {
             'ro': 'Filtrează după diametru, material, unghi și tip de cuplaj. %(n)d produse în '

@@ -146,6 +146,12 @@ What is in place:
   carry a "Fits" section with the make, every model, and the OE cross-references, plus
   `isAccessoryOrSparePartFor` in the Product markup. Someone searching a make and model is
   the readiest-to-buy visitor this shop gets.
+- **The plain spelling of the city.** Google ranks the home page for "furtun chisinau" and
+  prints "Missing: chisinau" under it, because everything on the site said "Chișinău" and
+  nobody in Moldova types the diacritics. The English pages now say "Chisinau", which is
+  the ordinary English spelling anyway, and `areaServed` names the city under both. The
+  Romanian and Russian prose keeps its proper spelling — the answer to a cosmetic SERP
+  label is not to misspell the language.
 - **No broken internal links**, checked across all 489 pages.
 - **The build inputs are not pages.** `publish = "."` ships the whole folder, so
   `/templates/*.html` (body fragments with no `<head>`) and `/scripts/*` are served to
