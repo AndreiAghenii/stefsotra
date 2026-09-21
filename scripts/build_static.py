@@ -142,13 +142,25 @@ except (OSError, ValueError):
 
 def slug_for(kind, key, lang, label):
     """The published slug for one key in one language, assigned once and then fixed."""
-    rec = SLUGS.setdefault('%s/%s' % (kind, key), {'now': {}, 'was': {}})
+    me = '%s/%s' % (kind, key)
+    rec = SLUGS.setdefault(me, {'now': {}, 'was': {}})
     if not rec['now'].get(lang):
         want = slugify(label) or key
-        taken = {r['now'].get(lang) for k, r in SLUGS.items()
-                 if k.startswith(kind + '/') and k != '%s/%s' % (kind, key)}
-        if want in taken:                      # never two pages at one address
-            want = '%s-%s' % (want, key)
+        # An address is taken if another page lives there now, and equally if another page
+        # *used* to live there: its old address has to stay a redirect source, and a slug
+        # that is both a source and a target makes a chain. Two products hit this -- the
+        # English name of "cement-discharge-hose2" slugifies to the old handle of a
+        # different hose. Falling back to the key is always safe: handles are unique, and
+        # a page whose new address equals its old one needs no redirect at all.
+        taken = set()
+        for k, r in SLUGS.items():
+            if not k.startswith(kind + '/') or k == me:
+                continue
+            taken.add(k.split('/', 1)[1])                    # its original handle or key
+            taken.add(r['now'].get(lang))
+            taken.update(r.get('was', {}).get(lang, []))
+        if want in taken:
+            want = key if key not in taken else '%s-%s' % (want, key)
         rec['now'][lang] = want
     return rec['now'][lang]
 
@@ -167,6 +179,15 @@ def cpath(lang, key):
 
 def gpath(lang, key):
     return '/g/%s/' % slug_for('g', key, lang, group_label(lang, key))
+
+
+def ppath(lang, prod):
+    """A product's path in one language, e.g. /p/reductie-camlock-tip-aa/."""
+    return '/p/%s/' % slug_for('p', prod['handle'], lang, name(lang, prod))
+
+
+def ppaths(prod):
+    return {l: ppath(l, prod) for l in LANGS}
 
 
 def cpaths(key):
@@ -430,6 +451,18 @@ def contact_js():
         ensure_ascii=False, separators=(',', ':'))
 
 
+def pslug_js(lang):
+    """Product slugs for this language, for the pages that draw their own tiles.
+
+    Only the four interactive pages need it -- everywhere else the tiles are written by
+    the build and already carry the right address. About 4 KB next to a catalogue those
+    pages were already fetching 441 KB of.
+    """
+    return '<script>window.__PSLUG=%s;</script>' % json.dumps(
+        {p['handle']: slug_for('p', p['handle'], lang, name(lang, p))
+         for p in CAT['products']}, ensure_ascii=False, separators=(',', ':'))
+
+
 def gslug_js(lang):
     """Group slugs for this language. The catalogue and basket pages draw their own
     category cards in the browser and used to build /g/<key>/ by hand, which stopped
@@ -579,7 +612,7 @@ def product_ld(lang, p):
         'description': strip_tags(summary(lang, p), 300),
         'category': cat_label(lang, p['category']),
         'brand': {'@type': 'Brand', 'name': brand_name(p['vendor'])},
-        'url': SITE + PREFIX[lang] + '/p/%s/' % p['handle'],
+        'url': SITE + PREFIX[lang] + ppath(lang, p),
     }
     if p['images']:
         d['image'] = p['images'][:4]
@@ -753,11 +786,11 @@ def tile(lang, p):
     price = (money(p['price_min'], lang, p['unit']) if p['price_min'] == p['price_max']
              else '<small>%s</small> %s' % (e(t(lang, 'cat.from')), money(p['price_min'], lang, p['unit'])))
     return (
-        '<article class="tile" data-h="%s"><a class="tile-link" href="%s/p/%s/">'
+        '<article class="tile" data-h="%s"><a class="tile-link" href="%s%s">'
         '%s<div class="meta"><div class="name">%s</div><div class="dims">%s</div>'
         '<div class="price">%s</div></div></a>'
         '<div class="tile-add">%s<button type="button" class="btn tile-btn"%s>%s</button></div></article>'
-        % (e(p['handle']), px, e(p['handle']),
+        % (e(p['handle']), px, ppath(lang, p),
            ('<div class="ph"><img loading="lazy" src="%s" alt="%s" width="1200" height="1200"></div>'
             % (e(img), e(name(lang, p)))) if img else
            placeholder(lang, p),
@@ -821,9 +854,9 @@ def build_home(lang):
         if len(picks) == 4:
             break
     art = ''.join(
-        '<a class="hero-tile t%d" href="%s/p/%s/" title="%s"><img src="%s" alt="%s" '
+        '<a class="hero-tile t%d" href="%s%s" title="%s"><img src="%s" alt="%s" '
         'width="1200" height="1200"%s></a>'
-        % (i, px, e(p['handle']), e(p['title']), e(p['images'][0]), e(p['title']),
+        % (i, px, ppath(lang, p), e(p['title']), e(p['images'][0]), e(p['title']),
            '' if i == 0 else ' loading="lazy"')
         for i, p in enumerate(picks))
 
@@ -934,7 +967,7 @@ def build_category(lang, key, count):
     lst = {'@context': 'https://schema.org', '@type': 'ItemList',
            'name': label, 'numberOfItems': len(prods),
            'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': p['title'],
-                                'url': SITE + PREFIX[lang] + '/p/%s/' % p['handle']}
+                                'url': SITE + PREFIX[lang] + ppath(lang, p)}
                                for i, p in enumerate(prods)]}
     crumb = crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
                              (group_label(lang, grp), gpath(lang, grp)),
@@ -1152,7 +1185,7 @@ def build_product(lang, p):
                                          'sku': v.get('sku', '')} for v in p['variants']],
                            'images': p['images']}, ensure_ascii=False, separators=(',', ':')))
 
-    PAGE_IMAGES['/p/%s/' % p['handle']] = p['images'][:4]
+    PAGE_IMAGES['p/%s' % p['handle']] = p['images'][:4]
     og_extra = (
         '<meta property="product:price:amount" content="%g">\n'
         '<meta property="product:price:currency" content="MDL">\n'
@@ -1166,7 +1199,7 @@ def build_product(lang, p):
         og_extra += ('<link rel="preload" as="image" href="%s" fetchpriority="high">\n'
                      % e(imgs[0]))
 
-    return page(lang, '/p/%s/' % p['handle'], title, desc, body,
+    return page(lang, ppaths(p), title, desc, body,
                 image=SITE + '/assets/og/%s.png' % p['handle'],
                 og_type='product', extra_meta=og_extra,
                 jsonld=[product_ld(lang, p),
@@ -1174,7 +1207,7 @@ def build_product(lang, p):
                         # was the English product title on the Romanian and Russian pages.
                         crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
                                          (label, cpath(lang, p['category'])),
-                                         (nm, '/p/%s/' % p['handle'])])],
+                                         (nm, ppath(lang, p))])],
                 scripts=embed)
 
 
@@ -1501,7 +1534,7 @@ def build_tool(lang, filename):
            header_html(lang, spec['current']).replace('{PATH}', path) +
            markup +
            footer_html(lang, path) +
-           contact_js() + gslug_js(lang) +
+           contact_js() + gslug_js(lang) + pslug_js(lang) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>\n' +
            inline +
@@ -1558,7 +1591,7 @@ def main():
                 urls.append((build_category(lang, c['key'], c['count']), lang,
                              'c/%s' % c['key']))
         for p in CAT['products']:
-            urls.append((build_product(lang, p), lang, '/p/%s/' % p['handle']))
+            urls.append((build_product(lang, p), lang, 'p/%s' % p['handle']))
         for slug, url in (('about', '/about/'), ('delivery', '/delivery/'),
                           ('partners', '/partners/'), ('returns', '/returns/'),
                           ('warranty', '/warranty/')):
@@ -1602,7 +1635,7 @@ def main():
         # by its path, which is the same in all three.
         prio = ('1.0' if path == '/' else
                 '0.9' if path.startswith('c/') else
-                '0.8' if path.startswith('/p/') else
+                '0.8' if path.startswith('p/') else
                 '0.7' if path.startswith('g/') else
                 '0.6' if path.endswith('.html') else '0.7')
         # Product photographs are a real share of the traffic for parts like these: someone

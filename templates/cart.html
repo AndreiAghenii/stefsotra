@@ -108,7 +108,7 @@ function render() {
     var img = S.img(r.p);
     return '<div class="cart-line">' +
       (img ? '<img src="' + S.esc(img) + '" alt="">' : '<div style="width:66px;height:66px"></div>') +
-      '<div><a href="' + S.url('/p/' + encodeURIComponent(r.p.handle) + '/') + '">' +
+      '<div><a href="' + S.productUrl(r.p.handle) + '">' +
         S.esc(S.name(r.p)) + '</a>' +
         // A product with one unnamed option has no size to print, and a per-metre item
         // is not priced "each" -- the /m already says what the price is per.

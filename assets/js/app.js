@@ -51,6 +51,11 @@
 
   // Group addresses are the group's own name in the page's language now, so a key is no
   // longer a path. build_static.py inlines the map for whichever language this page is.
+  S.productUrl = function (handle) {
+    var m = window.__PSLUG || {};
+    return S.url('/p/' + encodeURIComponent(m[handle] || handle) + '/');
+  };
+
   S.groupUrl = function (key) {
     var m = window.__GSLUG || {};
     return S.url('/g/' + encodeURIComponent(m[key] || key) + '/');
@@ -299,7 +304,7 @@
     var img = S.img(p);
     var one = p.variants.length === 1;
     return '<article class="tile" data-h="' + S.esc(p.handle) + '">' +
-      '<a class="tile-link" href="' + S.url('/p/' + encodeURIComponent(p.handle) + '/') + '">' +
+      '<a class="tile-link" href="' + S.productUrl(p.handle) + '">' +
         (img ? '<div class="ph"><img loading="lazy" src="' + S.esc(img) + '" alt="' + S.esc(S.name(p)) + '"></div>'
              : S.placeholder(p)) +
         '<div class="meta">' +
