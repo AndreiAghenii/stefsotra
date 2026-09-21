@@ -428,7 +428,7 @@ def footer_html(lang, path):
         'width="400" height="98" loading="lazy" decoding="async">'
         '<p class="small">%s</p>'
         '%s'
-        '<p class="small"><a href="mailto:%s">%s</a></p>%s</div>%s</div>'
+        '<p class="small"><a href="mailto:%s">%s</a></p>%s%s</div>%s</div>'
         '<div class="wrap foot-cats small">%s</div>'
         '<div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · '
         '<a href="https://stefsotra.md">stefsotra.md</a></span>'
@@ -440,6 +440,10 @@ def footer_html(lang, path):
            e(c['email']), e(c['email']),
            ('<p class="small"><a href="%s" target="_blank" rel="noopener">%s</a></p>'
             % (e(c.get('maps', '')), e(c['address']))) if c.get('address') else '',
+           # Opening hours on every page, not only on /contact/. For a trade counter this
+           # is the question a visitor asks before the price, and Google reads it too.
+           ('<p class="small hours">%s</p>' % hours_html(lang, ' · ')
+            ) if c.get('opening_hours') else '',
            colhtml, catlinks, e(t(lang, 'foot.by'))))
 
 
@@ -504,6 +508,10 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
 
 # ---------------------------------------------------------------- structured data
 
+SCHEMA_DAY = {'Mo': 'Monday', 'Tu': 'Tuesday', 'We': 'Wednesday', 'Th': 'Thursday',
+              'Fr': 'Friday', 'Sa': 'Saturday', 'Su': 'Sunday'}
+
+
 def org_ld():
     # HardwareStore rather than Organization: it is a LocalBusiness subtype, so the shop
     # is eligible for local results, which a bare Organization is not. Everything that
@@ -544,9 +552,13 @@ def org_ld():
     if CONTACT.get('hours'):
         d['openingHours'] = CONTACT['hours']
     if CONTACT.get('opening_hours'):
-        # [["Mo","Tu","We","Th","Fr"], "08:00", "17:00"] per row.
+        # [["Mo","Tu","We","Th","Fr"], "09:00", "18:00"] per row. dayOfWeek takes the
+        # schema.org DayOfWeek names -- "Monday", not the two-letter code, which belongs
+        # to the older openingHours string form and is not parsed here. Both times equal
+        # is how a day closed is spelled.
         d['openingHoursSpecification'] = [
-            {'@type': 'OpeningHoursSpecification', 'dayOfWeek': row[0],
+            {'@type': 'OpeningHoursSpecification',
+             'dayOfWeek': [SCHEMA_DAY[c] for c in row[0]],
              'opens': row[1], 'closes': row[2]}
             for row in CONTACT['opening_hours']]
     if CONTACT.get('geo'):
@@ -575,6 +587,39 @@ def sales_phone(lang):
     return ('<a class="btn ghost ask-tel" href="tel:%s" aria-label="%s %s">%s</a>'
             % (e(CONTACT['phone2_href']), e(t(lang, 'ct.phone')),
                e(CONTACT['phone2']), e(CONTACT['phone2'])))
+
+
+DAY_ORDER = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+
+
+def day_range(lang, days):
+    """"Lun–Vin" for a run of consecutive days, "Sâm" for one, commas between runs."""
+    idx = sorted(DAY_ORDER.index(d) for d in days if d in DAY_ORDER)
+    runs, start, prev = [], None, None
+    for i in idx + [None]:
+        if start is None:
+            start = prev = i
+            continue
+        if i is not None and i == prev + 1:
+            prev = i
+            continue
+        a, b = t(lang, 'day.' + DAY_ORDER[start].lower()), t(lang, 'day.' + DAY_ORDER[prev].lower())
+        runs.append(a if start == prev else '%s–%s' % (a, b))
+        start = prev = i
+    return ', '.join(runs)
+
+
+def hours_rows(lang):
+    """[(days, times)] for display. Both times equal means closed that day."""
+    out = []
+    for days, opens, closes in CONTACT.get('opening_hours') or []:
+        when = t(lang, 'day.closed') if opens == closes else '%s–%s' % (opens, closes)
+        out.append((day_range(lang, days), when))
+    return out
+
+
+def hours_html(lang, sep='<br>'):
+    return sep.join('%s %s' % (e(d), e(w)) for d, w in hours_rows(lang))
 
 
 def phone_links(fmt, sep=''):
@@ -1391,7 +1436,8 @@ def build_contact(lang):
             (t(lang, 'ct.phone'), phone_links('<a href="tel:%s">%s</a>', '<br>')),
             (t(lang, 'ct.email'), '<a href="mailto:%s">%s</a>' % (e(c['email']), e(c['email']))),
             (t(lang, 'ct.address'), addr),
-        ] + ([(t(lang, 'ct.hours'), e(c['hours']))] if c.get('hours') else []))
+        ] + ([(t(lang, 'ct.hours'), hours_html(lang))] if c.get('opening_hours')
+             else [(t(lang, 'ct.hours'), e(c['hours']))] if c.get('hours') else []))
 
     flow = '<ol class="flowsteps">%s</ol>' % ''.join(
         '<li><b></b><div><h3>%s</h3></div></li>' % e(t(lang, k))

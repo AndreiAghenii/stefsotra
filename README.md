@@ -191,15 +191,14 @@ good as it reasonably gets. The rest is off-page and needs you:
    link into `_contact.review_url` and the ask appears in the three places a happy
    customer actually is: the contact page, beside the on-site review form, and on the
    screen confirming an order was sent. Nothing renders until that link is set.
-3. **Opening hours and map coordinates.** The address is in `data/pages.json` and in the
-   `HardwareStore` markup. `_contact.opening_hours`, `_contact.geo`, `_contact.same_as`
-   (the Google Business, Facebook and Instagram addresses) and `_contact.price_range` are
-   still empty, and each one goes straight into that markup the moment it is filled in —
-   see `org_ld()`. They are left empty rather than guessed: wrong coordinates put the pin
-   in the wrong street and invented hours send someone to a closed door. Format is
-   `[[["Mo","Tu","We","Th","Fr"], "08:00", "17:00"]]` for the hours and `[lat, lon]` for
-   the coordinates. Hours and a consistent name/address/phone across the site, Google and
-   the local directories are a large part of whether the shop shows up in the map pack.
+3. **Map coordinates.** The address and the opening hours are both in `data/pages.json`
+   now and both reach the `HardwareStore` markup; the hours also print in the footer of
+   every page and on the contact page, in each language. Still empty: `_contact.geo`,
+   `_contact.same_as` (the Google Business, Facebook and Instagram addresses),
+   `_contact.review_url` and `_contact.price_range`. Each goes straight into the markup
+   the moment it is filled in — see `org_ld()`. They stay empty rather than guessed:
+   wrong coordinates put the pin in the wrong street. `geo` is `[lat, lon]`; hours are
+   `[[days], opens, closes]` per row, with both times equal meaning closed that day.
 4. **Search Console and Yandex Webmaster** — submit `sitemap.xml` to both. Yandex is a
    significant share of Russian-language search here.
 5. **Which domain.** `SITE` at the top of `build_static.py` says `https://stefsotra.md`. If
