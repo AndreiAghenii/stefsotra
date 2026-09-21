@@ -1,3 +1,10 @@
+# NOT IN USE. The site runs on Vercel, which never reads this file -- which is why the
+# redirects and headers below silently did nothing: the old Shopify addresses 404ed and
+# /scripts, /data and /templates stayed crawlable. scripts/build_static.py generates
+# vercel.json, and that is the file that serves the site. This is kept only so the project
+# can still be deployed to Netlify without rebuilding the config from scratch; the
+# redirects it lists are stale and superseded by the generated _redirects.
+#
 # Static publish; the whole folder is the site.
 [build]
   publish = "."

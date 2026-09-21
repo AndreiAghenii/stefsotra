@@ -219,14 +219,41 @@ prices change, re-derive it the same way rather than adjusting it by feel.
 
 ## Deploying
 
-Drop the folder on Netlify. `netlify.toml` is already set up. Three things then work that
-cannot work locally:
+The site runs on **Vercel**. `scripts/build_static.py` writes `vercel.json` — 541 redirects
+and the header rules — so deploying is a matter of pushing the built folder; there is
+nothing to configure by hand.
 
-**Orders, messages and reviews.** The basket, the contact form and the review form post to
-Netlify Forms. Each submission is emailed and kept in Netlify → Forms. No backend, no
-payment: a customer sends a request, you contact them about fulfilment.
+Two settings in there are load-bearing and should not be flipped casually:
 
-**The AI assistant.** Set `ANTHROPIC_API_KEY` in Site settings → Environment variables.
+- `trailingSlash: true`. Every canonical, `hreflang` and sitemap entry this build writes
+  ends in a slash. Vercel's default strips it, which would point all 483 canonicals at
+  addresses that redirect.
+- `cleanUrls: false`. The four tool pages are canonicalised as `/catalog.html`, not
+  `/catalog`.
+
+`netlify.toml` is **not in use** and never was on this host — which is why the old Shopify
+addresses were 404ing and `/scripts`, `/data` and `/templates` stayed crawlable. It is kept
+only as a starting point if the site ever moves to Netlify. `_redirects` is the portable
+form of the same generated list, read by Netlify and Cloudflare Pages.
+
+**Still to do on Vercel: the forms and the assistant.** Both were written against Netlify
+and neither works here. See below.
+
+Three things work only once deployed:
+
+**Orders, messages and reviews — BROKEN on Vercel.** The basket, the contact form and the
+review form all post to Netlify Forms (`data-netlify="true"`), which is the only backend
+this site has. Vercel does not implement it, so `quote-request`, `contact` and
+`product-review` submissions currently go nowhere: a customer can fill in the order form,
+press send, and nothing reaches anyone. Replacing it means three small Vercel Functions
+under `/api` and somewhere to put the result — email, or a sheet. Until then the basket's
+"send by email" fallback is the only path that works.
+
+**The AI assistant — also not running.** `netlify/functions/assistant.js` is a Netlify
+function; on Vercel it needs to move to `/api/assistant.js` and the key set in Project
+Settings → Environment Variables. Search still works without it: there is a rule-based
+reader that handles sizes, angles, materials and product words in all three languages.
+Set `ANTHROPIC_API_KEY` in Site settings → Environment variables.
 Until you do, the endpoint returns 501 and the site says plainly that the assistant is not
 switched on. Search keeps working regardless — it also has a rule-based reader that handles
 sizes, angles, materials and product words in Romanian, Russian and English.

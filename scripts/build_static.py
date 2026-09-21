@@ -1617,6 +1617,58 @@ def build_404():
 
 # ---------------------------------------------------------------- main
 
+def write_vercel_json(rules):
+    """The config the site is actually served from.
+
+    trailingSlash matters more than it looks. Every canonical, hreflang and sitemap entry
+    this build writes ends in a slash, and Vercel's default is to strip it -- which would
+    point all 483 canonicals at addresses that redirect. Setting it true makes the server
+    agree with what the HTML claims. cleanUrls stays off for the same reason: the four
+    tool pages are canonicalised as /catalog.html, not /catalog.
+
+    Headers here replace the ones in netlify.toml, which Vercel never reads, so the build
+    inputs under /templates, /scripts, /data and /i18n have been crawlable all along.
+    """
+    redirects = [
+        # One hostname. Google has the home page indexed as www while every canonical
+        # says the apex; this settles it at the server instead of leaving it to chance.
+        {'source': '/:path*',
+         'has': [{'type': 'host', 'value': 'www.stefsotra.md'}],
+         'destination': 'https://stefsotra.md/:path*', 'statusCode': 301},
+    ]
+    for line in rules:
+        src, dst, _ = line.split()
+        redirects.append({'source': src, 'destination': dst, 'statusCode': 301})
+
+    def hdr(source, **kv):
+        return {'source': source,
+                'headers': [{'key': k.replace('_', '-'), 'value': v} for k, v in kv.items()]}
+
+    cfg = {
+        '$schema': 'https://openapi.vercel.sh/vercel.json',
+        'trailingSlash': True,
+        'cleanUrls': False,
+        'redirects': redirects,
+        'headers': [
+            hdr('/templates/(.*)', X_Robots_Tag='noindex, nofollow'),
+            hdr('/scripts/(.*)', X_Robots_Tag='noindex, nofollow'),
+            hdr('/i18n/(.*)', X_Robots_Tag='noindex',
+                Cache_Control='public, max-age=3600'),
+            hdr('/data/(.*)', X_Robots_Tag='noindex',
+                Cache_Control='public, max-age=3600'),
+            hdr('/assets/(.*)', Cache_Control='public, max-age=86400'),
+            hdr('/(.*)', X_Content_Type_Options='nosniff',
+                Referrer_Policy='strict-origin-when-cross-origin'),
+        ],
+    }
+    # Vercel caps vercel.json at 1024 redirects. Fail loudly rather than deploy a file
+    # the platform will reject or silently truncate.
+    assert len(redirects) <= 1024, 'too many redirects for vercel.json: %d' % len(redirects)
+    with open(os.path.join(ROOT, 'vercel.json'), 'w', encoding='utf-8') as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+        f.write('\n')
+
+
 def main():
     # Wipe previously generated trees so a removed product cannot linger as a live URL.
     for d in ('p', 'c', 'g', 'ru', 'en', 'about', 'delivery', 'partners', 'returns',
@@ -1706,7 +1758,27 @@ def main():
     # key-based URLs (/c/silicone-hose/) are indexed and linked; without these they would
     # 404 the moment this deploys. A rule whose source equals its target is skipped --
     # English slugs often match the key exactly, and a redirect to itself is a loop.
+    #
+    # These are emitted twice, from this one list: vercel.json, which is what actually
+    # serves the site, and _redirects, which is the portable form Netlify and Cloudflare
+    # Pages both read. netlify.toml is not read by anything today -- see the README.
     rules = []
+    # The addresses the old Shopify storefront used. They are still linked and bookmarked,
+    # and have been 404ing since the move, because the file that held them was never read
+    # by the host the site actually runs on.
+    for src, dst in (('/product.html', '/catalog.html'),
+                     ('/about.html', '/about/'), ('/contact.html', '/contact/'),
+                     ('/delivery.html', '/delivery/'), ('/partners.html', '/partners/'),
+                     ('/returns.html', '/returns/'), ('/warranty.html', '/warranty/'),
+                     ('/pages/about-us', '/about/'), ('/pages/delivery', '/delivery/'),
+                     ('/pages/contact', '/contact/'), ('/pages/partners', '/partners/'),
+                     ('/pages/return-policy', '/returns/'),
+                     ('/pages/warranty-plicy', '/warranty/')):
+        rules.append('%s %s 301' % (src, dst))
+    # /products/<shopify handle> went to /p/<handle>/, which is no longer an address.
+    # Written out per product so it lands on the final URL in one hop instead of two.
+    for prod in CAT['products']:
+        rules.append('/products/%s %s 301' % (prod['handle'], ppath('ro', prod)))
     for rec_key, rec in sorted(SLUGS.items()):
         kind, key = rec_key.split('/', 1)
         olds = {key} | {v for v in rec.get('was', {}).get('__all__', [])}
@@ -1718,10 +1790,11 @@ def main():
                     rules.append('%s %s 301' % (src, new_path))
     with open(os.path.join(ROOT, '_redirects'), 'w', encoding='utf-8') as f:
         f.write('# Generated by scripts/build_static.py -- do not edit.\n'
-                '# Old category and group addresses, kept working after the slugs became\n'
-                '# Romanian and Russian. netlify.toml holds the hand-written rules.\n'
+                '# Portable form, read by Netlify and Cloudflare Pages. The site runs on\n'
+                '# Vercel, which reads vercel.json instead; both come from one list.\n'
                 + '\n'.join(rules) + '\n')
-    print('%d redirect rules for retired addresses' % len(rules))
+    write_vercel_json(rules)
+    print('%d redirect rules' % len(rules))
 
     with open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8') as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n'

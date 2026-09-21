@@ -1,0 +1,2786 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": true,
+  "cleanUrls": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.stefsotra.md"
+        }
+      ],
+      "destination": "https://stefsotra.md/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/product.html",
+      "destination": "/catalog.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/about.html",
+      "destination": "/about/",
+      "statusCode": 301
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/contact/",
+      "statusCode": 301
+    },
+    {
+      "source": "/delivery.html",
+      "destination": "/delivery/",
+      "statusCode": 301
+    },
+    {
+      "source": "/partners.html",
+      "destination": "/partners/",
+      "statusCode": 301
+    },
+    {
+      "source": "/returns.html",
+      "destination": "/returns/",
+      "statusCode": 301
+    },
+    {
+      "source": "/warranty.html",
+      "destination": "/warranty/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pages/about-us",
+      "destination": "/about/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pages/delivery",
+      "destination": "/delivery/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pages/contact",
+      "destination": "/contact/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pages/partners",
+      "destination": "/partners/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pages/return-policy",
+      "destination": "/returns/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pages/warranty-plicy",
+      "destination": "/warranty/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/kamaz-maz-silicone-hoses",
+      "destination": "/p/furtunuri-din-silicon-pentru-kamaz-maz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/mercedes-sprinter-silicone-hoses",
+      "destination": "/p/furtunuri-din-silicon-pentru-mercedes-sprinter/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-latch",
+      "destination": "/p/clichet-storz-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-aa",
+      "destination": "/p/reductie-camlock-tip-aa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-dd",
+      "destination": "/p/reductie-camlock-tip-dd/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-da",
+      "destination": "/p/reductie-camlock-tip-da/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-f",
+      "destination": "/p/reductie-camlock-tip-f/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-e",
+      "destination": "/p/reductie-camlock-tip-e/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-d",
+      "destination": "/p/reductie-camlock-tip-d/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-c",
+      "destination": "/p/reductie-camlock-tip-c/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-b",
+      "destination": "/p/reductie-camlock-tip-b/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-reducing-type-a",
+      "destination": "/p/reductie-camlock-tip-a/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/bauer-coupling-2",
+      "destination": "/p/cuplaj-bauer-alt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-reducer-2",
+      "destination": "/p/reductie-storz-alt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/vb",
+      "destination": "/p/cuplaj-vb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/mb",
+      "destination": "/p/cuplaj-mb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/mk",
+      "destination": "/p/cuplaj-mk/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/vk",
+      "destination": "/p/cuplaj-vk/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/universal-gasket",
+      "destination": "/p/garnitura-universala-pentru-cuplaj/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-gasket",
+      "destination": "/p/garnitura-guillemin/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-hose",
+      "destination": "/p/racord-guillemin-pentru-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-female",
+      "destination": "/p/guillemin-mama-fara-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-male",
+      "destination": "/p/guillemin-tata-cu-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/bauer-gasket",
+      "destination": "/p/garnitura-bauer/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/bauer-coupling",
+      "destination": "/p/cuplaj-bauer-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-handle",
+      "destination": "/p/maner-camlock/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-gasket",
+      "destination": "/p/garnitura-camlock/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-gasket",
+      "destination": "/p/garnitura-storz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-cap",
+      "destination": "/p/capac-storz-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-reducer",
+      "destination": "/p/reductie-storz-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-hose-end",
+      "destination": "/p/racord-storz-pentru-furtun-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-coupling-female",
+      "destination": "/p/cuplaj-storz-mama-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм",
+      "destination": "/p/poliuretan-in-bare-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм",
+      "destination": "/p/snur-din-silicon-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм",
+      "destination": "/p/textolit-in-foi-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75",
+      "destination": "/p/polipropilena-in-foi-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/капралон-графитонаполненный",
+      "destination": "/p/caprolon-grafitat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/hose-head",
+      "destination": "/p/racord-de-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/toyota-hilux-bed-liner",
+      "destination": "/p/toyota-hilux-protectie-de-bena/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/auto-compressor-628-4x4-2-cylinder",
+      "destination": "/p/compresor-auto-628-4x4-2-cylinder/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/truck-cargo-roof-canopy",
+      "destination": "/p/prelata-pentru-camion/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/rubber-cord-nbr",
+      "destination": "/p/snur-de-cauciuc-nbr/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/paronite-pmb",
+      "destination": "/p/paronit-pmb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/pvc-curtains",
+      "destination": "/p/perdele-din-pvc/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/polyurethane-sheet",
+      "destination": "/p/foaie-de-poliuretan/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/porous-sponge-rubber-epdm",
+      "destination": "/p/cauciuc-spongios-poros-epdm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/kenda-klever-m-t-tires",
+      "destination": "/p/kenda-klever-m-t-anvelope/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/bearway-tires",
+      "destination": "/p/bearway-anvelope/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/nylon-tube-pa6",
+      "destination": "/p/tub-din-poliamida-pa6/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/riezinovyie-rulony-piatachok",
+      "destination": "/p/covor-de-cauciuc-in-rulou-pyatachok/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/fuel-hose-with-braided-cover",
+      "destination": "/p/furtun-de-combustibil-cu-manta-textila/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-type-dp",
+      "destination": "/p/camlock-tip-dp/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-type-dc",
+      "destination": "/p/camlock-tip-dc/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-type-f",
+      "destination": "/p/camlock-tip-f/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-type-e",
+      "destination": "/p/camlock-tip-e/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-type-d",
+      "destination": "/p/camlock-tip-d/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-type-c",
+      "destination": "/p/camlock-tip-c/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-type-b",
+      "destination": "/p/camlock-tip-b/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/camlock-type-a",
+      "destination": "/p/camlock-tip-a/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/fregat-sprinkler",
+      "destination": "/p/aspersor-fregat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/reinforced-silicone-damper-hose-with-three-rings-l203",
+      "destination": "/p/furtun-amortizor-din-silicon-armat-cu-trei-inele-l203/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/reinforced-silicone-hose-damper-with-one-ring-l102",
+      "destination": "/p/furtun-amortizor-din-silicon-armat-cu-un-inel-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/silicone-hose-double-damper-l102",
+      "destination": "/p/furtun-amortizor-dublu-din-silicon-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/ball-valve-for-water",
+      "destination": "/p/robinet-cu-bila-pentru-apa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/silicone_pipe_elbow_45",
+      "destination": "/p/furtun-cot-din-silicon-45/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/pipe_with_silicone_transition",
+      "destination": "/p/furtun-drept-din-silicon-cu-reductie-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/silicone_pipe_straight_l1000",
+      "destination": "/p/furtun-drept-din-silicon-l1000mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/food_grade_hoses_suction",
+      "destination": "/p/furtunuri-alimentare-de-aspiratie/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/food_grade_hoses",
+      "destination": "/p/furtunuri-alimentare-de-presiune-si-aspiratie/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/adapters_plastic_abs",
+      "destination": "/p/adaptoare-de-furtun-din-plastic-abs/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/oil_resistant_hoses",
+      "destination": "/p/furtunuri-rezistente-la-ulei-si-combustibil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/polypropylene-ball-valve",
+      "destination": "/p/robinet-cu-bila-din-polipropilena/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/oxygen_hoses",
+      "destination": "/p/furtunuri-de-oxigen/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/caprolon_rod",
+      "destination": "/p/caprolon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/wire-fan-rake",
+      "destination": "/p/greble-evantai-din-sarma/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/fan-rake_01",
+      "destination": "/p/grebla-evantai/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/fan-lawn-rake",
+      "destination": "/p/greble-evantai-pentru-gazon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/adapter-hose-head",
+      "destination": "/p/racord-de-trecere-pentru-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/air-hose",
+      "destination": "/p/furtunuri-de-aer/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/aluminum-flex-duct",
+      "destination": "/p/tuburi-din-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/socket-coupling-head",
+      "destination": "/p/cap-de-cuplaj/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/ventilation-hoses",
+      "destination": "/p/furtunuri-de-ventilatie/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-coupling-with-internal-thread",
+      "destination": "/p/cuplaj-storz-cu-filet-interior/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/aluminum-nuts-for-water-pumps",
+      "destination": "/p/piulite-din-aluminiu-pentru-pompe-de-apa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/drive-belts",
+      "destination": "/p/curele-de-transmisie/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/shaft-seals",
+      "destination": "/p/simeringuri/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/storz-coupling-with-tail-for-hose",
+      "destination": "/p/cuplaj-storz-cu-racord-pentru-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/hose-clamps",
+      "destination": "/p/coliere-pentru-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/heavy-duty-clamp",
+      "destination": "/p/colier-de-sarcina-grea/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/shlangh-lay-flat",
+      "destination": "/p/furtun-plat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/pvc-corrugated-hoses-for-water",
+      "destination": "/p/furtun-pvc-gofrat-pentru-apa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/cement-discharge-hose2",
+      "destination": "/p/furtun-pentru-ciment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/sprayer-hose",
+      "destination": "/p/furtun-pentru-stropitoare/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/high-pressure-hoses",
+      "destination": "/p/furtunuri-de-inalta-presiune/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/hoses-for-sewage-truck",
+      "destination": "/p/furtunuri-pentru-vidanje/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/pvc-pressure-hoses",
+      "destination": "/p/furtunuri-pvc-de-presiune/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/water-hoses",
+      "destination": "/p/furtunuri-de-apa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/pvc-oil-and-gasoline-resistant-hose",
+      "destination": "/p/furtun-pvc-rezistent-la-ulei-si-benzina/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/plastering-hose",
+      "destination": "/p/furtunuri-pentru-tencuiala/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/straight-silicone-spigot-d38-l1100",
+      "destination": "/p/furtun-cot-din-silicon-cu-reductie-45-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/silicone-tube-d110-l1100",
+      "destination": "/p/furtun-cot-din-silicon-90-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/silicone-tube-d60-l1100",
+      "destination": "/p/furtun-cot-din-silicon-cu-reductie-90-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/silicone-tube-d85-l1100",
+      "destination": "/p/furtun-cot-din-silicon-135-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/flexible-silicone-hose-l700",
+      "destination": "/p/furtun-gofrat-din-silicon-l700mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/pipe-silicone-straight-l1100-d080",
+      "destination": "/p/furtun-din-silicon-in-forma-de-u-180/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/silicone-tube-d50-l1100",
+      "destination": "/p/stefsotra-furtun-amortizor-din-silicon-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/cement-discharge-hose",
+      "destination": "/p/furtun-de-aspiratie-din-poliuretan/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/broom-round-typesetting-without-handle",
+      "destination": "/p/matura-rotunda/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/silicone-sheet",
+      "destination": "/p/foaie-de-silicon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/lay-flat-hose",
+      "destination": "/p/furtun-plat-armat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/return-valve",
+      "destination": "/p/supapa-de-retinere/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/food-tech-plate",
+      "destination": "/p/placa-tehnica-alimentara/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/technical-plate",
+      "destination": "/p/foaie-de-cauciuc-tehnoplaca/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/fire-hoses",
+      "destination": "/p/furtun-de-pompieri/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-vb-stainless",
+      "destination": "/p/cuplaj-vb-otel-inoxidabil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-mb-stainless",
+      "destination": "/p/cuplaj-mb-otel-inoxidabil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-mk-stainless",
+      "destination": "/p/cuplaj-mk-otel-inoxidabil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-vk-stainless",
+      "destination": "/p/cuplaj-vk-otel-inoxidabil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-vb-brass",
+      "destination": "/p/cuplaj-vb-alama/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-mb-brass",
+      "destination": "/p/cuplaj-mb-alama/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-mk-brass",
+      "destination": "/p/cuplaj-mk-alama/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-vk-brass",
+      "destination": "/p/cuplaj-vk-alama/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-blind-cap-bk",
+      "destination": "/p/bk-capac-orb-pentru-cuplaj-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-blind-adapter-bv",
+      "destination": "/p/bv-adaptor-orb-pentru-cuplaj-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/tw-coupling-gasket",
+      "destination": "/p/garnitura-pentru-cuplaj-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-female-with-latch",
+      "destination": "/p/guillemin-mama-cu-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-male-without-latch",
+      "destination": "/p/guillemin-tata-fara-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-hose-end-with-latch",
+      "destination": "/p/racord-guillemin-pentru-furtun-cu-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-blind-cap",
+      "destination": "/p/capac-orb-guillemin-cu-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/products/guillemin-reducer",
+      "destination": "/p/adaptor-de-reductie-guillemin/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/agri/",
+      "destination": "/c/agro-si-gradina/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/agri/",
+      "destination": "/ru/c/агро-и-сад/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/agri/",
+      "destination": "/en/c/agriculture-garden/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/bauer/",
+      "destination": "/c/cuplaje-bauer/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/bauer/",
+      "destination": "/ru/c/соединения-bauer/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/bauer/",
+      "destination": "/en/c/bauer-couplings/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/camlock/",
+      "destination": "/c/cuplaje-camlock/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/camlock/",
+      "destination": "/ru/c/соединения-camlock/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/camlock/",
+      "destination": "/en/c/camlock-couplings/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/clamp/",
+      "destination": "/c/coliere/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/clamp/",
+      "destination": "/ru/c/хомуты/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/clamp/",
+      "destination": "/en/c/clamps/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/gasket/",
+      "destination": "/c/garnituri/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/gasket/",
+      "destination": "/ru/c/прокладки/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/gasket/",
+      "destination": "/en/c/gaskets/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/guillemin/",
+      "destination": "/c/cuplaje-guillemin/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/guillemin/",
+      "destination": "/ru/c/соединения-guillemin/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/guillemin/",
+      "destination": "/en/c/guillemin-couplings/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/hose-fitting/",
+      "destination": "/c/racorduri-si-adaptoare/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/hose-fitting/",
+      "destination": "/ru/c/головки-и-адаптеры/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/hose-fitting/",
+      "destination": "/en/c/hose-heads-adapters/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/industrial-hose/",
+      "destination": "/c/furtunuri-industriale/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/industrial-hose/",
+      "destination": "/ru/c/промышленные-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/plastic-stock/",
+      "destination": "/c/bare-si-tuburi-tehnice/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/plastic-stock/",
+      "destination": "/ru/c/стержни-и-трубы/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/plastic-stock/",
+      "destination": "/en/c/rods-tubes/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/pvc-hose/",
+      "destination": "/c/furtun-pvc/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/pvc-hose/",
+      "destination": "/ru/c/пвх-шланги/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/rubber-profile/",
+      "destination": "/c/snur-si-profil-de-cauciuc/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/rubber-profile/",
+      "destination": "/ru/c/шнур-и-профиль/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/rubber-profile/",
+      "destination": "/en/c/rubber-cord-profile/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/sheet-material/",
+      "destination": "/c/placi-si-foi/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/sheet-material/",
+      "destination": "/ru/c/листовые-материалы/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/sheet-material/",
+      "destination": "/en/c/sheet-materials/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/silicone-hose/",
+      "destination": "/c/furtun-din-silicon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/silicone-hose/",
+      "destination": "/ru/c/силиконовые-шланги/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/storz/",
+      "destination": "/c/cuplaje-storz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/storz/",
+      "destination": "/ru/c/соединения-storz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/storz/",
+      "destination": "/en/c/storz-couplings/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/tw-coupling/",
+      "destination": "/c/cuplaje-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/tw-coupling/",
+      "destination": "/ru/c/соединения-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/tw-coupling/",
+      "destination": "/en/c/tw-couplings/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/valve/",
+      "destination": "/c/robinete-si-supape/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/valve/",
+      "destination": "/ru/c/краны-и-клапаны/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/valve/",
+      "destination": "/en/c/valves/",
+      "statusCode": 301
+    },
+    {
+      "source": "/c/vehicle-part/",
+      "destination": "/c/piese-auto/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/c/vehicle-part/",
+      "destination": "/ru/c/автозапчасти/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/c/vehicle-part/",
+      "destination": "/en/c/vehicle-parts/",
+      "statusCode": 301
+    },
+    {
+      "source": "/g/couplings/",
+      "destination": "/g/cuplaje-si-fitinguri/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/g/couplings/",
+      "destination": "/ru/g/соединения-и-фитинги/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/g/couplings/",
+      "destination": "/en/g/couplings-fittings/",
+      "statusCode": 301
+    },
+    {
+      "source": "/g/hoses/",
+      "destination": "/g/furtunuri/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/g/hoses/",
+      "destination": "/ru/g/шланги-и-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/g/materials/",
+      "destination": "/g/materiale-tehnice/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/g/materials/",
+      "destination": "/ru/g/технические-материалы/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/g/materials/",
+      "destination": "/en/g/technical-materials/",
+      "statusCode": 301
+    },
+    {
+      "source": "/g/sealing/",
+      "destination": "/g/coliere-si-etansari/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/g/sealing/",
+      "destination": "/ru/g/хомуты-и-уплотнения/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/g/sealing/",
+      "destination": "/en/g/clamps-sealing/",
+      "statusCode": 301
+    },
+    {
+      "source": "/g/vehicle/",
+      "destination": "/g/auto-si-agro/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/g/vehicle/",
+      "destination": "/ru/g/авто-и-агро/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/g/vehicle/",
+      "destination": "/en/g/vehicle-agriculture/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/adapter-hose-head/",
+      "destination": "/p/racord-de-trecere-pentru-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/adapter-hose-head/",
+      "destination": "/ru/p/переходная-головка-для-шланга/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/adapter-hose-head/",
+      "destination": "/en/p/transition-hose-head/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/adapters_plastic_abs/",
+      "destination": "/p/adaptoare-de-furtun-din-plastic-abs/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/adapters_plastic_abs/",
+      "destination": "/ru/p/адаптеры-для-шланга-из-abs-пластика/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/adapters_plastic_abs/",
+      "destination": "/en/p/abs-plastic-hose-adapters/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/air-hose/",
+      "destination": "/p/furtunuri-de-aer/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/air-hose/",
+      "destination": "/ru/p/воздушные-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/air-hose/",
+      "destination": "/en/p/air-hoses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/aluminum-flex-duct/",
+      "destination": "/p/tuburi-din-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/aluminum-flex-duct/",
+      "destination": "/ru/p/алюминиевые-воздуховоды/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/aluminum-flex-duct/",
+      "destination": "/en/p/aluminum-ducts/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/aluminum-nuts-for-water-pumps/",
+      "destination": "/p/piulite-din-aluminiu-pentru-pompe-de-apa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/aluminum-nuts-for-water-pumps/",
+      "destination": "/ru/p/алюминиевые-гайки-для-водяных-насосов/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/auto-compressor-628-4x4-2-cylinder/",
+      "destination": "/p/compresor-auto-628-4x4-2-cylinder/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/auto-compressor-628-4x4-2-cylinder/",
+      "destination": "/ru/p/автомобильный-компрессор-628-4x4-2-cylinder/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/ball-valve-for-water/",
+      "destination": "/p/robinet-cu-bila-pentru-apa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/ball-valve-for-water/",
+      "destination": "/ru/p/шаровой-кран-для-воды/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/bauer-coupling/",
+      "destination": "/p/cuplaj-bauer-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/bauer-coupling/",
+      "destination": "/ru/p/соединение-bauer-алюминий/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/bauer-coupling/",
+      "destination": "/en/p/bauer-coupling-aluminum/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/bauer-coupling-2/",
+      "destination": "/p/cuplaj-bauer-alt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/bauer-coupling-2/",
+      "destination": "/ru/p/соединение-bauer-alt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/bauer-coupling-2/",
+      "destination": "/en/p/bauer-coupling-alt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/bauer-gasket/",
+      "destination": "/p/garnitura-bauer/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/bauer-gasket/",
+      "destination": "/ru/p/прокладка-bauer/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/bearway-tires/",
+      "destination": "/p/bearway-anvelope/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/bearway-tires/",
+      "destination": "/ru/p/bearway-шины/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/broom-round-typesetting-without-handle/",
+      "destination": "/p/matura-rotunda/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/broom-round-typesetting-without-handle/",
+      "destination": "/ru/p/метла-круглая/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/broom-round-typesetting-without-handle/",
+      "destination": "/en/p/round-broom/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-gasket/",
+      "destination": "/p/garnitura-camlock/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-gasket/",
+      "destination": "/ru/p/прокладка-camlock/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-handle/",
+      "destination": "/p/maner-camlock/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-handle/",
+      "destination": "/ru/p/ручка-camlock/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-a/",
+      "destination": "/p/reductie-camlock-tip-a/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-a/",
+      "destination": "/ru/p/переходник-camlock-тип-a/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-a/",
+      "destination": "/en/p/camlock-reducer-type-a/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-aa/",
+      "destination": "/p/reductie-camlock-tip-aa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-aa/",
+      "destination": "/ru/p/переходник-camlock-тип-aa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-aa/",
+      "destination": "/en/p/camlock-reducer-type-aa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-b/",
+      "destination": "/p/reductie-camlock-tip-b/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-b/",
+      "destination": "/ru/p/переходник-camlock-тип-b/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-b/",
+      "destination": "/en/p/camlock-reducer-type-b/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-c/",
+      "destination": "/p/reductie-camlock-tip-c/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-c/",
+      "destination": "/ru/p/переходник-camlock-тип-c/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-c/",
+      "destination": "/en/p/camlock-reducer-type-c/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-d/",
+      "destination": "/p/reductie-camlock-tip-d/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-d/",
+      "destination": "/ru/p/переходник-camlock-тип-d/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-d/",
+      "destination": "/en/p/camlock-reducer-type-d/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-da/",
+      "destination": "/p/reductie-camlock-tip-da/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-da/",
+      "destination": "/ru/p/переходник-camlock-тип-da/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-da/",
+      "destination": "/en/p/camlock-reducer-type-da/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-dd/",
+      "destination": "/p/reductie-camlock-tip-dd/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-dd/",
+      "destination": "/ru/p/переходник-camlock-тип-dd/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-dd/",
+      "destination": "/en/p/camlock-reducer-type-dd/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-e/",
+      "destination": "/p/reductie-camlock-tip-e/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-e/",
+      "destination": "/ru/p/переходник-camlock-тип-e/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-e/",
+      "destination": "/en/p/camlock-reducer-type-e/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-reducing-type-f/",
+      "destination": "/p/reductie-camlock-tip-f/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-reducing-type-f/",
+      "destination": "/ru/p/переходник-camlock-тип-f/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/camlock-reducing-type-f/",
+      "destination": "/en/p/camlock-reducer-type-f/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-type-a/",
+      "destination": "/p/camlock-tip-a/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-type-a/",
+      "destination": "/ru/p/camlock-тип-a/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-type-b/",
+      "destination": "/p/camlock-tip-b/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-type-b/",
+      "destination": "/ru/p/camlock-тип-b/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-type-c/",
+      "destination": "/p/camlock-tip-c/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-type-c/",
+      "destination": "/ru/p/camlock-тип-c/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-type-d/",
+      "destination": "/p/camlock-tip-d/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-type-d/",
+      "destination": "/ru/p/camlock-тип-d/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-type-dc/",
+      "destination": "/p/camlock-tip-dc/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-type-dc/",
+      "destination": "/ru/p/camlock-тип-dc/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-type-dp/",
+      "destination": "/p/camlock-tip-dp/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-type-dp/",
+      "destination": "/ru/p/camlock-тип-dp/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-type-e/",
+      "destination": "/p/camlock-tip-e/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-type-e/",
+      "destination": "/ru/p/camlock-тип-e/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/camlock-type-f/",
+      "destination": "/p/camlock-tip-f/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/camlock-type-f/",
+      "destination": "/ru/p/camlock-тип-f/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/caprolon_rod/",
+      "destination": "/p/caprolon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/caprolon_rod/",
+      "destination": "/ru/p/капролон/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/caprolon_rod/",
+      "destination": "/en/p/caprolon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/cement-discharge-hose/",
+      "destination": "/p/furtun-de-aspiratie-din-poliuretan/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/cement-discharge-hose/",
+      "destination": "/ru/p/полиуретановый-аспирационный-рукав/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/cement-discharge-hose/",
+      "destination": "/en/p/polyurethane-aspiration-hose/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/cement-discharge-hose2/",
+      "destination": "/p/furtun-pentru-ciment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/cement-discharge-hose2/",
+      "destination": "/ru/p/рукав-для-подачи-цемента/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/drive-belts/",
+      "destination": "/p/curele-de-transmisie/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/drive-belts/",
+      "destination": "/ru/p/приводные-ремни/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/fan-lawn-rake/",
+      "destination": "/p/greble-evantai-pentru-gazon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/fan-lawn-rake/",
+      "destination": "/ru/p/веерные-грабли-для-газона/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/fan-lawn-rake/",
+      "destination": "/en/p/fan-lawn-rakes/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/fan-rake_01/",
+      "destination": "/p/grebla-evantai/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/fan-rake_01/",
+      "destination": "/ru/p/веерные-грабли/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/fan-rake_01/",
+      "destination": "/en/p/fan-rake/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/fire-hoses/",
+      "destination": "/p/furtun-de-pompieri/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/fire-hoses/",
+      "destination": "/ru/p/пожарный-рукав/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/fire-hoses/",
+      "destination": "/en/p/fire-hose/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/flexible-silicone-hose-l700/",
+      "destination": "/p/furtun-gofrat-din-silicon-l700mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/flexible-silicone-hose-l700/",
+      "destination": "/ru/p/силиконовый-гофрированный-патрубок-l700mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/flexible-silicone-hose-l700/",
+      "destination": "/en/p/silicone-corrugated-hose-l700mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/food-tech-plate/",
+      "destination": "/p/placa-tehnica-alimentara/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/food-tech-plate/",
+      "destination": "/ru/p/пластина-техническая-пищевая/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/food-tech-plate/",
+      "destination": "/en/p/food-grade-technical-plate/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/food_grade_hoses/",
+      "destination": "/p/furtunuri-alimentare-de-presiune-si-aspiratie/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/food_grade_hoses/",
+      "destination": "/ru/p/пищевые-напорно-всасывающие-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/food_grade_hoses/",
+      "destination": "/en/p/food-grade-pressure-and-suction-hoses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/food_grade_hoses_suction/",
+      "destination": "/p/furtunuri-alimentare-de-aspiratie/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/food_grade_hoses_suction/",
+      "destination": "/ru/p/пищевые-всасывающие-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/food_grade_hoses_suction/",
+      "destination": "/en/p/food-grade-suction-hoses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/fregat-sprinkler/",
+      "destination": "/p/aspersor-fregat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/fregat-sprinkler/",
+      "destination": "/ru/p/дождеватель-фрегат/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/fuel-hose-with-braided-cover/",
+      "destination": "/p/furtun-de-combustibil-cu-manta-textila/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/fuel-hose-with-braided-cover/",
+      "destination": "/ru/p/топливный-шланг-в-оплетке/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-blind-cap/",
+      "destination": "/p/capac-orb-guillemin-cu-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-blind-cap/",
+      "destination": "/ru/p/заглушка-guillemin-с-защелкой/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/guillemin-blind-cap/",
+      "destination": "/en/p/guillemin-blind-cap-with-latch/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-female/",
+      "destination": "/p/guillemin-mama-fara-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-female/",
+      "destination": "/ru/p/guillemin-гайка-без-защелки/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/guillemin-female/",
+      "destination": "/en/p/guillemin-female-without-latch/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-female-with-latch/",
+      "destination": "/p/guillemin-mama-cu-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-female-with-latch/",
+      "destination": "/ru/p/guillemin-гайка-с-защелкой/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-gasket/",
+      "destination": "/p/garnitura-guillemin/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-gasket/",
+      "destination": "/ru/p/прокладка-guillemin/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-hose/",
+      "destination": "/p/racord-guillemin-pentru-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-hose/",
+      "destination": "/ru/p/guillemin-наконечник-для-шланга/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/guillemin-hose/",
+      "destination": "/en/p/guillemin-hose-end/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-hose-end-with-latch/",
+      "destination": "/p/racord-guillemin-pentru-furtun-cu-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-hose-end-with-latch/",
+      "destination": "/ru/p/guillemin-наконечник-для-шланга-с-защелкой/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-male/",
+      "destination": "/p/guillemin-tata-cu-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-male/",
+      "destination": "/ru/p/guillemin-ниппель-с-защелкой/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/guillemin-male/",
+      "destination": "/en/p/guillemin-male-with-latch/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-male-without-latch/",
+      "destination": "/p/guillemin-tata-fara-clichet/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-male-without-latch/",
+      "destination": "/ru/p/guillemin-ниппель-без-защелки/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/guillemin-reducer/",
+      "destination": "/p/adaptor-de-reductie-guillemin/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/guillemin-reducer/",
+      "destination": "/ru/p/редуцирующий-переходник-guillemin/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/guillemin-reducer/",
+      "destination": "/en/p/guillemin-reducing-adapter/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/heavy-duty-clamp/",
+      "destination": "/p/colier-de-sarcina-grea/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/heavy-duty-clamp/",
+      "destination": "/ru/p/усиленный-хомут/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/high-pressure-hoses/",
+      "destination": "/p/furtunuri-de-inalta-presiune/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/high-pressure-hoses/",
+      "destination": "/ru/p/рукава-высокого-давления/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/hose-clamps/",
+      "destination": "/p/coliere-pentru-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/hose-clamps/",
+      "destination": "/ru/p/хомуты-для-шланга/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/hose-head/",
+      "destination": "/p/racord-de-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/hose-head/",
+      "destination": "/ru/p/головка-для-шланга/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/hoses-for-sewage-truck/",
+      "destination": "/p/furtunuri-pentru-vidanje/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/hoses-for-sewage-truck/",
+      "destination": "/ru/p/рукава-для-ассенизаторских-машин/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/hoses-for-sewage-truck/",
+      "destination": "/en/p/hoses-for-sewage-trucks/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/kamaz-maz-silicone-hoses/",
+      "destination": "/p/furtunuri-din-silicon-pentru-kamaz-maz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/kamaz-maz-silicone-hoses/",
+      "destination": "/ru/p/силиконовые-патрубки-для-kamaz-maz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/kamaz-maz-silicone-hoses/",
+      "destination": "/en/p/silicone-hoses-for-kamaz-maz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/kenda-klever-m-t-tires/",
+      "destination": "/p/kenda-klever-m-t-anvelope/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/kenda-klever-m-t-tires/",
+      "destination": "/ru/p/kenda-klever-m-t-шины/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/lay-flat-hose/",
+      "destination": "/p/furtun-plat-armat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/lay-flat-hose/",
+      "destination": "/ru/p/плоскосворачиваемый-рукав-армированный/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/lay-flat-hose/",
+      "destination": "/en/p/layflat-hose-reinforced/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/mb/",
+      "destination": "/p/cuplaj-mb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/mb/",
+      "destination": "/ru/p/соединение-mb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/mb/",
+      "destination": "/en/p/mb-coupling/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/mercedes-sprinter-silicone-hoses/",
+      "destination": "/p/furtunuri-din-silicon-pentru-mercedes-sprinter/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/mercedes-sprinter-silicone-hoses/",
+      "destination": "/ru/p/силиконовые-патрубки-для-mercedes-sprinter/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/mercedes-sprinter-silicone-hoses/",
+      "destination": "/en/p/silicone-hoses-for-mercedes-sprinter/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/mk/",
+      "destination": "/p/cuplaj-mk/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/mk/",
+      "destination": "/ru/p/соединение-mk/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/mk/",
+      "destination": "/en/p/mk-coupling/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/nylon-tube-pa6/",
+      "destination": "/p/tub-din-poliamida-pa6/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/nylon-tube-pa6/",
+      "destination": "/ru/p/полиамидная-труба-pa6/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/oil_resistant_hoses/",
+      "destination": "/p/furtunuri-rezistente-la-ulei-si-combustibil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/oil_resistant_hoses/",
+      "destination": "/ru/p/маслобензостойкие-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/oil_resistant_hoses/",
+      "destination": "/en/p/oil-and-fuel-resistant-hoses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/oxygen_hoses/",
+      "destination": "/p/furtunuri-de-oxigen/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/oxygen_hoses/",
+      "destination": "/ru/p/кислородные-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/oxygen_hoses/",
+      "destination": "/en/p/oxygen-hoses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/paronite-pmb/",
+      "destination": "/p/paronit-pmb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/paronite-pmb/",
+      "destination": "/ru/p/паронит-pmb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/pipe-silicone-straight-l1100-d080/",
+      "destination": "/p/furtun-din-silicon-in-forma-de-u-180/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/pipe-silicone-straight-l1100-d080/",
+      "destination": "/ru/p/силиконовый-патрубок-u-образный-180/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/pipe-silicone-straight-l1100-d080/",
+      "destination": "/en/p/silicone-u-shaped-hose-180/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/pipe_with_silicone_transition/",
+      "destination": "/p/furtun-drept-din-silicon-cu-reductie-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/pipe_with_silicone_transition/",
+      "destination": "/ru/p/силиконовый-прямой-патрубок-с-переходом-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/pipe_with_silicone_transition/",
+      "destination": "/en/p/silicone-straight-hose-with-transition-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/plastering-hose/",
+      "destination": "/p/furtunuri-pentru-tencuiala/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/plastering-hose/",
+      "destination": "/ru/p/рукава-для-штукатурки/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/plastering-hose/",
+      "destination": "/en/p/plastering-hoses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/polypropylene-ball-valve/",
+      "destination": "/p/robinet-cu-bila-din-polipropilena/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/polypropylene-ball-valve/",
+      "destination": "/ru/p/шаровой-кран-из-полипропилена/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/polyurethane-sheet/",
+      "destination": "/p/foaie-de-poliuretan/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/polyurethane-sheet/",
+      "destination": "/ru/p/полиуретановый-лист/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/porous-sponge-rubber-epdm/",
+      "destination": "/p/cauciuc-spongios-poros-epdm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/porous-sponge-rubber-epdm/",
+      "destination": "/ru/p/пористая-губчатая-резина-epdm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/pvc-corrugated-hoses-for-water/",
+      "destination": "/p/furtun-pvc-gofrat-pentru-apa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/pvc-corrugated-hoses-for-water/",
+      "destination": "/ru/p/пвх-гофрированный-шланг-для-воды/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/pvc-corrugated-hoses-for-water/",
+      "destination": "/en/p/pvc-corrugated-hose-for-water/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/pvc-curtains/",
+      "destination": "/p/perdele-din-pvc/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/pvc-curtains/",
+      "destination": "/ru/p/пвх-завесы/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/pvc-oil-and-gasoline-resistant-hose/",
+      "destination": "/p/furtun-pvc-rezistent-la-ulei-si-benzina/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/pvc-oil-and-gasoline-resistant-hose/",
+      "destination": "/ru/p/пвх-рукав-маслобензостойкий/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/pvc-pressure-hoses/",
+      "destination": "/p/furtunuri-pvc-de-presiune/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/pvc-pressure-hoses/",
+      "destination": "/ru/p/пвх-напорные-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/reinforced-silicone-damper-hose-with-three-rings-l203/",
+      "destination": "/p/furtun-amortizor-din-silicon-armat-cu-trei-inele-l203/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/reinforced-silicone-damper-hose-with-three-rings-l203/",
+      "destination": "/ru/p/армированный-силиконовый-демпферный-шланг-с-тремя-кольцами/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/reinforced-silicone-hose-damper-with-one-ring-l102/",
+      "destination": "/p/furtun-amortizor-din-silicon-armat-cu-un-inel-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/reinforced-silicone-hose-damper-with-one-ring-l102/",
+      "destination": "/ru/p/армированный-силиконовый-демпферный-шланг-с-одним-кольцом/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/return-valve/",
+      "destination": "/p/supapa-de-retinere/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/return-valve/",
+      "destination": "/ru/p/обратный-клапан/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/riezinovyie-rulony-piatachok/",
+      "destination": "/p/covor-de-cauciuc-in-rulou-pyatachok/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/riezinovyie-rulony-piatachok/",
+      "destination": "/ru/p/резиновое-рулонное-покрытие-pyatachok/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/riezinovyie-rulony-piatachok/",
+      "destination": "/en/p/rubber-roll-flooring-pyatachok/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/rubber-cord-nbr/",
+      "destination": "/p/snur-de-cauciuc-nbr/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/rubber-cord-nbr/",
+      "destination": "/ru/p/резиновый-шнур-nbr/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/shaft-seals/",
+      "destination": "/p/simeringuri/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/shaft-seals/",
+      "destination": "/ru/p/сальники/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/shlangh-lay-flat/",
+      "destination": "/p/furtun-plat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/shlangh-lay-flat/",
+      "destination": "/ru/p/плоскосворачиваемый-рукав/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silicone-hose-double-damper-l102/",
+      "destination": "/p/furtun-amortizor-dublu-din-silicon-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/silicone-hose-double-damper-l102/",
+      "destination": "/ru/p/силиконовый-шланг-с-двойным-демпфером-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silicone-sheet/",
+      "destination": "/p/foaie-de-silicon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/silicone-sheet/",
+      "destination": "/ru/p/силиконовая-пластина/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silicone-tube-d110-l1100/",
+      "destination": "/p/furtun-cot-din-silicon-90-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/silicone-tube-d110-l1100/",
+      "destination": "/ru/p/силиконовый-патрубок-колено-90-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/silicone-tube-d110-l1100/",
+      "destination": "/en/p/silicone-90-elbow-hose-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silicone-tube-d50-l1100/",
+      "destination": "/p/stefsotra-furtun-amortizor-din-silicon-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/silicone-tube-d50-l1100/",
+      "destination": "/ru/p/stefsotra-силиконовый-демпферный-шланг-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/silicone-tube-d50-l1100/",
+      "destination": "/en/p/stefsotra-silicone-damper-hose-l102/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silicone-tube-d60-l1100/",
+      "destination": "/p/furtun-cot-din-silicon-cu-reductie-90-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/silicone-tube-d60-l1100/",
+      "destination": "/ru/p/силиконовый-патрубок-колено-с-переходом-90-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/silicone-tube-d60-l1100/",
+      "destination": "/en/p/silicone-elbow-hose-with-transition-90-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silicone-tube-d85-l1100/",
+      "destination": "/p/furtun-cot-din-silicon-135-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/silicone-tube-d85-l1100/",
+      "destination": "/ru/p/силиконовый-патрубок-колено-135-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/silicone-tube-d85-l1100/",
+      "destination": "/en/p/silicone-135-elbow-hose-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silicone_pipe_elbow_45/",
+      "destination": "/p/furtun-cot-din-silicon-45/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/silicone_pipe_elbow_45/",
+      "destination": "/ru/p/силиконовый-патрубок-колено-45/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/silicone_pipe_elbow_45/",
+      "destination": "/en/p/silicone-45-elbow-hose/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silicone_pipe_straight_l1000/",
+      "destination": "/p/furtun-drept-din-silicon-l1000mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/silicone_pipe_straight_l1000/",
+      "destination": "/ru/p/силиконовый-прямой-патрубок-l1000mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/silicone_pipe_straight_l1000/",
+      "destination": "/en/p/silicone-straight-hose-l1000mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/socket-coupling-head/",
+      "destination": "/p/cap-de-cuplaj/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/socket-coupling-head/",
+      "destination": "/ru/p/головка-соединительная/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/socket-coupling-head/",
+      "destination": "/en/p/coupling-head/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/sprayer-hose/",
+      "destination": "/p/furtun-pentru-stropitoare/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/sprayer-hose/",
+      "destination": "/ru/p/шланг-для-опрыскивателя/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-cap/",
+      "destination": "/p/capac-storz-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-cap/",
+      "destination": "/ru/p/заглушка-storz-алюминий/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/storz-cap/",
+      "destination": "/en/p/storz-cap-aluminum/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-coupling-female/",
+      "destination": "/p/cuplaj-storz-mama-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-coupling-female/",
+      "destination": "/ru/p/соединение-storz-гайка-алюминий/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/storz-coupling-female/",
+      "destination": "/en/p/storz-coupling-female-aluminum/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-coupling-with-internal-thread/",
+      "destination": "/p/cuplaj-storz-cu-filet-interior/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-coupling-with-internal-thread/",
+      "destination": "/ru/p/соединение-storz-с-внутренней-резьбой/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-coupling-with-tail-for-hose/",
+      "destination": "/p/cuplaj-storz-cu-racord-pentru-furtun/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-coupling-with-tail-for-hose/",
+      "destination": "/ru/p/соединение-storz-с-хвостовиком-под-шланг/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-gasket/",
+      "destination": "/p/garnitura-storz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-gasket/",
+      "destination": "/ru/p/прокладка-storz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-hose-end/",
+      "destination": "/p/racord-storz-pentru-furtun-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-hose-end/",
+      "destination": "/ru/p/storz-наконечник-для-шланга-алюминий/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/storz-hose-end/",
+      "destination": "/en/p/storz-hose-end-aluminum/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-latch/",
+      "destination": "/p/clichet-storz-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-latch/",
+      "destination": "/ru/p/защелка-storz-алюминий/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/storz-latch/",
+      "destination": "/en/p/storz-latch-aluminum/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-reducer/",
+      "destination": "/p/reductie-storz-aluminiu/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-reducer/",
+      "destination": "/ru/p/переходник-storz-алюминий/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/storz-reducer/",
+      "destination": "/en/p/storz-reducer-aluminum/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/storz-reducer-2/",
+      "destination": "/p/reductie-storz-alt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/storz-reducer-2/",
+      "destination": "/ru/p/переходник-storz-alt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/storz-reducer-2/",
+      "destination": "/en/p/storz-reducer-alt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/straight-silicone-spigot-d38-l1100/",
+      "destination": "/p/furtun-cot-din-silicon-cu-reductie-45-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/straight-silicone-spigot-d38-l1100/",
+      "destination": "/ru/p/силиконовый-патрубок-колено-с-переходом-45-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/straight-silicone-spigot-d38-l1100/",
+      "destination": "/en/p/silicone-elbow-hose-with-transition-45-l102-102mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/technical-plate/",
+      "destination": "/p/foaie-de-cauciuc-tehnoplaca/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/technical-plate/",
+      "destination": "/ru/p/резина-листовая-технопластина/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/technical-plate/",
+      "destination": "/en/p/rubber-sheet-techno-plate/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/toyota-hilux-bed-liner/",
+      "destination": "/p/toyota-hilux-protectie-de-bena/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/toyota-hilux-bed-liner/",
+      "destination": "/ru/p/toyota-hilux-вкладыш-в-кузов/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/truck-cargo-roof-canopy/",
+      "destination": "/p/prelata-pentru-camion/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/truck-cargo-roof-canopy/",
+      "destination": "/ru/p/тент-на-кузов-грузовика/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-blind-adapter-bv/",
+      "destination": "/p/bv-adaptor-orb-pentru-cuplaj-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-blind-adapter-bv/",
+      "destination": "/ru/p/bv-ниппель-заглушка-для-соединения-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-blind-adapter-bv/",
+      "destination": "/en/p/bv-blind-adapter-for-tw-coupling/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-blind-cap-bk/",
+      "destination": "/p/bk-capac-orb-pentru-cuplaj-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-blind-cap-bk/",
+      "destination": "/ru/p/bk-заглушка-для-соединения-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-blind-cap-bk/",
+      "destination": "/en/p/bk-blind-cap-for-tw-coupling/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-gasket/",
+      "destination": "/p/garnitura-pentru-cuplaj-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-gasket/",
+      "destination": "/ru/p/прокладка-для-соединения-tw/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-mb-brass/",
+      "destination": "/p/cuplaj-mb-alama/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-mb-brass/",
+      "destination": "/ru/p/соединение-mb-латунь/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-coupling-mb-brass/",
+      "destination": "/en/p/mb-coupling-brass/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-mb-stainless/",
+      "destination": "/p/cuplaj-mb-otel-inoxidabil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-mb-stainless/",
+      "destination": "/ru/p/соединение-mb-нержавеющая-сталь/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-coupling-mb-stainless/",
+      "destination": "/en/p/mb-coupling-stainless-steel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-mk-brass/",
+      "destination": "/p/cuplaj-mk-alama/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-mk-brass/",
+      "destination": "/ru/p/соединение-mk-латунь/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-coupling-mk-brass/",
+      "destination": "/en/p/mk-coupling-brass/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-mk-stainless/",
+      "destination": "/p/cuplaj-mk-otel-inoxidabil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-mk-stainless/",
+      "destination": "/ru/p/соединение-mk-нержавеющая-сталь/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-coupling-mk-stainless/",
+      "destination": "/en/p/mk-coupling-stainless-steel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-vb-brass/",
+      "destination": "/p/cuplaj-vb-alama/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-vb-brass/",
+      "destination": "/ru/p/соединение-vb-латунь/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-coupling-vb-brass/",
+      "destination": "/en/p/vb-coupling-brass/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-vb-stainless/",
+      "destination": "/p/cuplaj-vb-otel-inoxidabil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-vb-stainless/",
+      "destination": "/ru/p/соединение-vb-нержавеющая-сталь/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-coupling-vb-stainless/",
+      "destination": "/en/p/vb-coupling-stainless-steel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-vk-brass/",
+      "destination": "/p/cuplaj-vk-alama/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-vk-brass/",
+      "destination": "/ru/p/соединение-vk-латунь/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-coupling-vk-brass/",
+      "destination": "/en/p/vk-coupling-brass/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tw-coupling-vk-stainless/",
+      "destination": "/p/cuplaj-vk-otel-inoxidabil/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tw-coupling-vk-stainless/",
+      "destination": "/ru/p/соединение-vk-нержавеющая-сталь/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tw-coupling-vk-stainless/",
+      "destination": "/en/p/vk-coupling-stainless-steel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/universal-gasket/",
+      "destination": "/p/garnitura-universala-pentru-cuplaj/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/universal-gasket/",
+      "destination": "/ru/p/универсальная-прокладка-для-соединения/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/universal-gasket/",
+      "destination": "/en/p/universal-coupling-gasket/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/vb/",
+      "destination": "/p/cuplaj-vb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/vb/",
+      "destination": "/ru/p/соединение-vb/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/vb/",
+      "destination": "/en/p/vb-coupling/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/ventilation-hoses/",
+      "destination": "/p/furtunuri-de-ventilatie/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/ventilation-hoses/",
+      "destination": "/ru/p/вентиляционные-рукава/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/vk/",
+      "destination": "/p/cuplaj-vk/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/vk/",
+      "destination": "/ru/p/соединение-vk/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/vk/",
+      "destination": "/en/p/vk-coupling/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/water-hoses/",
+      "destination": "/p/furtunuri-de-apa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/water-hoses/",
+      "destination": "/ru/p/водяные-шланги/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/wire-fan-rake/",
+      "destination": "/p/greble-evantai-din-sarma/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/wire-fan-rake/",
+      "destination": "/ru/p/веерные-грабли-проволочные/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/wire-fan-rake/",
+      "destination": "/en/p/wire-fan-rakes/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/капралон-графитонаполненный/",
+      "destination": "/p/caprolon-grafitat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/капралон-графитонаполненный/",
+      "destination": "/en/p/graphite-filled-caprolon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
+      "destination": "/p/polipropilena-in-foi-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
+      "destination": "/ru/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
+      "destination": "/en/p/polypropylene-sheet-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
+      "destination": "/p/poliuretan-in-bare-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
+      "destination": "/ru/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
+      "destination": "/en/p/polyurethane-rod-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/",
+      "destination": "/p/snur-din-silicon-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/",
+      "destination": "/en/p/silicone-cord-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
+      "destination": "/p/textolit-in-foi-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
+      "destination": "/ru/p/textolith-текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
+      "destination": "/en/p/textolite-sheets-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
+      "statusCode": 301
+    }
+  ],
+  "headers": [
+    {
+      "source": "/templates/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/scripts/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/i18n/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/data/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ]
+}
