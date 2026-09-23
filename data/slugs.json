@@ -1,0 +1,1218 @@
+{
+ "c/agri": {
+  "now": {
+   "en": "agriculture-garden",
+   "ro": "agro-si-gradina",
+   "ru": "agro-i-sad"
+  },
+  "was": {}
+ },
+ "c/bauer": {
+  "now": {
+   "en": "bauer-couplings",
+   "ro": "cuplaje-bauer",
+   "ru": "soedineniya-bauer"
+  },
+  "was": {}
+ },
+ "c/camlock": {
+  "now": {
+   "en": "camlock-couplings",
+   "ro": "cuplaje-camlock",
+   "ru": "soedineniya-camlock"
+  },
+  "was": {}
+ },
+ "c/clamp": {
+  "now": {
+   "en": "clamps",
+   "ro": "coliere",
+   "ru": "khomuty"
+  },
+  "was": {}
+ },
+ "c/gasket": {
+  "now": {
+   "en": "gaskets",
+   "ro": "garnituri",
+   "ru": "prokladki"
+  },
+  "was": {}
+ },
+ "c/guillemin": {
+  "now": {
+   "en": "guillemin-couplings",
+   "ro": "cuplaje-guillemin",
+   "ru": "soedineniya-guillemin"
+  },
+  "was": {}
+ },
+ "c/hose-fitting": {
+  "now": {
+   "en": "hose-heads-adapters",
+   "ro": "racorduri-si-adaptoare",
+   "ru": "golovki-i-adaptery"
+  },
+  "was": {}
+ },
+ "c/industrial-hose": {
+  "now": {
+   "en": "industrial-hose",
+   "ro": "furtunuri-industriale",
+   "ru": "promyshlennye-rukava"
+  },
+  "was": {}
+ },
+ "c/plastic-stock": {
+  "now": {
+   "en": "rods-tubes",
+   "ro": "bare-si-tuburi-tehnice",
+   "ru": "sterzhni-i-truby"
+  },
+  "was": {}
+ },
+ "c/pvc-hose": {
+  "now": {
+   "en": "pvc-hose",
+   "ro": "furtun-pvc",
+   "ru": "pvkh-shlangi"
+  },
+  "was": {}
+ },
+ "c/rubber-profile": {
+  "now": {
+   "en": "rubber-cord-profile",
+   "ro": "snur-si-profil-de-cauciuc",
+   "ru": "shnur-i-profil"
+  },
+  "was": {}
+ },
+ "c/sheet-material": {
+  "now": {
+   "en": "sheet-materials",
+   "ro": "placi-si-foi",
+   "ru": "listovye-materialy"
+  },
+  "was": {}
+ },
+ "c/silicone-hose": {
+  "now": {
+   "en": "silicone-hose",
+   "ro": "furtun-din-silicon",
+   "ru": "silikonovye-shlangi"
+  },
+  "was": {}
+ },
+ "c/storz": {
+  "now": {
+   "en": "storz-couplings",
+   "ro": "cuplaje-storz",
+   "ru": "soedineniya-storz"
+  },
+  "was": {}
+ },
+ "c/tw-coupling": {
+  "now": {
+   "en": "tw-couplings",
+   "ro": "cuplaje-tw",
+   "ru": "soedineniya-tw"
+  },
+  "was": {}
+ },
+ "c/valve": {
+  "now": {
+   "en": "valves",
+   "ro": "robinete-si-supape",
+   "ru": "krany-i-klapany"
+  },
+  "was": {}
+ },
+ "c/vehicle-part": {
+  "now": {
+   "en": "vehicle-parts",
+   "ro": "piese-auto",
+   "ru": "avtozapchasti"
+  },
+  "was": {}
+ },
+ "g/couplings": {
+  "now": {
+   "en": "couplings-fittings",
+   "ro": "cuplaje-si-fitinguri",
+   "ru": "soedineniya-i-fitingi"
+  },
+  "was": {}
+ },
+ "g/hoses": {
+  "now": {
+   "en": "hoses",
+   "ro": "furtunuri",
+   "ru": "shlangi-i-rukava"
+  },
+  "was": {}
+ },
+ "g/materials": {
+  "now": {
+   "en": "technical-materials",
+   "ro": "materiale-tehnice",
+   "ru": "tekhnicheskie-materialy"
+  },
+  "was": {}
+ },
+ "g/sealing": {
+  "now": {
+   "en": "clamps-sealing",
+   "ro": "coliere-si-etansari",
+   "ru": "khomuty-i-uplotneniya"
+  },
+  "was": {}
+ },
+ "g/vehicle": {
+  "now": {
+   "en": "vehicle-agriculture",
+   "ro": "auto-si-agro",
+   "ru": "avto-i-agro"
+  },
+  "was": {}
+ },
+ "p/adapter-hose-head": {
+  "now": {
+   "en": "transition-hose-head",
+   "ro": "racord-de-trecere-pentru-furtun",
+   "ru": "perekhodnaya-golovka-dlya-shlanga"
+  },
+  "was": {}
+ },
+ "p/adapters_plastic_abs": {
+  "now": {
+   "en": "abs-plastic-hose-adapters",
+   "ro": "adaptoare-de-furtun-din-plastic-abs",
+   "ru": "adaptery-dlya-shlanga-iz-abs-plastika"
+  },
+  "was": {}
+ },
+ "p/air-hose": {
+  "now": {
+   "en": "air-hoses",
+   "ro": "furtunuri-de-aer",
+   "ru": "vozdushnye-rukava"
+  },
+  "was": {}
+ },
+ "p/aluminum-flex-duct": {
+  "now": {
+   "en": "aluminum-ducts",
+   "ro": "tuburi-din-aluminiu",
+   "ru": "alyuminievye-vozdukhovody"
+  },
+  "was": {}
+ },
+ "p/aluminum-nuts-for-water-pumps": {
+  "now": {
+   "en": "aluminum-nuts-for-water-pumps",
+   "ro": "piulite-din-aluminiu-pentru-pompe-de-apa",
+   "ru": "alyuminievye-gayki-dlya-vodyanykh-nasosov"
+  },
+  "was": {}
+ },
+ "p/auto-compressor-628-4x4-2-cylinder": {
+  "now": {
+   "en": "auto-compressor-628-4x4-2-cylinder",
+   "ro": "compresor-auto-628-4x4-2-cylinder",
+   "ru": "avtomobilnyy-kompressor-628-4x4-2-cylinder"
+  },
+  "was": {}
+ },
+ "p/ball-valve-for-water": {
+  "now": {
+   "en": "ball-valve-for-water",
+   "ro": "robinet-cu-bila-pentru-apa",
+   "ru": "sharovoy-kran-dlya-vody"
+  },
+  "was": {}
+ },
+ "p/bauer-coupling": {
+  "now": {
+   "en": "bauer-coupling-aluminum",
+   "ro": "cuplaj-bauer-aluminiu",
+   "ru": "soedinenie-bauer-alyuminiy"
+  },
+  "was": {}
+ },
+ "p/bauer-coupling-2": {
+  "now": {
+   "en": "bauer-coupling-alt",
+   "ro": "cuplaj-bauer-alt",
+   "ru": "soedinenie-bauer-alt"
+  },
+  "was": {}
+ },
+ "p/bauer-gasket": {
+  "now": {
+   "en": "bauer-gasket",
+   "ro": "garnitura-bauer",
+   "ru": "prokladka-bauer"
+  },
+  "was": {}
+ },
+ "p/bearway-tires": {
+  "now": {
+   "en": "bearway-tires",
+   "ro": "bearway-anvelope",
+   "ru": "bearway-shiny"
+  },
+  "was": {}
+ },
+ "p/broom-round-typesetting-without-handle": {
+  "now": {
+   "en": "round-broom",
+   "ro": "matura-rotunda",
+   "ru": "metla-kruglaya"
+  },
+  "was": {}
+ },
+ "p/camlock-gasket": {
+  "now": {
+   "en": "camlock-gasket",
+   "ro": "garnitura-camlock",
+   "ru": "prokladka-camlock"
+  },
+  "was": {}
+ },
+ "p/camlock-handle": {
+  "now": {
+   "en": "camlock-handle",
+   "ro": "maner-camlock",
+   "ru": "ruchka-camlock"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-a": {
+  "now": {
+   "en": "camlock-reducer-type-a",
+   "ro": "reductie-camlock-tip-a",
+   "ru": "perekhodnik-camlock-tip-a"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-aa": {
+  "now": {
+   "en": "camlock-reducer-type-aa",
+   "ro": "reductie-camlock-tip-aa",
+   "ru": "perekhodnik-camlock-tip-aa"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-b": {
+  "now": {
+   "en": "camlock-reducer-type-b",
+   "ro": "reductie-camlock-tip-b",
+   "ru": "perekhodnik-camlock-tip-b"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-c": {
+  "now": {
+   "en": "camlock-reducer-type-c",
+   "ro": "reductie-camlock-tip-c",
+   "ru": "perekhodnik-camlock-tip-c"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-d": {
+  "now": {
+   "en": "camlock-reducer-type-d",
+   "ro": "reductie-camlock-tip-d",
+   "ru": "perekhodnik-camlock-tip-d"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-da": {
+  "now": {
+   "en": "camlock-reducer-type-da",
+   "ro": "reductie-camlock-tip-da",
+   "ru": "perekhodnik-camlock-tip-da"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-dd": {
+  "now": {
+   "en": "camlock-reducer-type-dd",
+   "ro": "reductie-camlock-tip-dd",
+   "ru": "perekhodnik-camlock-tip-dd"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-e": {
+  "now": {
+   "en": "camlock-reducer-type-e",
+   "ro": "reductie-camlock-tip-e",
+   "ru": "perekhodnik-camlock-tip-e"
+  },
+  "was": {}
+ },
+ "p/camlock-reducing-type-f": {
+  "now": {
+   "en": "camlock-reducer-type-f",
+   "ro": "reductie-camlock-tip-f",
+   "ru": "perekhodnik-camlock-tip-f"
+  },
+  "was": {}
+ },
+ "p/camlock-type-a": {
+  "now": {
+   "en": "camlock-type-a",
+   "ro": "camlock-tip-a",
+   "ru": "camlock-tip-a"
+  },
+  "was": {}
+ },
+ "p/camlock-type-b": {
+  "now": {
+   "en": "camlock-type-b",
+   "ro": "camlock-tip-b",
+   "ru": "camlock-tip-b"
+  },
+  "was": {}
+ },
+ "p/camlock-type-c": {
+  "now": {
+   "en": "camlock-type-c",
+   "ro": "camlock-tip-c",
+   "ru": "camlock-tip-c"
+  },
+  "was": {}
+ },
+ "p/camlock-type-d": {
+  "now": {
+   "en": "camlock-type-d",
+   "ro": "camlock-tip-d",
+   "ru": "camlock-tip-d"
+  },
+  "was": {}
+ },
+ "p/camlock-type-dc": {
+  "now": {
+   "en": "camlock-type-dc",
+   "ro": "camlock-tip-dc",
+   "ru": "camlock-tip-dc"
+  },
+  "was": {}
+ },
+ "p/camlock-type-dp": {
+  "now": {
+   "en": "camlock-type-dp",
+   "ro": "camlock-tip-dp",
+   "ru": "camlock-tip-dp"
+  },
+  "was": {}
+ },
+ "p/camlock-type-e": {
+  "now": {
+   "en": "camlock-type-e",
+   "ro": "camlock-tip-e",
+   "ru": "camlock-tip-e"
+  },
+  "was": {}
+ },
+ "p/camlock-type-f": {
+  "now": {
+   "en": "camlock-type-f",
+   "ro": "camlock-tip-f",
+   "ru": "camlock-tip-f"
+  },
+  "was": {}
+ },
+ "p/caprolon_rod": {
+  "now": {
+   "en": "caprolon",
+   "ro": "caprolon",
+   "ru": "kaprolon"
+  },
+  "was": {}
+ },
+ "p/cement-discharge-hose": {
+  "now": {
+   "en": "polyurethane-aspiration-hose",
+   "ro": "furtun-de-aspiratie-din-poliuretan",
+   "ru": "poliuretanovyy-aspiratsionnyy-rukav"
+  },
+  "was": {}
+ },
+ "p/cement-discharge-hose2": {
+  "now": {
+   "en": "cement-discharge-hose2",
+   "ro": "furtun-pentru-ciment",
+   "ru": "rukav-dlya-podachi-tsementa"
+  },
+  "was": {}
+ },
+ "p/drive-belts": {
+  "now": {
+   "en": "drive-belts",
+   "ro": "curele-de-transmisie",
+   "ru": "privodnye-remni"
+  },
+  "was": {}
+ },
+ "p/fan-lawn-rake": {
+  "now": {
+   "en": "fan-lawn-rakes",
+   "ro": "greble-evantai-pentru-gazon",
+   "ru": "veernye-grabli-dlya-gazona"
+  },
+  "was": {}
+ },
+ "p/fan-rake_01": {
+  "now": {
+   "en": "fan-rake",
+   "ro": "grebla-evantai",
+   "ru": "veernye-grabli"
+  },
+  "was": {}
+ },
+ "p/fire-hoses": {
+  "now": {
+   "en": "fire-hose",
+   "ro": "furtun-de-pompieri",
+   "ru": "pozharnyy-rukav"
+  },
+  "was": {}
+ },
+ "p/flexible-silicone-hose-l700": {
+  "now": {
+   "en": "silicone-corrugated-hose-l700mm",
+   "ro": "furtun-gofrat-din-silicon-l700mm",
+   "ru": "silikonovyy-gofrirovannyy-patrubok-l700mm"
+  },
+  "was": {}
+ },
+ "p/food-tech-plate": {
+  "now": {
+   "en": "food-grade-technical-plate",
+   "ro": "placa-tehnica-alimentara",
+   "ru": "plastina-tekhnicheskaya-pishchevaya"
+  },
+  "was": {}
+ },
+ "p/food_grade_hoses": {
+  "now": {
+   "en": "food-grade-pressure-and-suction-hoses",
+   "ro": "furtunuri-alimentare-de-presiune-si-aspiratie",
+   "ru": "pishchevye-naporno-vsasyvayushchie-rukava"
+  },
+  "was": {}
+ },
+ "p/food_grade_hoses_suction": {
+  "now": {
+   "en": "food-grade-suction-hoses",
+   "ro": "furtunuri-alimentare-de-aspiratie",
+   "ru": "pishchevye-vsasyvayushchie-rukava"
+  },
+  "was": {}
+ },
+ "p/fregat-sprinkler": {
+  "now": {
+   "en": "fregat-sprinkler",
+   "ro": "aspersor-fregat",
+   "ru": "dozhdevatel-fregat"
+  },
+  "was": {}
+ },
+ "p/fuel-hose-with-braided-cover": {
+  "now": {
+   "en": "fuel-hose-with-braided-cover",
+   "ro": "furtun-de-combustibil-cu-manta-textila",
+   "ru": "toplivnyy-shlang-v-oplyotke"
+  },
+  "was": {}
+ },
+ "p/guillemin-blind-cap": {
+  "now": {
+   "en": "guillemin-blind-cap-with-latch",
+   "ro": "capac-orb-guillemin-cu-clichet",
+   "ru": "zaglushka-guillemin-s-zashchyolkoy"
+  },
+  "was": {}
+ },
+ "p/guillemin-female": {
+  "now": {
+   "en": "guillemin-female-without-latch",
+   "ro": "guillemin-mama-fara-clichet",
+   "ru": "guillemin-gayka-bez-zashchyolki"
+  },
+  "was": {}
+ },
+ "p/guillemin-female-with-latch": {
+  "now": {
+   "en": "guillemin-female-with-latch",
+   "ro": "guillemin-mama-cu-clichet",
+   "ru": "guillemin-gayka-s-zashchyolkoy"
+  },
+  "was": {}
+ },
+ "p/guillemin-gasket": {
+  "now": {
+   "en": "guillemin-gasket",
+   "ro": "garnitura-guillemin",
+   "ru": "prokladka-guillemin"
+  },
+  "was": {}
+ },
+ "p/guillemin-hose": {
+  "now": {
+   "en": "guillemin-hose-end",
+   "ro": "racord-guillemin-pentru-furtun",
+   "ru": "guillemin-nakonechnik-dlya-shlanga"
+  },
+  "was": {}
+ },
+ "p/guillemin-hose-end-with-latch": {
+  "now": {
+   "en": "guillemin-hose-end-with-latch",
+   "ro": "racord-guillemin-pentru-furtun-cu-clichet",
+   "ru": "guillemin-nakonechnik-dlya-shlanga-s-zashchyolkoy"
+  },
+  "was": {}
+ },
+ "p/guillemin-male": {
+  "now": {
+   "en": "guillemin-male-with-latch",
+   "ro": "guillemin-tata-cu-clichet",
+   "ru": "guillemin-nippel-s-zashchyolkoy"
+  },
+  "was": {}
+ },
+ "p/guillemin-male-without-latch": {
+  "now": {
+   "en": "guillemin-male-without-latch",
+   "ro": "guillemin-tata-fara-clichet",
+   "ru": "guillemin-nippel-bez-zashchyolki"
+  },
+  "was": {}
+ },
+ "p/guillemin-reducer": {
+  "now": {
+   "en": "guillemin-reducing-adapter",
+   "ro": "adaptor-de-reductie-guillemin",
+   "ru": "redutsiruyushchiy-perekhodnik-guillemin"
+  },
+  "was": {}
+ },
+ "p/heavy-duty-clamp": {
+  "now": {
+   "en": "heavy-duty-clamp",
+   "ro": "colier-de-sarcina-grea",
+   "ru": "usilennyy-khomut"
+  },
+  "was": {}
+ },
+ "p/high-pressure-hoses": {
+  "now": {
+   "en": "high-pressure-hoses",
+   "ro": "furtunuri-de-inalta-presiune",
+   "ru": "rukava-vysokogo-davleniya"
+  },
+  "was": {}
+ },
+ "p/hose-clamps": {
+  "now": {
+   "en": "hose-clamps",
+   "ro": "coliere-pentru-furtun",
+   "ru": "khomuty-dlya-shlanga"
+  },
+  "was": {}
+ },
+ "p/hose-head": {
+  "now": {
+   "en": "hose-head",
+   "ro": "racord-de-furtun",
+   "ru": "golovka-dlya-shlanga"
+  },
+  "was": {}
+ },
+ "p/hoses-for-sewage-truck": {
+  "now": {
+   "en": "hoses-for-sewage-trucks",
+   "ro": "furtunuri-pentru-vidanje",
+   "ru": "rukava-dlya-assenizatorskikh-mashin"
+  },
+  "was": {}
+ },
+ "p/kamaz-maz-silicone-hoses": {
+  "now": {
+   "en": "silicone-hoses-for-kamaz-maz",
+   "ro": "furtunuri-din-silicon-pentru-kamaz-maz",
+   "ru": "silikonovye-patrubki-dlya-kamaz-maz"
+  },
+  "was": {}
+ },
+ "p/kapralon-grafitonapolnennyy": {
+  "now": {
+   "en": "graphite-filled-caprolon",
+   "ro": "caprolon-grafitat",
+   "ru": "kapralon-grafitonapolnennyy"
+  },
+  "was": {}
+ },
+ "p/kenda-klever-m-t-tires": {
+  "now": {
+   "en": "kenda-klever-m-t-tires",
+   "ro": "kenda-klever-m-t-anvelope",
+   "ru": "kenda-klever-m-t-shiny"
+  },
+  "was": {}
+ },
+ "p/lay-flat-hose": {
+  "now": {
+   "en": "layflat-hose-reinforced",
+   "ro": "furtun-plat-armat",
+   "ru": "ploskosvorachivaemyy-rukav-armirovannyy"
+  },
+  "was": {}
+ },
+ "p/mb": {
+  "now": {
+   "en": "mb-coupling",
+   "ro": "cuplaj-mb",
+   "ru": "soedinenie-mb"
+  },
+  "was": {}
+ },
+ "p/mercedes-sprinter-silicone-hoses": {
+  "now": {
+   "en": "silicone-hoses-for-mercedes-sprinter",
+   "ro": "furtunuri-din-silicon-pentru-mercedes-sprinter",
+   "ru": "silikonovye-patrubki-dlya-mercedes-sprinter"
+  },
+  "was": {}
+ },
+ "p/mk": {
+  "now": {
+   "en": "mk-coupling",
+   "ro": "cuplaj-mk",
+   "ru": "soedinenie-mk"
+  },
+  "was": {}
+ },
+ "p/nylon-tube-pa6": {
+  "now": {
+   "en": "nylon-tube-pa6",
+   "ro": "tub-din-poliamida-pa6",
+   "ru": "poliamidnaya-truba-pa6"
+  },
+  "was": {}
+ },
+ "p/oil_resistant_hoses": {
+  "now": {
+   "en": "oil-and-fuel-resistant-hoses",
+   "ro": "furtunuri-rezistente-la-ulei-si-combustibil",
+   "ru": "maslobenzostoykie-rukava"
+  },
+  "was": {}
+ },
+ "p/oxygen_hoses": {
+  "now": {
+   "en": "oxygen-hoses",
+   "ro": "furtunuri-de-oxigen",
+   "ru": "kislorodnye-rukava"
+  },
+  "was": {}
+ },
+ "p/paronite-pmb": {
+  "now": {
+   "en": "paronite-pmb",
+   "ro": "paronit-pmb",
+   "ru": "paronit-pmb"
+  },
+  "was": {}
+ },
+ "p/pipe-silicone-straight-l1100-d080": {
+  "now": {
+   "en": "silicone-u-shaped-hose-180",
+   "ro": "furtun-din-silicon-in-forma-de-u-180",
+   "ru": "silikonovyy-patrubok-u-obraznyy-180"
+  },
+  "was": {}
+ },
+ "p/pipe_with_silicone_transition": {
+  "now": {
+   "en": "silicone-straight-hose-with-transition-l102",
+   "ro": "furtun-drept-din-silicon-cu-reductie-l102",
+   "ru": "silikonovyy-pryamoy-patrubok-s-perekhodom-l102"
+  },
+  "was": {}
+ },
+ "p/plastering-hose": {
+  "now": {
+   "en": "plastering-hoses",
+   "ro": "furtunuri-pentru-tencuiala",
+   "ru": "rukava-dlya-shtukaturki"
+  },
+  "was": {}
+ },
+ "p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75": {
+  "now": {
+   "en": "polypropylene-sheet-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm",
+   "ro": "polipropilena-in-foi-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm",
+   "ru": "polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm"
+  },
+  "was": {}
+ },
+ "p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm": {
+  "now": {
+   "en": "polyurethane-rod-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm",
+   "ro": "poliuretan-in-bare-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80",
+   "ru": "poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm"
+  },
+  "was": {}
+ },
+ "p/polypropylene-ball-valve": {
+  "now": {
+   "en": "polypropylene-ball-valve",
+   "ro": "robinet-cu-bila-din-polipropilena",
+   "ru": "sharovoy-kran-iz-polipropilena"
+  },
+  "was": {}
+ },
+ "p/polyurethane-sheet": {
+  "now": {
+   "en": "polyurethane-sheet",
+   "ro": "foaie-de-poliuretan",
+   "ru": "poliuretanovyy-list"
+  },
+  "was": {}
+ },
+ "p/porous-sponge-rubber-epdm": {
+  "now": {
+   "en": "porous-sponge-rubber-epdm",
+   "ro": "cauciuc-spongios-poros-epdm",
+   "ru": "poristaya-gubchataya-rezina-epdm"
+  },
+  "was": {}
+ },
+ "p/pvc-corrugated-hoses-for-water": {
+  "now": {
+   "en": "pvc-corrugated-hose-for-water",
+   "ro": "furtun-pvc-gofrat-pentru-apa",
+   "ru": "pvkh-gofrirovannyy-shlang-dlya-vody"
+  },
+  "was": {}
+ },
+ "p/pvc-curtains": {
+  "now": {
+   "en": "pvc-curtains",
+   "ro": "perdele-din-pvc",
+   "ru": "pvkh-zavesy"
+  },
+  "was": {}
+ },
+ "p/pvc-oil-and-gasoline-resistant-hose": {
+  "now": {
+   "en": "pvc-oil-and-gasoline-resistant-hose",
+   "ro": "furtun-pvc-rezistent-la-ulei-si-benzina",
+   "ru": "pvkh-rukav-maslobenzostoykiy"
+  },
+  "was": {}
+ },
+ "p/pvc-pressure-hoses": {
+  "now": {
+   "en": "pvc-pressure-hoses",
+   "ro": "furtunuri-pvc-de-presiune",
+   "ru": "pvkh-napornye-rukava"
+  },
+  "was": {}
+ },
+ "p/reinforced-silicone-damper-hose-with-three-rings-l203": {
+  "now": {
+   "en": "reinforced-silicone-damper-hose-with-three-rings-l203",
+   "ro": "furtun-amortizor-din-silicon-armat-cu-trei-inele-l203",
+   "ru": "armirovannyy-silikonovyy-dempfernyy-shlang-s-tremya"
+  },
+  "was": {}
+ },
+ "p/reinforced-silicone-hose-damper-with-one-ring-l102": {
+  "now": {
+   "en": "reinforced-silicone-hose-damper-with-one-ring-l102",
+   "ro": "furtun-amortizor-din-silicon-armat-cu-un-inel-l102",
+   "ru": "armirovannyy-silikonovyy-dempfernyy-shlang-s-odnim-koltsom"
+  },
+  "was": {}
+ },
+ "p/return-valve": {
+  "now": {
+   "en": "return-valve",
+   "ro": "supapa-de-retinere",
+   "ru": "obratnyy-klapan"
+  },
+  "was": {}
+ },
+ "p/riezinovyie-rulony-piatachok": {
+  "now": {
+   "en": "rubber-roll-flooring-pyatachok",
+   "ro": "covor-de-cauciuc-in-rulou-pyatachok",
+   "ru": "rezinovoe-rulonnoe-pokrytie-pyatachok"
+  },
+  "was": {}
+ },
+ "p/rubber-cord-nbr": {
+  "now": {
+   "en": "rubber-cord-nbr",
+   "ro": "snur-de-cauciuc-nbr",
+   "ru": "rezinovyy-shnur-nbr"
+  },
+  "was": {}
+ },
+ "p/shaft-seals": {
+  "now": {
+   "en": "shaft-seals",
+   "ro": "simeringuri",
+   "ru": "salniki"
+  },
+  "was": {}
+ },
+ "p/shlangh-lay-flat": {
+  "now": {
+   "en": "shlangh-lay-flat",
+   "ro": "furtun-plat",
+   "ru": "ploskosvorachivaemyy-rukav"
+  },
+  "was": {}
+ },
+ "p/silicone-hose-double-damper-l102": {
+  "now": {
+   "en": "silicone-hose-double-damper-l102",
+   "ro": "furtun-amortizor-dublu-din-silicon-l102",
+   "ru": "silikonovyy-shlang-s-dvoynym-dempferom-l102"
+  },
+  "was": {}
+ },
+ "p/silicone-sheet": {
+  "now": {
+   "en": "silicone-sheet",
+   "ro": "foaie-de-silicon",
+   "ru": "silikonovaya-plastina"
+  },
+  "was": {}
+ },
+ "p/silicone-tube-d110-l1100": {
+  "now": {
+   "en": "silicone-90-elbow-hose-l102-102mm",
+   "ro": "furtun-cot-din-silicon-90-l102-102mm",
+   "ru": "silikonovyy-patrubok-koleno-90-l102-102mm"
+  },
+  "was": {}
+ },
+ "p/silicone-tube-d50-l1100": {
+  "now": {
+   "en": "stefsotra-silicone-damper-hose-l102",
+   "ro": "stefsotra-furtun-amortizor-din-silicon-l102",
+   "ru": "stefsotra-silikonovyy-dempfernyy-shlang-l102"
+  },
+  "was": {}
+ },
+ "p/silicone-tube-d60-l1100": {
+  "now": {
+   "en": "silicone-elbow-hose-with-transition-90-l102-102mm",
+   "ro": "furtun-cot-din-silicon-cu-reductie-90-l102-102mm",
+   "ru": "silikonovyy-patrubok-koleno-s-perekhodom-90-l102-102mm"
+  },
+  "was": {}
+ },
+ "p/silicone-tube-d85-l1100": {
+  "now": {
+   "en": "silicone-135-elbow-hose-l102-102mm",
+   "ro": "furtun-cot-din-silicon-135-l102-102mm",
+   "ru": "silikonovyy-patrubok-koleno-135-l102-102mm"
+  },
+  "was": {}
+ },
+ "p/silicone_pipe_elbow_45": {
+  "now": {
+   "en": "silicone-45-elbow-hose",
+   "ro": "furtun-cot-din-silicon-45",
+   "ru": "silikonovyy-patrubok-koleno-45"
+  },
+  "was": {}
+ },
+ "p/silicone_pipe_straight_l1000": {
+  "now": {
+   "en": "silicone-straight-hose-l1000mm",
+   "ro": "furtun-drept-din-silicon-l1000mm",
+   "ru": "silikonovyy-pryamoy-patrubok-l1000mm"
+  },
+  "was": {}
+ },
+ "p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm": {
+  "now": {
+   "en": "silicone-cord-5-mm-10-mm-15-mm-20-mm",
+   "ro": "snur-din-silicon-5-mm-10-mm-15-mm-20-mm",
+   "ru": "silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm"
+  },
+  "was": {}
+ },
+ "p/socket-coupling-head": {
+  "now": {
+   "en": "coupling-head",
+   "ro": "cap-de-cuplaj",
+   "ru": "golovka-soedinitelnaya"
+  },
+  "was": {}
+ },
+ "p/sprayer-hose": {
+  "now": {
+   "en": "sprayer-hose",
+   "ro": "furtun-pentru-stropitoare",
+   "ru": "shlang-dlya-opryskivatelya"
+  },
+  "was": {}
+ },
+ "p/storz-cap": {
+  "now": {
+   "en": "storz-cap-aluminum",
+   "ro": "capac-storz-aluminiu",
+   "ru": "zaglushka-storz-alyuminiy"
+  },
+  "was": {}
+ },
+ "p/storz-coupling-female": {
+  "now": {
+   "en": "storz-coupling-female-aluminum",
+   "ro": "cuplaj-storz-mama-aluminiu",
+   "ru": "soedinenie-storz-gayka-alyuminiy"
+  },
+  "was": {}
+ },
+ "p/storz-coupling-with-internal-thread": {
+  "now": {
+   "en": "storz-coupling-with-internal-thread",
+   "ro": "cuplaj-storz-cu-filet-interior",
+   "ru": "soedinenie-storz-s-vnutrenney-rezboy"
+  },
+  "was": {}
+ },
+ "p/storz-coupling-with-tail-for-hose": {
+  "now": {
+   "en": "storz-coupling-with-tail-for-hose",
+   "ro": "cuplaj-storz-cu-racord-pentru-furtun",
+   "ru": "soedinenie-storz-s-khvostovikom-pod-shlang"
+  },
+  "was": {}
+ },
+ "p/storz-gasket": {
+  "now": {
+   "en": "storz-gasket",
+   "ro": "garnitura-storz",
+   "ru": "prokladka-storz"
+  },
+  "was": {}
+ },
+ "p/storz-hose-end": {
+  "now": {
+   "en": "storz-hose-end-aluminum",
+   "ro": "racord-storz-pentru-furtun-aluminiu",
+   "ru": "storz-nakonechnik-dlya-shlanga-alyuminiy"
+  },
+  "was": {}
+ },
+ "p/storz-latch": {
+  "now": {
+   "en": "storz-latch-aluminum",
+   "ro": "clichet-storz-aluminiu",
+   "ru": "zashchyolka-storz-alyuminiy"
+  },
+  "was": {}
+ },
+ "p/storz-reducer": {
+  "now": {
+   "en": "storz-reducer-aluminum",
+   "ro": "reductie-storz-aluminiu",
+   "ru": "perekhodnik-storz-alyuminiy"
+  },
+  "was": {}
+ },
+ "p/storz-reducer-2": {
+  "now": {
+   "en": "storz-reducer-alt",
+   "ro": "reductie-storz-alt",
+   "ru": "perekhodnik-storz-alt"
+  },
+  "was": {}
+ },
+ "p/straight-silicone-spigot-d38-l1100": {
+  "now": {
+   "en": "silicone-elbow-hose-with-transition-45-l102-102mm",
+   "ro": "furtun-cot-din-silicon-cu-reductie-45-l102-102mm",
+   "ru": "silikonovyy-patrubok-koleno-s-perekhodom-45-l102-102mm"
+  },
+  "was": {}
+ },
+ "p/technical-plate": {
+  "now": {
+   "en": "rubber-sheet-techno-plate",
+   "ro": "foaie-de-cauciuc-tehnoplaca",
+   "ru": "rezina-listovaya-tekhnoplastina"
+  },
+  "was": {}
+ },
+ "p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm": {
+  "now": {
+   "en": "textolite-sheets-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm",
+   "ro": "textolit-in-foi-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm",
+   "ru": "textolith-tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm"
+  },
+  "was": {}
+ },
+ "p/toyota-hilux-bed-liner": {
+  "now": {
+   "en": "toyota-hilux-bed-liner",
+   "ro": "toyota-hilux-protectie-de-bena",
+   "ru": "toyota-hilux-vkladysh-v-kuzov"
+  },
+  "was": {}
+ },
+ "p/truck-cargo-roof-canopy": {
+  "now": {
+   "en": "truck-cargo-roof-canopy",
+   "ro": "prelata-pentru-camion",
+   "ru": "tent-na-kuzov-gruzovika"
+  },
+  "was": {}
+ },
+ "p/tw-blind-adapter-bv": {
+  "now": {
+   "en": "bv-blind-adapter-for-tw-coupling",
+   "ro": "bv-adaptor-orb-pentru-cuplaj-tw",
+   "ru": "bv-nippel-zaglushka-dlya-soedineniya-tw"
+  },
+  "was": {}
+ },
+ "p/tw-blind-cap-bk": {
+  "now": {
+   "en": "bk-blind-cap-for-tw-coupling",
+   "ro": "bk-capac-orb-pentru-cuplaj-tw",
+   "ru": "bk-zaglushka-dlya-soedineniya-tw"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-gasket": {
+  "now": {
+   "en": "tw-coupling-gasket",
+   "ro": "garnitura-pentru-cuplaj-tw",
+   "ru": "prokladka-dlya-soedineniya-tw"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-mb-brass": {
+  "now": {
+   "en": "mb-coupling-brass",
+   "ro": "cuplaj-mb-alama",
+   "ru": "soedinenie-mb-latun"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-mb-stainless": {
+  "now": {
+   "en": "mb-coupling-stainless-steel",
+   "ro": "cuplaj-mb-otel-inoxidabil",
+   "ru": "soedinenie-mb-nerzhaveyushchaya-stal"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-mk-brass": {
+  "now": {
+   "en": "mk-coupling-brass",
+   "ro": "cuplaj-mk-alama",
+   "ru": "soedinenie-mk-latun"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-mk-stainless": {
+  "now": {
+   "en": "mk-coupling-stainless-steel",
+   "ro": "cuplaj-mk-otel-inoxidabil",
+   "ru": "soedinenie-mk-nerzhaveyushchaya-stal"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-vb-brass": {
+  "now": {
+   "en": "vb-coupling-brass",
+   "ro": "cuplaj-vb-alama",
+   "ru": "soedinenie-vb-latun"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-vb-stainless": {
+  "now": {
+   "en": "vb-coupling-stainless-steel",
+   "ro": "cuplaj-vb-otel-inoxidabil",
+   "ru": "soedinenie-vb-nerzhaveyushchaya-stal"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-vk-brass": {
+  "now": {
+   "en": "vk-coupling-brass",
+   "ro": "cuplaj-vk-alama",
+   "ru": "soedinenie-vk-latun"
+  },
+  "was": {}
+ },
+ "p/tw-coupling-vk-stainless": {
+  "now": {
+   "en": "vk-coupling-stainless-steel",
+   "ro": "cuplaj-vk-otel-inoxidabil",
+   "ru": "soedinenie-vk-nerzhaveyushchaya-stal"
+  },
+  "was": {}
+ },
+ "p/universal-gasket": {
+  "now": {
+   "en": "universal-coupling-gasket",
+   "ro": "garnitura-universala-pentru-cuplaj",
+   "ru": "universalnaya-prokladka-dlya-soedineniya"
+  },
+  "was": {}
+ },
+ "p/vb": {
+  "now": {
+   "en": "vb-coupling",
+   "ro": "cuplaj-vb",
+   "ru": "soedinenie-vb"
+  },
+  "was": {}
+ },
+ "p/ventilation-hoses": {
+  "now": {
+   "en": "ventilation-hoses",
+   "ro": "furtunuri-de-ventilatie",
+   "ru": "ventilyatsionnye-rukava"
+  },
+  "was": {}
+ },
+ "p/vk": {
+  "now": {
+   "en": "vk-coupling",
+   "ro": "cuplaj-vk",
+   "ru": "soedinenie-vk"
+  },
+  "was": {}
+ },
+ "p/water-hoses": {
+  "now": {
+   "en": "water-hoses",
+   "ro": "furtunuri-de-apa",
+   "ru": "vodyanye-shlangi"
+  },
+  "was": {}
+ },
+ "p/wire-fan-rake": {
+  "now": {
+   "en": "wire-fan-rakes",
+   "ro": "greble-evantai-din-sarma",
+   "ru": "veernye-grabli-provolochnye"
+  },
+  "was": {}
+ }
+}

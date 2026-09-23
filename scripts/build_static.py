@@ -29,15 +29,25 @@ of picking one and treating the others as duplicates.
 import html
 import json
 import os
+import datetime
+import hashlib
 import re
 import shutil
+import urllib.parse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, 'data')
-SITE = 'https://www.stefsotra.md'      # the host Netlify serves: the apex 308s to www,
+SITE = 'https://www.stefsotra.md'      # the host Vercel serves: the apex 308s to www,
                                        # so canonicals must name www or every page
                                        # declares a canonical that redirects elsewhere
+
+# <lastmod> has to mean something or Google stops reading it. Writing today's date on all
+# 483 URLs at every build is the usual way to make it meaningless. Instead each page's HTML
+# is hashed as it is written and compared with data/lastmod.json from the previous build:
+# a page whose bytes did not change keeps the date it already had.
+PAGE_HASH = {}
+PAGE_IMAGES = {}
 
 LANGS = ['ro', 'ru', 'en']
 PREFIX = {'ro': '', 'ru': '/ru', 'en': '/en'}
@@ -49,7 +59,12 @@ PREFIX = {'ro': '', 'ru': '/ru', 'en': '/en'}
 # Using one form for both produced titles that read as broken Russian.
 GEO = {'ro': 'Moldova', 'ru': 'Молдова', 'en': 'Moldova'}
 GEO_IN = {'ro': 'Moldova', 'ru': 'Молдове', 'en': 'Moldova'}
-CITY = {'ro': 'Chișinău', 'ru': 'Кишинёве', 'en': 'Chișinău'}
+# Romanian and Russian keep the local spellings. English uses "Chisinau", which is the
+# ordinary English spelling of the city and is also what someone types when their keyboard
+# has no Romanian diacritics -- Google printed "Missing: chisinau" under our own result for
+# "furtun chisinau" while ranking the page, because the plain form appeared nowhere on it.
+CITY = {'ro': 'Chișinău', 'ru': 'Кишинёве', 'en': 'Chisinau'}
+CITY_ASCII = 'Chisinau'
 CURRENCY = 'lei'
 
 STR = {l: json.load(open(os.path.join(ROOT, 'i18n', l + '.json'), encoding='utf-8'))
@@ -57,13 +72,128 @@ STR = {l: json.load(open(os.path.join(ROOT, 'i18n', l + '.json'), encoding='utf-
 CAT = json.load(open(os.path.join(DATA, 'products.json'), encoding='utf-8'))
 PAGES = json.load(open(os.path.join(DATA, 'pages.json'), encoding='utf-8'))
 REVIEWS = json.load(open(os.path.join(DATA, 'reviews.json'), encoding='utf-8'))
+FITMENT = json.load(open(os.path.join(DATA, 'fitment.json'), encoding='utf-8'))
 CONTACT = PAGES['_contact']
 
 BY_HANDLE = {p['handle']: p for p in CAT['products']}
+
+# data/fitment.json records which vehicles a part is an exact fit for, by OE number. It
+# was written for the vehicle finder and read by nothing else, so none of it reached the
+# HTML: "Mercedes-Benz" appeared nowhere on the Sprinter page -- only "Sprinter" -- and
+# three of the nine KAMAZ models it covers, 53212, 65115 and 43118, appeared nowhere on
+# the site at all. The other six were present only by accident, because an OE code like
+# 53205-1170245 happens to contain the model number. Someone searching a make and model
+# is the most ready-to-buy visitor this shop gets; the words have to be on the page.
+FITS = {}
+for _f in FITMENT['entries']:
+    _mk = FITS.setdefault(_f['handle'], {})
+    _md = _mk.setdefault(_f['make'], {'models': [], 'oe': []})
+    for _m in _f['models']:
+        if _m not in _md['models']:
+            _md['models'].append(_m)
+    if _f['oe'] not in _md['oe']:
+        _md['oe'].append(_f['oe'])
+# Truck model names are numbers, so a plain string sort reads as nonsense: 4308, 43118,
+# 5320. Sort on the leading digits where there are any.
+def _natural(x):
+    m = re.match(r'(\d+)', x)
+    return (0, int(m.group(1)), x) if m else (1, 0, x.lower())
+
+
+for _v in FITS.values():
+    for _d in _v.values():
+        _d['models'].sort(key=_natural)
+        _d['oe'].sort(key=_natural)
 CAT_OF = {}
 for g in CAT['groups']:
     for c in g['categories']:
         CAT_OF[c['key']] = g['key']
+
+
+# ---------------------------------------------------------------------- URL slugs
+#
+# Every competitor ranking above us for "furtun chisinau" does so with a Romanian URL --
+# supraten.md/furtunuri-..., volta.md/irigare/furtune, profmet.md/272-furtunuri -- while
+# ours said /c/silicone-hose/. The category and group addresses are now the page's own
+# name in the page's own language: /c/furtun-din-silicon/, /ru/c/силиконовые-шланги/.
+#
+# Once a slug is published it is permanent. The build assigns one the first time it sees a
+# key and then leaves it alone for good, even if the label it came from is later reworded,
+# because a URL that moves on its own is a URL that breaks other people's links. To rename
+# one deliberately: edit "now" in data/slugs.json and push the old value onto "was", and
+# the next build will 301 the old address to the new one.
+# Addresses stay ASCII. A Cyrillic slug percent-encodes into
+# /ru/c/%D1%85%D0%BE%D0%BC%D1%83%D1%82%D1%8B/ the moment anyone pastes it, and Vercel
+# matches redirects against that encoded form -- a rule written in literal Cyrillic never
+# fires, which build_catalogue.py had already found the hard way. Same BGN/PCGN table it
+# uses on the handles, so the two agree.
+FOLD = {'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ş': 's', 'ț': 't', 'ţ': 't',
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
+        'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+        'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts',
+        'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e',
+        'ю': 'yu', 'я': 'ya'}
+
+
+def slugify(text, limit=60):
+    out = ''.join(FOLD.get(c, c) for c in (text or '').lower())
+    out = re.sub(r'[^a-z0-9]+', '-', out.replace('×', 'x'))
+    out = re.sub(r'-+', '-', out).strip('-')
+    if len(out) > limit:
+        out = out[:limit]
+        if '-' in out:
+            out = out[:out.rfind('-')]
+    return out.strip('-')
+
+
+# Five products left Shopify with Cyrillic handles. build_catalogue.py transliterates
+# them as the feed is read, so nothing downstream sees them any more -- but the original
+# addresses are indexed and linked, and the redirect that protected them lived in a
+# vercel.json this build now overwrites. They are kept here, pointed at wherever the
+# product lives today, so the rule survives every rebuild.
+RETIRED_HANDLES = {
+    'kapralon-grafitonapolnennyy':
+        'капралон-графитонаполненный',
+    'polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75':
+        'полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75',
+    'poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm':
+        'полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм',
+    'silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm':
+        'силиконовый-шнур-5-мм-10-мм-15-мм-20-мм',
+    'tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm':
+        'текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм',
+}
+
+SLUG_PATH = os.path.join(DATA, 'slugs.json')
+try:
+    SLUGS = json.load(open(SLUG_PATH, encoding='utf-8'))
+except (OSError, ValueError):
+    SLUGS = {}
+
+
+def slug_for(kind, key, lang, label):
+    """The published slug for one key in one language, assigned once and then fixed."""
+    me = '%s/%s' % (kind, key)
+    rec = SLUGS.setdefault(me, {'now': {}, 'was': {}})
+    if not rec['now'].get(lang):
+        want = slugify(label) or key
+        # An address is taken if another page lives there now, and equally if another page
+        # *used* to live there: its old address has to stay a redirect source, and a slug
+        # that is both a source and a target makes a chain. Two products hit this -- the
+        # English name of "cement-discharge-hose2" slugifies to the old handle of a
+        # different hose. Falling back to the key is always safe: handles are unique, and
+        # a page whose new address equals its old one needs no redirect at all.
+        taken = set()
+        for k, r in SLUGS.items():
+            if not k.startswith(kind + '/') or k == me:
+                continue
+            taken.add(k.split('/', 1)[1])                    # its original handle or key
+            taken.add(r['now'].get(lang))
+            taken.update(r.get('was', {}).get(lang, []))
+        if want in taken:
+            want = key if key not in taken else '%s-%s' % (want, key)
+        rec['now'][lang] = want
+    return rec['now'][lang]
 
 
 def t(lang, key, **vars):
@@ -71,6 +201,33 @@ def t(lang, key, **vars):
     for k, v in vars.items():
         s = s.replace('{' + k + '}', str(v))
     return s
+
+
+def cpath(lang, key):
+    """A category's path in one language, e.g. /c/furtun-din-silicon/."""
+    return '/c/%s/' % slug_for('c', key, lang, cat_label(lang, key))
+
+
+def gpath(lang, key):
+    return '/g/%s/' % slug_for('g', key, lang, group_label(lang, key))
+
+
+def ppath(lang, prod):
+    """A product's path in one language, e.g. /p/reductie-camlock-tip-aa/."""
+    return '/p/%s/' % slug_for('p', prod['handle'], lang, name(lang, prod))
+
+
+def ppaths(prod):
+    return {l: ppath(l, prod) for l in LANGS}
+
+
+def cpaths(key):
+    """{lang: path} -- what the canonical and the hreflang set are built from."""
+    return {l: cpath(l, key) for l in LANGS}
+
+
+def gpaths(key):
+    return {l: gpath(l, key) for l in LANGS}
 
 
 def cat_label(lang, key):
@@ -104,6 +261,24 @@ def strip_tags(s, limit=None):
     if limit and len(s) > limit:
         s = s[:limit].rsplit(' ', 1)[0] + '…'
     return s
+
+
+# Google renders roughly 70 characters of a title and roughly 160 of a description, and
+# cuts the rest off mid-word. A page whose description is cut at "Livrare in Chisin" reads
+# as careless in the one place a customer decides whether to click, so both are trimmed
+# here, on a word boundary, before they are written.
+TITLE_MAX = 70
+DESC_MAX = 165
+
+
+def clamp(text, limit):
+    if len(text) <= limit:
+        return text
+    cut = text[:limit - 1].rstrip()
+    sp = cut.rfind(' ')
+    if sp > limit * 0.6:
+        cut = cut[:sp]
+    return cut.rstrip(' ,.;:-–—·') + '…'
 
 
 def dim_label(d):
@@ -145,18 +320,23 @@ def range_label(p):
 
 # ---------------------------------------------------------------- page shell
 
-def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
+def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
+         og_type='website', extra_meta=''):
     """<head> for one page, including the hreflang set and structured data."""
+    # `path` is either one path shared by every language, or {lang: path} once the
+    # languages stopped sharing a slug. Each language's alternate has to name that
+    # language's own address or the hreflang set points at pages that do not exist.
+    paths = path if isinstance(path, dict) else {l: path for l in LANGS}
     # A noindex page -- the 404 -- gets neither: its address is whatever was mistyped,
     # so a canonical and an hreflang set could only name URLs that do not exist.
     if noindex:
         alts = ''
     else:
         alts = ''.join(
-            '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], path)
+            '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], paths[l])
             for l in LANGS)
-        alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, path)
-    canonical = SITE + PREFIX[lang] + path
+        alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, paths['ro'])
+    canonical = SITE + PREFIX[lang] + paths[lang]
     # 1.91:1 preview card. A square product photo was being cropped through the middle
     # by every chat app; these are drawn by scripts/build_og.py.
     img = image or (SITE + '/assets/img/og-default.png')
@@ -175,7 +355,7 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
          '<meta name="robots" content="index,follow,max-image-preview:large">\n') +
         ('' if noindex else '<link rel="canonical" href="%s">\n' % e(canonical)) +
         alts + '\n'
-        '<meta property="og:type" content="website">\n'
+        '<meta property="og:type" content="%s">\n' % og_type +
         '<meta property="og:site_name" content="Stefsotra">\n'
         '<meta property="og:title" content="%s">\n' % e(title) +
         '<meta property="og:description" content="%s">\n' % e(desc) +
@@ -185,12 +365,14 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False):
         '<meta property="og:image:height" content="630">\n'
         '<meta property="og:image:alt" content="%s">\n' % e(title) +
         '<meta property="og:locale" content="%s">\n' % {'ro': 'ro_MD', 'ru': 'ru_MD', 'en': 'en_US'}[lang] +
-        '<meta name="twitter:card" content="summary_large_image">\n'
+        '<meta name="twitter:card" content="summary_large_image">\n' +
+        extra_meta +
         '<meta name="theme-color" content="#bf2c2c">\n'
         '<link rel="icon" href="/favicon.ico" sizes="32x32">\n'
         '<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">\n'
         '<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">\n'
         '<link rel="manifest" href="/site.webmanifest">\n'
+        '<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>\n'
         '<link rel="stylesheet" href="/assets/css/app.css">\n' +
         blocks +
         '\n</head>\n<body>\n')
@@ -210,16 +392,23 @@ def announce_html(lang):
 
 
 def header_html(lang, current=''):
-    """The navigation, written out rather than injected, so a crawler can follow it."""
+    """The navigation, written out rather than injected, so a crawler can follow it.
+
+    The logo is logo-400.png, not logo.png. The full-size file is 1620x395 and 30 KB and
+    was being drawn at 123x30 in this header and 107x26 in the footer -- thirteen times
+    wider than any screen asks for, above the fold, on all 489 pages. The 400px copy is
+    4 KB, still better than 3x on a phone, and is generated by scripts/build_logo.py.
+    logo.png stays: it is what the Organization markup and the preview cards point at,
+    and both want the large one."""
     px = PREFIX[lang]
     mega = ''
     for g in CAT['groups']:
         items = ''.join(
-            '<li><a href="%s/c/%s/">%s<span>%d</span></a></li>' %
-            (px, c['key'], e(cat_label(lang, c['key'])), c['count'])
+            '<li><a href="%s%s">%s<span>%d</span></a></li>' %
+            (px, cpath(lang, c['key']), e(cat_label(lang, c['key'])), c['count'])
             for c in g['categories'])
-        mega += ('<div class="mega-col"><a class="mega-h" href="%s/g/%s/">%s</a><ul>%s</ul></div>'
-                 % (px, g['key'], e(group_label(lang, g['key'])), items))
+        mega += ('<div class="mega-col"><a class="mega-h" href="%s%s">%s</a><ul>%s</ul></div>'
+                 % (px, gpath(lang, g['key']), e(group_label(lang, g['key'])), items))
     total = sum(len(p['variants']) for p in CAT['products'])
     mega += ('<div class="mega-col mega-cta"><a class="mega-h" href="%s/catalog.html">%s</a>'
              '<p class="small muted">%s</p>'
@@ -238,9 +427,8 @@ def header_html(lang, current=''):
         for l in LANGS)
 
     return (
-        announce_html(lang) +
         '<header class="site"><div class="wrap bar">'
-        '<a class="logo" href="%s/"><img src="/assets/img/logo.png" alt="STEFSOTRA" width="1620" height="395"></a>'
+        '<a class="logo" href="%s/"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" width="400" height="98"></a>'
         '<nav class="main" id="mainnav">'
         '<button type="button" class="menu-trigger" id="prodBtn" aria-expanded="false">%s<i></i></button>'
         '%s</nav>'
@@ -279,52 +467,100 @@ def footer_html(lang, path):
     # Every group linked from the footer of every page: a small, honest internal link
     # graph that lets a crawler reach all 17 categories from anywhere on the site.
     catlinks = ' · '.join(
-        '<a href="%s/c/%s/">%s</a>' % (px, c['key'], e(cat_label(lang, c['key'])))
+        '<a href="%s%s">%s</a>' % (px, cpath(lang, c['key']), e(cat_label(lang, c['key'])))
         for g in CAT['groups'] for c in g['categories'])
 
     c = CONTACT
     return (
         '<footer class="site"><div class="wrap foot">'
-        '<div class="foot-brand"><img src="/assets/img/logo.png" alt="STEFSOTRA" class="foot-logo" '
-        'width="1620" height="395">'
+        '<div class="foot-brand"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" class="foot-logo" '
+        'width="400" height="98" loading="lazy" decoding="async">'
         '<p class="small">%s</p>'
-        '<p class="small"><a href="tel:%s">%s</a></p>'
-        '<p class="small"><a href="mailto:%s">%s</a></p>%s</div>%s</div>'
+        '%s'
+        '<p class="small"><a href="mailto:%s">%s</a></p>%s%s</div>%s</div>'
         '<div class="wrap foot-cats small">%s</div>'
         '<div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · '
         '<a href="https://www.stefsotra.md">stefsotra.md</a></span>'
         '<span class="madeby"><a href="https://aggento.com" target="_blank" '
         'rel="noopener">%s</a></span></div>'
         '</footer>\n'
-        % (e(t(lang, 'site.tagline')), e(c['phone_href']), e(c['phone']),
+        % (e(t(lang, 'site.tagline')),
+           phone_links('<p class="small"><a href="tel:%s">%s</a></p>'),
            e(c['email']), e(c['email']),
            ('<p class="small"><a href="%s" target="_blank" rel="noopener">%s</a></p>'
             % (e(c.get('maps', '')), e(c['address']))) if c.get('address') else '',
+           # Opening hours on every page, not only on /contact/. For a trade counter this
+           # is the question a visitor asks before the price, and Google reads it too.
+           ('<p class="small hours">%s</p>' % hours_html(lang, ' · ')
+            ) if c.get('opening_hours') else '',
            colhtml, catlinks, e(t(lang, 'foot.by'))))
 
 
+def contact_js():
+    return '<script>window.__CONTACT=%s;</script>' % json.dumps(
+        {k: CONTACT.get(k, '') for k in
+         ('email', 'phone', 'phone_href', 'phone2', 'phone2_href', 'address', 'maps',
+          'review_url')},
+        ensure_ascii=False, separators=(',', ':'))
+
+
+def pslug_js(lang):
+    """Product slugs for this language, for the pages that draw their own tiles.
+
+    Only the four interactive pages need it -- everywhere else the tiles are written by
+    the build and already carry the right address. About 4 KB next to a catalogue those
+    pages were already fetching 441 KB of.
+    """
+    return '<script>window.__PSLUG=%s;</script>' % json.dumps(
+        {p['handle']: slug_for('p', p['handle'], lang, name(lang, p))
+         for p in CAT['products']}, ensure_ascii=False, separators=(',', ':'))
+
+
+def gslug_js(lang):
+    """Group slugs for this language. The catalogue and basket pages draw their own
+    category cards in the browser and used to build /g/<key>/ by hand, which stopped
+    being an address the day the slugs became Romanian."""
+    return '<script>window.__GSLUG=%s;</script>' % json.dumps(
+        {g['key']: slug_for('g', g['key'], lang, group_label(lang, g['key']))
+         for g in CAT['groups']}, ensure_ascii=False, separators=(',', ':'))
+
+
 def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
-         current='', scripts=''):
-    doc = (head(lang, title, desc, path, image, jsonld, noindex) +
-           header_html(lang, current).replace('{PATH}', path) +
+         current='', scripts='', og_type='website', extra_meta=''):
+    title, desc = clamp(title, TITLE_MAX), clamp(desc, DESC_MAX)
+    paths = path if isinstance(path, dict) else {l: path for l in LANGS}
+    own = paths[lang]
+    doc = (head(lang, title, desc, paths, image, jsonld, noindex, og_type, extra_meta) +
+           announce_html(lang) +
+           # the language switcher must point at the other language's slug, not this one's
+           header_html(lang, current).replace('{PATH}', '{LANGPATH}') +
            '<main>' + body + '</main>' +
-           footer_html(lang, path) +
-           '<script>window.__CONTACT=%s;</script>' % json.dumps(
-               {k: CONTACT.get(k, '') for k in
-                ('email', 'phone', 'phone_href', 'address', 'maps')},
-               ensure_ascii=False, separators=(',', ':')) +
+           footer_html(lang, own) +
+           contact_js() + gslug_js(lang) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'
            '<script src="/assets/js/static.js"></script>' + scripts +
            '\n</body>\n</html>\n')
-    out = os.path.join(ROOT, (PREFIX[lang] + path).lstrip('/'), 'index.html')
+    # {LANGPATH} is per-language: the "ru" button on a Romanian page has to carry the
+    # Russian slug for the same page, which is no longer the Romanian one.
+    for l in LANGS:
+        doc = doc.replace('href="%s{LANGPATH}" data-lang="%s"' % (PREFIX[l], l),
+                          'href="%s%s" data-lang="%s"' % (PREFIX[l], paths[l], l))
+    doc = doc.replace('{LANGPATH}', own)
+    out = os.path.join(ROOT, (PREFIX[lang] + own).lstrip('/'), 'index.html')
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, 'w', encoding='utf-8') as f:
         f.write(doc)
-    return SITE + PREFIX[lang] + path
+    url = SITE + PREFIX[lang] + own
+    PAGE_HASH[url] = hashlib.sha1(doc.encode('utf-8')).hexdigest()
+    return url
 
 
 # ---------------------------------------------------------------- structured data
+
+SCHEMA_DAY = {'Mo': 'Monday', 'Tu': 'Tuesday', 'We': 'Wednesday', 'Th': 'Thursday',
+              'Fr': 'Friday', 'Sa': 'Saturday', 'Su': 'Sunday'}
+
 
 def org_ld():
     # HardwareStore rather than Organization: it is a LocalBusiness subtype, so the shop
@@ -336,13 +572,52 @@ def org_ld():
         '@context': 'https://schema.org', '@type': 'HardwareStore',
         'name': 'Stefsotra', 'url': SITE, 'logo': SITE + '/assets/img/logo.png',
         'image': SITE + '/assets/img/logo.png',
-        'telephone': CONTACT['phone'], 'email': CONTACT['email'],
+        # Google matches a Business Profile to a website by the name, address and phone
+        # agreeing on both. The listing is "FURTUNE.MD - Stefsotra S.R.L"; the site brands
+        # itself "Stefsotra". Declaring the other names it trades under is what lets the
+        # two be recognised as one business rather than two.
+        'legalName': CONTACT.get('legal_name', ''),
+        'alternateName': [n for n in (CONTACT.get('gbp_name'), CONTACT.get('legal_name'))
+                          if n],
+        # schema.org takes a list here. Google reads the first, so the landline leads,
+        # matching the Google Business listing; the mobile is published alongside it.
+        'telephone': ([CONTACT['phone'], CONTACT['phone2']] if CONTACT.get('phone2')
+                      else CONTACT['phone']),
+        'email': CONTACT['email'],
         'currenciesAccepted': 'MDL',
+        # Both spellings of the city. This is the service area stated in structured data,
+        # not visible text, and "Chisinau" is a real name for the same place -- it is what
+        # the postal form, the Google Maps link below and an English speaker all use.
         'areaServed': [{'@type': 'City', 'name': 'Chișinău'},
+                       {'@type': 'City', 'name': CITY_ASCII},
                        {'@type': 'Country', 'name': 'Moldova'}],
     }
+    # For a trade counter, opening hours and coordinates are most of what decides whether
+    # the shop appears in the local pack at all. Both are emitted the moment the data
+    # exists in data/pages.json and stay absent until then -- a guessed pair of coordinates
+    # puts the pin in the wrong street, and guessed hours send someone to a closed door.
+    for k in ('legalName', 'alternateName'):
+        if not d.get(k):
+            d.pop(k, None)
     if CONTACT.get('hours'):
         d['openingHours'] = CONTACT['hours']
+    if CONTACT.get('opening_hours'):
+        # [["Mo","Tu","We","Th","Fr"], "09:00", "18:00"] per row. dayOfWeek takes the
+        # schema.org DayOfWeek names -- "Monday", not the two-letter code, which belongs
+        # to the older openingHours string form and is not parsed here. Both times equal
+        # is how a day closed is spelled.
+        d['openingHoursSpecification'] = [
+            {'@type': 'OpeningHoursSpecification',
+             'dayOfWeek': [SCHEMA_DAY[c] for c in row[0]],
+             'opens': row[1], 'closes': row[2]}
+            for row in CONTACT['opening_hours']]
+    if CONTACT.get('geo'):
+        d['geo'] = {'@type': 'GeoCoordinates',
+                    'latitude': CONTACT['geo'][0], 'longitude': CONTACT['geo'][1]}
+    if CONTACT.get('same_as'):
+        d['sameAs'] = CONTACT['same_as']
+    if CONTACT.get('price_range'):
+        d['priceRange'] = CONTACT['price_range']
     if CONTACT.get('address'):
         d['address'] = {
             '@type': 'PostalAddress',
@@ -355,12 +630,72 @@ def org_ld():
     return d
 
 
+def sales_phone(lang):
+    """The sales number as a button for the call-us band. Empty when none is configured."""
+    if not CONTACT.get('phone2'):
+        return ''
+    return ('<a class="btn ghost ask-tel" href="tel:%s" aria-label="%s %s">%s</a>'
+            % (e(CONTACT['phone2_href']), e(t(lang, 'ct.phone')),
+               e(CONTACT['phone2']), e(CONTACT['phone2'])))
+
+
+DAY_ORDER = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+
+
+def day_range(lang, days):
+    """"Lun–Vin" for a run of consecutive days, "Sâm" for one, commas between runs."""
+    idx = sorted(DAY_ORDER.index(d) for d in days if d in DAY_ORDER)
+    runs, start, prev = [], None, None
+    for i in idx + [None]:
+        if start is None:
+            start = prev = i
+            continue
+        if i is not None and i == prev + 1:
+            prev = i
+            continue
+        a, b = t(lang, 'day.' + DAY_ORDER[start].lower()), t(lang, 'day.' + DAY_ORDER[prev].lower())
+        runs.append(a if start == prev else '%s–%s' % (a, b))
+        start = prev = i
+    return ', '.join(runs)
+
+
+def hours_rows(lang):
+    """[(days, times)] for display. Both times equal means closed that day."""
+    out = []
+    for days, opens, closes in CONTACT.get('opening_hours') or []:
+        when = t(lang, 'day.closed') if opens == closes else '%s–%s' % (opens, closes)
+        out.append((day_range(lang, days), when))
+    return out
+
+
+def hours_html(lang, sep='<br>'):
+    return sep.join('%s %s' % (e(d), e(w)) for d, w in hours_rows(lang))
+
+
+def phone_links(fmt, sep=''):
+    """Both numbers, landline first, each wrapped in `fmt` with (href, text).
+
+    The mobile is the sales line and the landline is what the Google listing and the trade
+    directories carry, so the landline stays first: a visitor comparing the two sees the
+    same order in both places. Everything degrades to one number if phone2 is cleared.
+    """
+    out = [fmt % (e(CONTACT['phone_href']), e(CONTACT['phone']))]
+    if CONTACT.get('phone2'):
+        out.append(fmt % (e(CONTACT['phone2_href']), e(CONTACT['phone2'])))
+    return sep.join(out)
+
+
 def crumbs_ld(lang, items):
     return {'@context': 'https://schema.org', '@type': 'BreadcrumbList',
             'itemListElement': [
                 {'@type': 'ListItem', 'position': i + 1, 'name': name,
                  'item': SITE + PREFIX[lang] + url}
                 for i, (name, url) in enumerate(items)]}
+
+
+def brand_name(vendor):
+    v = (vendor or '').strip()
+    return 'Stefsotra' if v.lower().replace('-shop', '') in ('stefsotra', '') else v
 
 
 def product_ld(lang, p):
@@ -371,14 +706,17 @@ def product_ld(lang, p):
         'alternateName': p['title'],
         'description': strip_tags(summary(lang, p), 300),
         'category': cat_label(lang, p['category']),
-        'brand': {'@type': 'Brand', 'name': p['vendor'] or 'Stefsotra'},
-        'url': SITE + PREFIX[lang] + '/p/%s/' % p['handle'],
+        'brand': {'@type': 'Brand', 'name': brand_name(p['vendor'])},
+        'url': SITE + PREFIX[lang] + ppath(lang, p),
     }
     if p['images']:
         d['image'] = p['images'][:4]
     skus = [v['sku'] for v in p['variants'] if v.get('sku')]
     if skus:
         d['sku'] = skus[0]
+    fits = fitment_ld(p)
+    if fits:
+        d['isAccessoryOrSparePartFor'] = fits
     # No aggregateRating: there are no reviews yet, and inventing one is both against
     # Google's structured-data policy and against consumer law here.
     if not prices:
@@ -393,8 +731,34 @@ def product_ld(lang, p):
         'availability': 'https://schema.org/InStock' if any(v['available'] for v in p['variants'])
                         else 'https://schema.org/PreOrder',
         'seller': {'@type': 'Organization', 'name': 'Stefsotra'},
+        'hasMerchantReturnPolicy': RETURN_POLICY,
+        'shippingDetails': SHIPPING_CHISINAU,
     }
     return d
+
+
+# Google flags a Product offer with no return and no delivery terms, and the two blocks
+# it wants are on the site already in prose: /returns/ says 30 days for a refund with the
+# customer sending the item back, /delivery/ says a flat 200 lei by courier in Chișinău.
+# Only those two are stated here. Delivery outside Chișinău is quoted per address and
+# delivery time is confirmed when the request is answered, so neither is asserted: a made-up
+# handling time in structured data is a promise the shop has not made.
+RETURN_POLICY = {
+    '@type': 'MerchantReturnPolicy',
+    'applicableCountry': 'MD',
+    'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+    'merchantReturnDays': 30,
+    'returnMethod': 'https://schema.org/ReturnByMail',
+    'returnFees': 'https://schema.org/ReturnShippingFees',
+    'refundType': 'https://schema.org/FullRefund',
+}
+
+SHIPPING_CHISINAU = {
+    '@type': 'OfferShippingDetails',
+    'shippingDestination': {'@type': 'DefinedRegion', 'addressCountry': 'MD',
+                            'addressRegion': 'Chișinău'},
+    'shippingRate': {'@type': 'MonetaryAmount', 'value': 200, 'currency': 'MDL'},
+}
 
 
 def faq_ld(faq):
@@ -428,11 +792,25 @@ def placeholder(lang, prod):
             % (art, e(prod['title']), e(t(lang, 'ph.none'))))
 
 
+# The manufacturer copy is Shopify's, and some of it was pasted out of a Word document:
+# the seven Camlock descriptions each open with their own <h1>, which gave those pages two
+# first-level headings, the second one in Russian on the Romanian page. Every heading
+# inside the description is pushed two levels down so the product name stays the only h1,
+# and align="..." is dropped with it -- it is a presentational attribute the stylesheet
+# already overrides, and it was the only thing forcing centred text into a left-aligned page.
+_H_IN_DESC = re.compile(r'<(/?)h([1-4])\b([^>]*)>', re.I)
+_ALIGN = re.compile(r'\s+align="[^"]*"', re.I)
+
+
+def _demote(m):
+    return '<%sh%d%s>' % (m.group(1), min(int(m.group(2)) + 2, 6), _ALIGN.sub('', m.group(3)))
+
+
 def desc_html(lang, p):
     """Description in the page's language. Falls back to the original whenever a
     translation is absent or was held back by the verifier in
     translate_descriptions.py -- an English description beats a wrong number."""
-    return p.get('body_' + lang) or p['body_html']
+    return _H_IN_DESC.sub(_demote, p.get('body_' + lang) or p['body_html'])
 
 
 def summary(lang, p):
@@ -503,11 +881,11 @@ def tile(lang, p):
     price = (money(p['price_min'], lang, p['unit']) if p['price_min'] == p['price_max']
              else '<small>%s</small> %s' % (e(t(lang, 'cat.from')), money(p['price_min'], lang, p['unit'])))
     return (
-        '<article class="tile" data-h="%s"><a class="tile-link" href="%s/p/%s/">'
+        '<article class="tile" data-h="%s"><a class="tile-link" href="%s%s">'
         '%s<div class="meta"><div class="name">%s</div><div class="dims">%s</div>'
         '<div class="price">%s</div></div></a>'
         '<div class="tile-add">%s<button type="button" class="btn tile-btn"%s>%s</button></div></article>'
-        % (e(p['handle']), px, e(p['handle']),
+        % (e(p['handle']), px, ppath(lang, p),
            ('<div class="ph"><img loading="lazy" src="%s" alt="%s" width="1200" height="1200"></div>'
             % (e(img), e(name(lang, p)))) if img else
            placeholder(lang, p),
@@ -537,7 +915,7 @@ def build_home(lang):
     title = {
         'ro': 'Furtunuri, cuplaje și cauciuc tehnic în Chișinău | Stefsotra',
         'ru': 'Промышленные шланги и соединения в Кишинёве | Stefsotra',
-        'en': 'Industrial hoses and couplings in Chișinău | Stefsotra',
+        'en': 'Industrial hoses and couplings in Chisinau | Stefsotra',
     }[lang]
     desc = {
         'ro': 'Furtun din silicon și PVC, cuplaje Camlock, Storz, Guillemin și Bauer, coliere '
@@ -547,7 +925,7 @@ def build_home(lang):
               'и технические материалы. %d товаров в %d размерах, цены в леях. Доставка по '
               'Кишинёву и Молдове.' % (CAT['count'], variants),
         'en': 'Silicone and PVC hose, Camlock, Storz, Guillemin and Bauer couplings, clamps and '
-              'technical materials. %d products in %d sizes, priced in lei. Delivery in Chișinău '
+              'technical materials. %d products in %d sizes, priced in lei. Delivery in Chisinau '
               'and across Moldova.' % (CAT['count'], variants),
     }[lang]
 
@@ -571,9 +949,9 @@ def build_home(lang):
         if len(picks) == 4:
             break
     art = ''.join(
-        '<a class="hero-tile t%d" href="%s/p/%s/" title="%s"><img src="%s" alt="%s" '
+        '<a class="hero-tile t%d" href="%s%s" title="%s"><img src="%s" alt="%s" '
         'width="1200" height="1200"%s></a>'
-        % (i, px, e(p['handle']), e(p['title']), e(p['images'][0]), e(p['title']),
+        % (i, px, ppath(lang, p), e(p['title']), e(p['images'][0]), e(p['title']),
            '' if i == 0 else ' loading="lazy"')
         for i, p in enumerate(picks))
 
@@ -582,9 +960,9 @@ def build_home(lang):
         img = next((p['images'][0] for p in CAT['products']
                     if p['group'] == g['key'] and p['images']), None)
         gcards += (
-            '<a class="gcard" href="%s/g/%s/">%s<span class="gcard-t">%s<i>%s</i></span>'
+            '<a class="gcard" href="%s%s">%s<span class="gcard-t">%s<i>%s</i></span>'
             '<span class="gcard-list small muted">%s</span></a>'
-            % (px, g['key'],
+            % (px, gpath(lang, g['key']),
                ('<img loading="lazy" src="%s" alt="" width="1200" height="1200">' % e(img))
                if img else '<span class="gcard-ph"></span>',
                e(group_label(lang, g['key'])), e(t(lang, 'cat.results', n=g['count'])),
@@ -621,9 +999,13 @@ def build_home(lang):
         % (e(t(lang, 'home.popular')), px, e(t(lang, 'home.seeAll')),
            ''.join(tile(lang, p) for p in featured)) +
 
+        # "Ask the assistant or call us" and then no number to call. The sales line goes
+        # here, as a real tel: link, so a phone taps it and a desktop can read it off.
         '<section class="home-sec ask"><div><h2>%s</h2><p class="muted">%s</p></div>'
-        '<button class="btn" type="button" data-ai-open>%s ✦</button></section>'
-        % (e(t(lang, 'home.askH')), e(t(lang, 'home.askP')), e(t(lang, 'nav.assistant'))) +
+        '<div class="ask-actions">%s'
+        '<button class="btn" type="button" data-ai-open>%s ✦</button></div></section>'
+        % (e(t(lang, 'home.askH')), e(t(lang, 'home.askP')), sales_phone(lang),
+           e(t(lang, 'nav.assistant'))) +
         '</div>')
 
     site_ld = {'@context': 'https://schema.org', '@type': 'WebSite', 'url': SITE,
@@ -647,7 +1029,7 @@ def build_category(lang, key, count):
     title = {
         'ro': '%s Chișinău — %d produse, de la %s | Stefsotra' % (label, len(prods), money(lo, lang)),
         'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra' % (label, len(prods), money(lo, lang)),
-        'en': '%s in Chișinău — %d products from %s | Stefsotra' % (label, len(prods), money(lo, lang)),
+        'en': '%s in Chisinau — %d products from %s | Stefsotra' % (label, len(prods), money(lo, lang)),
     }[lang]
     desc = {
         'ro': '%s pe stoc la Stefsotra: %d produse, %d dimensiuni, preț de la %s. Livrare în %s '
@@ -663,7 +1045,7 @@ def build_category(lang, key, count):
 
     siblings = [c['key'] for c in next(g for g in CAT['groups'] if g['key'] == grp)['categories']]
     related = ''.join(
-        '<a class="chip%s" href="%s/c/%s/">%s</a>' % (' on' if k == key else '', px, k,
+        '<a class="chip%s" href="%s%s">%s</a>' % (' on' if k == key else '', px, cpath(lang, k),
                                                       e(cat_label(lang, k)))
         for k in siblings)
 
@@ -672,7 +1054,7 @@ def build_category(lang, key, count):
             '<p class="muted small">%s</p><div class="grid">%s</div>'
             '<p style="margin-top:26px"><a class="btn ghost" href="%s/catalog.html">%s</a></p></div>'
             % (crumb_html(lang, [(t(lang, 'nav.home'), '/'),
-                                 (group_label(lang, grp), '/g/%s/' % grp), (label, '')]),
+                                 (group_label(lang, grp), gpath(lang, grp)), (label, '')]),
                e(label), e(desc.split('.')[0] + '.'), related,
                e(t(lang, 'cat.results', n=len(prods))),
                ''.join(tile(lang, p) for p in prods), px, e(t(lang, 'cat.all'))))
@@ -680,12 +1062,12 @@ def build_category(lang, key, count):
     lst = {'@context': 'https://schema.org', '@type': 'ItemList',
            'name': label, 'numberOfItems': len(prods),
            'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': p['title'],
-                                'url': SITE + PREFIX[lang] + '/p/%s/' % p['handle']}
+                                'url': SITE + PREFIX[lang] + ppath(lang, p)}
                                for i, p in enumerate(prods)]}
     crumb = crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
-                             (group_label(lang, grp), '/g/%s/' % grp),
-                             (label, '/c/%s/' % key)])
-    return page(lang, '/c/%s/' % key, title, desc, body,
+                             (group_label(lang, grp), gpath(lang, grp)),
+                             (label, cpath(lang, key))])
+    return page(lang, cpaths(key), title, desc, body,
                 jsonld=[lst, crumb])
 
 
@@ -700,21 +1082,21 @@ def build_group(lang, g):
     title = {
         'ro': '%s Chișinău — %d produse, de la %s | Stefsotra',
         'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra',
-        'en': '%s in Chișinău — %d products from %s | Stefsotra',
+        'en': '%s in Chisinau — %d products from %s | Stefsotra',
     }[lang] % (label, len(prods), money(lo, lang))
     desc = {
         'ro': '%s la Stefsotra Chișinău: %d produse în %d dimensiuni, preț de la %s. %s. '
               'Tăiem la dimensiune fără cost, livrare în Chișinău și în toată Moldova.',
         'ru': '%s в Stefsotra, Кишинёв: %d товаров в %d размерах, цена от %s. %s. '
               'Режем по размеру бесплатно, доставка по Кишинёву и всей Молдове.',
-        'en': '%s at Stefsotra in Chișinău: %d products in %d sizes, from %s. %s. '
+        'en': '%s at Stefsotra in Chisinau: %d products in %d sizes, from %s. %s. '
               'Cut to size free of charge, delivery in Chișinău and across Moldova.',
     }[lang] % (label, len(prods), sizes, money(lo, lang),
                ', '.join(cat_label(lang, c['key']) for c in g['categories']))
 
     cards = ''.join(
-        '<a class="gcard" href="%s/c/%s/">%s<span class="gcard-t">%s<i>%s</i></span></a>'
-        % (px, c['key'],
+        '<a class="gcard" href="%s%s">%s<span class="gcard-t">%s<i>%s</i></span></a>'
+        % (px, cpath(lang, c['key']),
            ('<img loading="lazy" src="%s" alt="" width="1200" height="1200">'
             % e(next((p['images'][0] for p in CAT['products']
                       if p['category'] == c['key'] and p['images']), '')))
@@ -733,9 +1115,9 @@ def build_group(lang, g):
             continue
         sections += ('<section class="home-sec" id="c-%s">'
                      '<div class="sec-head"><h2>%s</h2>'
-                     '<a class="small" href="%s/c/%s/">%s →</a></div>'
+                     '<a class="small" href="%s%s">%s →</a></div>'
                      '<p class="muted small">%s</p><div class="grid">%s</div></section>'
-                     % (c['key'], e(cat_label(lang, c['key'])), px, c['key'],
+                     % (c['key'], e(cat_label(lang, c['key'])), px, cpath(lang, c['key']),
                         e(t(lang, 'nav.allIn', n=c['count'])),
                         e(t(lang, 'cat.results', n=len(in_cat))),
                         ''.join(tile(lang, p) for p in in_cat)))
@@ -748,8 +1130,9 @@ def build_group(lang, g):
             '<div class="wrap">%s<p class="muted small">%s</p><div class="cards">%s</div>%s</div>'
             % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (label, '')]),
                e(label), e(desc), jump, e(t(lang, 'cat.results', n=len(prods))), cards, sections))
-    return page(lang, '/g/%s/' % g['key'], title, desc, body,
-                jsonld=[crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (label, '/g/%s/' % g['key'])])])
+    return page(lang, gpaths(g['key']), title, desc, body,
+                jsonld=[crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
+                                         (label, gpath(lang, g['key']))])])
 
 
 def build_product(lang, p):
@@ -773,13 +1156,23 @@ def build_product(lang, p):
                body_txt + '. ' if body_txt else '', CITY[lang])
 
     imgs = p['images']
+    # The photograph is the largest thing on the page and it is what the browser measures
+    # as the LCP, so it is fetched at high priority rather than in queue order. The alt was
+    # the English product title on all three languages; it is the page's own name for the
+    # product now, which is both what a screen reader should read out and what Google Images
+    # matches a Romanian or Russian query against.
+    size_only = ' · '.join(x for x in (rng or '').split(' · ') if not x.endswith('×'))
+    alt_txt = '%s — %s' % (nm, size_only) if size_only else nm
     gallery = (
-        '<div class="main"><img id="mainImg" src="%s" alt="%s" width="1200" height="1200"></div>'
-        % (e(imgs[0]), e(p['title'])) +
+        '<div class="main"><img id="mainImg" src="%s" alt="%s" width="1200" height="1200" '
+        'fetchpriority="high" decoding="async"></div>'
+        % (e(imgs[0]), e(alt_txt)) +
         ('<div class="thumbs">%s</div>' % ''.join(
-            '<button type="button" data-i="%d" aria-pressed="%s"><img src="%s" alt="" '
-            'loading="lazy" width="1200" height="1200"></button>'
-            % (i, 'true' if i == 0 else 'false', e(u)) for i, u in enumerate(imgs))
+            '<button type="button" data-i="%d" aria-pressed="%s"><img src="%s" alt="%s" '
+            'loading="lazy" decoding="async" width="1200" height="1200"></button>'
+            % (i, 'true' if i == 0 else 'false', e(u),
+               e('%s %d' % (nm, i + 1)) if i else e(alt_txt))
+            for i, u in enumerate(imgs))
          if len(imgs) > 1 else '')
     ) if imgs else ('<div class="main ph none">%s</div>'
                     % placeholder(lang, p).replace('<div class="ph none">', '').replace('</div>', ''))
@@ -831,8 +1224,8 @@ def build_product(lang, p):
     body = (
         '<div class="wrap">' +
         crumb_html(lang, [(t(lang, 'nav.home'), '/'),
-                          (group_label(lang, p['group']), '/g/%s/' % p['group']),
-                          (label, '/c/%s/' % p['category']), (nm, '')]) +
+                          (group_label(lang, p['group']), gpath(lang, p['group'])),
+                          (label, cpath(lang, p['category'])), (nm, '')]) +
         '<div class="pdp"><div class="gallery">%s</div><div>' % gallery +
         '<h1>%s</h1>%s<p class="price big">%s</p>%s'
         % (e(nm), ('<p class="altname small muted">%s</p>' % e(p['title'])) if nm != p['title'] else '',
@@ -863,6 +1256,7 @@ def build_product(lang, p):
             ''.join('<li>%s</li>' % e(t(lang, k))
                     for k in ('prod.noPay', 'prod.cut'))) +
         '<h2 style="margin-top:26px">%s</h2>%s</div></div>' % (e(t(lang, 'prod.spec')), spec) +
+        fitment_html(lang, p) +
         sizetable +
         ('<div class="desc"><h2>%s</h2><p class="summary">%s</p></div>'
          % (e(t(lang, 'prod.summary')), e(summary(lang, p)))) +
@@ -886,13 +1280,89 @@ def build_product(lang, p):
                                          'sku': v.get('sku', '')} for v in p['variants']],
                            'images': p['images']}, ensure_ascii=False, separators=(',', ':')))
 
-    return page(lang, '/p/%s/' % p['handle'], title, desc, body,
+    PAGE_IMAGES['p/%s' % p['handle']] = p['images'][:4]
+    og_extra = (
+        '<meta property="product:price:amount" content="%g">\n'
+        '<meta property="product:price:currency" content="MDL">\n'
+        '<meta property="product:availability" content="%s">\n'
+        % (p['price_min'],
+           'in stock' if any(v['available'] for v in p['variants']) else 'preorder')
+    ) if p['price_min'] else ''
+    # A preload for the photograph the page is about. The browser finds it in <head>
+    # instead of waiting for the stylesheet and the gallery markup below it.
+    if imgs:
+        og_extra += ('<link rel="preload" as="image" href="%s" fetchpriority="high">\n'
+                     % e(imgs[0]))
+
+    return page(lang, ppaths(p), title, desc, body,
                 image=SITE + '/assets/og/%s.png' % p['handle'],
+                og_type='product', extra_meta=og_extra,
                 jsonld=[product_ld(lang, p),
+                        # Google prints the breadcrumb under the result, and the last crumb
+                        # was the English product title on the Romanian and Russian pages.
                         crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
-                                         (label, '/c/%s/' % p['category']),
-                                         (p['title'], '/p/%s/' % p['handle'])])],
+                                         (label, cpath(lang, p['category'])),
+                                         (nm, ppath(lang, p))])],
                 scripts=embed)
+
+
+def fitment_html(lang, p):
+    """"Fits" section: the make, every model it covers, and the OE cross-references."""
+    fits = FITS.get(p['handle'])
+    if not fits:
+        return ''
+    rows = ''.join(
+        '<li><b>%s</b>%s</li>'
+        % (e(mk), (' — ' + e(', '.join(d['models']))) if d['models'] else '')
+        for mk, d in sorted(fits.items()))
+    oe = sorted({o for d in fits.values() for o in d['oe']})
+    return (
+        '<section class="fitment"><h2>%s</h2><ul class="fitlist">%s</ul>'
+        '<p class="small"><b>%s:</b> <span class="oelist">%s</span></p>'
+        '<p class="small muted">%s <a href="%s/vehicle.html">%s →</a></p></section>'
+        % (e(t(lang, 'prod.fits')), rows,
+           e(t(lang, 'prod.fitsOe')), e(', '.join(oe)),
+           e(t(lang, 'prod.fitsNote')), PREFIX[lang], e(t(lang, 'prod.fitsCta'))))
+
+
+def fitment_ld(p):
+    """schema.org Vehicle entries for the Product this part fits."""
+    fits = FITS.get(p['handle'])
+    if not fits:
+        return None
+    out = []
+    for mk, d in sorted(fits.items()):
+        for md in (d['models'] or [None]):
+            v = {'@type': 'Vehicle', 'manufacturer': {'@type': 'Organization', 'name': mk},
+                 'name': '%s %s' % (mk, md) if md else mk}
+            if md:
+                v['model'] = md
+            out.append(v)
+    return out
+
+
+def google_review_cta(lang, compact=False):
+    """The ask that actually moves the needle.
+
+    The shop that owns the top of "furtun chisinau" does so from a Business Profile with
+    thousands of reviews, not from its HTML -- that is the box Google puts above the
+    organic results. Reviews there can only come from customers who were asked, so the ask
+    goes where a satisfied customer already is: on the contact page, next to the on-site
+    review form, and on the screen that confirms an order has been sent.
+
+    Nothing renders until _contact.review_url holds the Business Profile's own
+    "write a review" link. There is no default and no placeholder.
+    """
+    url = CONTACT.get('review_url')
+    if not url:
+        return ''
+    if compact:
+        return ('<p class="small"><a href="%s" target="_blank" rel="noopener">%s →</a></p>'
+                % (e(url), e(t(lang, 'rev.googleH'))))
+    return ('<div class="sidecard greview"><h3>%s</h3><p class="small">%s</p>'
+            '<a class="btn ghost small-btn" href="%s" target="_blank" rel="noopener">%s</a></div>'
+            % (e(t(lang, 'rev.googleH')), e(t(lang, 'rev.googleP')),
+               e(url), e(t(lang, 'rev.googleCta'))))
 
 
 def review_block(lang, p):
@@ -922,10 +1392,10 @@ def review_block(lang, p):
                    for i in range(1, 6)),
            e(t(lang, 'ct.name')), e(t(lang, 'rev.text')),
            e(t(lang, 'rev.submit')), e(t(lang, 'rev.pending'))))
-    return ('<section id="reviews" class="reviews"><h2>%s</h2>%s%s</section>'
+    return ('<section id="reviews" class="reviews"><h2>%s</h2>%s%s%s</section>'
             % (e(t(lang, 'rev.h')),
                items or '<p class="muted">%s %s</p>' % (e(t(lang, 'rev.none')), e(t(lang, 'rev.first'))),
-               form))
+               form, google_review_cta(lang, compact=True)))
 
 
 def build_content(lang, slug, url):
@@ -972,11 +1442,12 @@ def build_content(lang, slug, url):
               ('/warranty/', 'nav.warranty'), ('/contact/', 'nav.contact')]
     side = (
         '<div class="sidecard"><h3>%s</h3><p class="small">%s</p>'
-        '<a class="bigphone" href="tel:%s">%s</a><a class="small" href="mailto:%s">%s</a>'
+        '%s<a class="small" href="mailto:%s">%s</a>'
         '<button type="button" class="btn ghost small-btn" data-ai-open>%s ✦</button></div>'
         '<div class="sidecard"><h3>%s</h3><ul class="sidelinks">%s</ul></div>'
         % (e(t(lang, 'pg.help')), e(t(lang, 'pg.helpText')),
-           e(CONTACT['phone_href']), e(CONTACT['phone']), e(CONTACT['email']), e(CONTACT['email']),
+           phone_links('<a class="bigphone" href="tel:%s">%s</a>'),
+           e(CONTACT['email']), e(CONTACT['email']),
            e(t(lang, 'nav.assistant')), e(t(lang, 'pg.more')),
            ''.join('<li><a href="%s%s">%s</a></li>' % (px, u, e(t(lang, k)))
                    for u, k in others if u != url)))
@@ -986,11 +1457,12 @@ def build_content(lang, slug, url):
         '<div class="wrap pagebody"><article class="prose">%s</article>'
         '<aside class="pageside">%s</aside></div>'
         '<div class="wrap"><section class="home-sec ask"><div><h2>%s</h2>'
-        '<p class="muted">%s</p></div><a class="btn" href="%s/catalog.html">%s</a></section></div>'
+        '<p class="muted">%s</p></div><div class="ask-actions">%s'
+        '<a class="btn" href="%s/catalog.html">%s</a></div></section></div>'
         % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (d['title'], '')]),
            e(d['title']), ''.join(parts), side,
            e(t(lang, 'pg.ctaH')), e(t(lang, 'pg.ctaP', n=CAT['count'], v=variants)),
-           px, e(t(lang, 'nav.catalog'))))
+           sales_phone(lang), px, e(t(lang, 'nav.catalog'))))
 
     title = '%s | Stefsotra %s' % (d['title'], GEO[lang])
     desc = strip_tags(d.get('lead', '') + ' ' + (d.get('body') or [''])[0], 158)
@@ -1011,10 +1483,11 @@ def build_contact(lang):
     facts = ''.join(
         '<div class="fact"><span class="small muted">%s</span><div>%s</div></div>' % (e(k), v)
         for k, v in [
-            (t(lang, 'ct.phone'), '<a href="tel:%s">%s</a>' % (e(c['phone_href']), e(c['phone']))),
+            (t(lang, 'ct.phone'), phone_links('<a href="tel:%s">%s</a>', '<br>')),
             (t(lang, 'ct.email'), '<a href="mailto:%s">%s</a>' % (e(c['email']), e(c['email']))),
             (t(lang, 'ct.address'), addr),
-        ] + ([(t(lang, 'ct.hours'), e(c['hours']))] if c.get('hours') else []))
+        ] + ([(t(lang, 'ct.hours'), hours_html(lang))] if c.get('opening_hours')
+             else [(t(lang, 'ct.hours'), e(c['hours']))] if c.get('hours') else []))
 
     flow = '<ol class="flowsteps">%s</ol>' % ''.join(
         '<li><b></b><div><h3>%s</h3></div></li>' % e(t(lang, k))
@@ -1031,19 +1504,26 @@ def build_contact(lang):
         '<div class="field"><label for="message">%s</label>'
         '<textarea id="message" name="message" rows="5" required></textarea></div>'
         '<button class="btn" type="submit">%s</button></form>'
-        '<p class="note ok" id="ok" hidden>%s</p>'
+        '<p class="note ok" id="ok" hidden>%s</p>%s'
         % (e(t(lang, 'ct.name')), e(t(lang, 'cart.phone')), e(t(lang, 'ct.email')),
-           e(t(lang, 'ct.msg')), e(t(lang, 'ct.send')), e(t(lang, 'ct.sent'))))
+           e(t(lang, 'ct.msg')), e(t(lang, 'ct.send')), e(t(lang, 'ct.sent')),
+           # Under the form, the same offer the order form makes: not everyone wants to
+           # type their question into a box and wait.
+           ('<p class="small muted" style="margin-top:10px">%s</p>'
+            % t(lang, 'form.orCall',
+                p='<a href="tel:%s">%s</a>' % (e(c['phone2_href']), e(c['phone2'])))
+            ) if c.get('phone2') else ''))
 
     body = (
         '<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
         '<div class="wrap"><div class="contact-grid">'
         '<div class="contact-facts">%s</div>'
-        '<div class="contact-form"><h2>%s</h2><p class="note">%s</p>%s</div></div>'
+        '<div class="contact-form"><h2>%s</h2><p class="note">%s</p>%s%s</div></div>'
         '<section class="home-sec"><h2>%s</h2>%s</section></div>'
         % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (t(lang, 'ct.h1'), '')]),
            e(t(lang, 'ct.h1')), e(t(lang, 'ct.lead')), facts,
-           e(t(lang, 'ct.formH')), e(t(lang, 'ct.biz')), form, e(t(lang, 'flow.h')), flow))
+           e(t(lang, 'ct.formH')), e(t(lang, 'ct.biz')), form, google_review_cta(lang),
+           e(t(lang, 'flow.h')), flow))
 
     title = '%s — Stefsotra %s | %s' % (t(lang, 'ct.h1'), GEO[lang], CONTACT['phone'])
     desc = {'ro': 'Contactează Stefsotra: telefon %s, e-mail %s. Furnizor de furtunuri industriale '
@@ -1059,6 +1539,112 @@ def build_contact(lang):
                 current='/contact/')
 
 
+# ------------------------------------------------------------------ tool pages
+
+# catalog / search / vehicle / cart are drawn in the browser, so they used to be copied
+# byte for byte to /, /ru/ and /en/. That left twelve URLs carrying the same empty shell,
+# every one of them lang="ro", with no canonical, no hreflang, no description and no
+# header a crawler could read. Google had three identical addresses per tool and no
+# instruction about which to keep. They are now built like every other page: one head per
+# language, a self-referencing canonical, the hreflang set, and the real header and footer
+# so the navigation is in the HTML rather than assembled by JavaScript after load.
+TOOLS = {
+    'catalog.html': {
+        'current': '/catalog.html', 'index': True, 'h1': 'cat.h1',
+        'seed': {'<h1 id="h1">&nbsp;</h1>': '<h1 id="h1">%(h1)s</h1>'},
+        'title': {
+            'ro': 'Catalog — %(n)d produse tehnice din cauciuc | Stefsotra Chișinău',
+            'ru': 'Каталог — %(n)d технических резиновых изделий | Stefsotra Кишинёв',
+            'en': 'Catalogue — %(n)d technical rubber products | Stefsotra Chisinau',
+        },
+        'desc': {
+            'ro': 'Filtrează după diametru, material, unghi și tip de cuplaj. %(n)d produse în '
+                  '%(v)d dimensiuni, prețuri în lei. Livrare în Chișinău și în toată Moldova.',
+            'ru': 'Фильтр по диаметру, материалу, углу и типу соединения. %(n)d товаров в '
+                  '%(v)d размерах, цены в леях. Доставка по Кишинёву и всей Молдове.',
+            'en': 'Filter by diameter, material, angle and coupling type. %(n)d products in '
+                  '%(v)d sizes, priced in lei. Delivery in Chișinău and across Moldova.',
+        }},
+    'vehicle.html': {
+        'current': '/vehicle.html', 'index': True, 'h1': 'veh.h1',
+        'seed': {'<div class="wrap" id="root"></div>':
+                 '<div class="wrap" id="root"><h1>%(h1)s</h1><p class="lead">%(lead)s</p></div>'},
+        'title': {
+            'ro': 'Caută piese după vehicul — furtunuri de silicon | Stefsotra',
+            'ru': 'Подбор по автомобилю — силиконовые шланги | Stefsotra',
+            'en': 'Find parts by vehicle — silicone hoses | Stefsotra',
+        },
+        'desc': {
+            'ro': 'Alege marca, modelul și motorul și vezi furtunurile și piesele care se '
+                  'potrivesc. Stoc în Chișinău, livrare în toată Moldova.',
+            'ru': 'Выберите марку, модель и двигатель и посмотрите подходящие шланги и детали. '
+                  'Склад в Кишинёве, доставка по всей Молдове.',
+            'en': 'Pick the make, model and engine and see the hoses and parts that fit. '
+                  'Stock in Chișinău, delivery across Moldova.',
+        }},
+    # A results page and a basket. Neither has content of its own, and an indexed search
+    # page is the classic way to fill an index with near-duplicates, so both say noindex.
+    # "follow" so the links on them still pass through.
+    'search.html': {
+        'current': '', 'index': False, 'h1': 'srch.h1',
+        'seed': {'<div class="wrap" id="root"></div>':
+                 '<div class="wrap" id="root"><h1>%(h1)s</h1><p class="lead">%(lead)s</p></div>'},
+        'title': {'ro': 'Căutare | Stefsotra', 'ru': 'Поиск | Stefsotra',
+                  'en': 'Search | Stefsotra'},
+        'desc': {l: strip_tags(STR[l].get('srch.lead', '')) for l in LANGS}},
+    'cart.html': {
+        'current': '', 'index': False, 'h1': 'cart.h1',
+        'seed': {'<h1 data-t="cart.h1">&nbsp;</h1>': '<h1 data-t="cart.h1">%(h1)s</h1>'},
+        'title': {'ro': 'Cererea ta | Stefsotra', 'ru': 'Ваша заявка | Stefsotra',
+                  'en': 'Your request | Stefsotra'},
+        'desc': {l: strip_tags(STR[l].get('cart.note', '')) for l in LANGS}},
+}
+
+
+def build_tool(lang, filename):
+    """One interactive tool page, wrapped in the same chrome as every other page."""
+    spec = TOOLS[filename]
+    path = '/' + filename
+    fill = {'n': CAT['count'], 'v': sum(len(p['variants']) for p in CAT['products'])}
+    fmt = lambda x: x % fill if '%(' in x else x
+    title = clamp(fmt(spec['title'][lang]), TITLE_MAX)
+    desc = clamp(fmt(spec['desc'][lang]), DESC_MAX)
+    body = open(os.path.join(ROOT, 'templates', filename), encoding='utf-8').read()
+    # These two pages draw themselves, so what a crawler was served was an empty <h1> on
+    # the catalogue and no <h1> at all on the vehicle finder. Both headings are seeded
+    # into the HTML in the page's own language, in the element the page's JavaScript
+    # rewrites a moment later with the same text -- so nothing on screen changes, and the
+    # heading is there for whatever does not run the script.
+    for marker, seed in spec.get('seed', {}).items():
+        assert marker in body, (filename, marker)
+        body = body.replace(marker, seed % {'h1': e(t(lang, spec['h1'])), 'lead': e(desc)}, 1)
+    # The fragment is markup followed by the page's own script, and that script calls into
+    # app.js the moment it runs, so app.js has to be emitted between the two rather than
+    # after both. Split at the first <script and the footer goes in the gap as well.
+    cut = body.find('<script')
+    markup, inline = (body[:cut], body[cut:]) if cut >= 0 else (body, '')
+
+    jsonld = [crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (title.split(' — ')[0].split(' | ')[0], path)])] \
+        if spec['index'] else None
+    doc = (head(lang, title, desc, path, None, jsonld, noindex=not spec['index']) +
+           announce_html(lang) +
+           header_html(lang, spec['current']).replace('{PATH}', path) +
+           markup +
+           footer_html(lang, path) +
+           contact_js() + gslug_js(lang) + pslug_js(lang) +
+           '<script src="/assets/js/app.js"></script>'
+           '<script src="/assets/js/assistant.js"></script>\n' +
+           inline +
+           '\n</body>\n</html>\n')
+    out = os.path.join(ROOT, PREFIX[lang].lstrip('/'), filename)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, 'w', encoding='utf-8') as f:
+        f.write(doc)
+    url = SITE + PREFIX[lang] + path
+    PAGE_HASH[url] = hashlib.sha1(doc.encode('utf-8')).hexdigest()
+    return url
+
+
 def build_404():
     lang = 'ro'
     body = ('<div class="wrap" style="padding:60px 20px;text-align:center">'
@@ -1066,11 +1652,13 @@ def build_404():
             '<a class="btn" href="/catalog.html">%s</a></div>'
             % (e(t(lang, 'nf.h')), e(t(lang, 'nf.p')), e(t(lang, 'nf.cta'))))
     doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404.html', noindex=True) +
+           announce_html(lang) +
            header_html(lang).replace('{PATH}', '/') + '<main>' + body + '</main>' +
            footer_html(lang, '/') +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
                {k: CONTACT.get(k, '') for k in
-                ('email', 'phone', 'phone_href', 'address', 'maps')},
+                ('email', 'phone', 'phone_href', 'phone2', 'phone2_href',
+                 'address', 'maps')},
                ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
            '<script src="/assets/js/assistant.js"></script>'
@@ -1081,21 +1669,78 @@ def build_404():
 
 # ---------------------------------------------------------------- main
 
+def write_vercel_json(rules):
+    """The config the site is actually served from.
+
+    trailingSlash matters more than it looks. Every canonical, hreflang and sitemap entry
+    this build writes ends in a slash, and Vercel's default is to strip it -- which would
+    point all 483 canonicals at addresses that redirect. Setting it true makes the server
+    agree with what the HTML claims. cleanUrls stays off for the same reason: the four
+    tool pages are canonicalised as /catalog.html, not /catalog.
+
+    Headers here replace the ones in netlify.toml, which Vercel never reads, so the build
+    inputs under /templates, /scripts, /data and /i18n have been crawlable all along.
+    """
+    # No host rule here. The apex already 308s to www at the platform, which is why SITE
+    # names www; a www-to-apex rule would fight it and loop.
+    redirects = []
+    for line in rules:
+        src, dst, _ = line.split()
+        redirects.append({'source': src, 'destination': dst, 'statusCode': 301})
+
+    def hdr(source, **kv):
+        return {'source': source,
+                'headers': [{'key': k.replace('_', '-'), 'value': v} for k, v in kv.items()]}
+
+    cfg = {
+        '$schema': 'https://openapi.vercel.sh/vercel.json',
+        'trailingSlash': True,
+        'cleanUrls': False,
+        # The assistant reads the catalogue index off disk at runtime. Vercel bundles only
+        # what a function requires, and this is opened with fs, so it has to be named.
+        'functions': {'api/assistant.js': {'includeFiles': 'data/index.txt'}},
+        'redirects': redirects,
+        'headers': [
+            hdr('/templates/(.*)', X_Robots_Tag='noindex, nofollow'),
+            hdr('/scripts/(.*)', X_Robots_Tag='noindex, nofollow'),
+            hdr('/i18n/(.*)', X_Robots_Tag='noindex',
+                Cache_Control='public, max-age=3600'),
+            hdr('/data/(.*)', X_Robots_Tag='noindex',
+                Cache_Control='public, max-age=3600'),
+            hdr('/assets/(.*)', Cache_Control='public, max-age=86400'),
+            hdr('/(.*)', X_Content_Type_Options='nosniff',
+                Referrer_Policy='strict-origin-when-cross-origin'),
+        ],
+    }
+    # Vercel caps vercel.json at 1024 redirects. Fail loudly rather than deploy a file
+    # the platform will reject or silently truncate.
+    assert len(redirects) <= 1024, 'too many redirects for vercel.json: %d' % len(redirects)
+    with open(os.path.join(ROOT, 'vercel.json'), 'w', encoding='utf-8') as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+        f.write('\n')
+
+
 def main():
     # Wipe previously generated trees so a removed product cannot linger as a live URL.
     for d in ('p', 'c', 'g', 'ru', 'en', 'about', 'delivery', 'partners', 'returns',
               'warranty', 'contact'):
         shutil.rmtree(os.path.join(ROOT, d), ignore_errors=True)
+    for f in TOOLS:
+        try:
+            os.remove(os.path.join(ROOT, f))
+        except FileNotFoundError:
+            pass
 
     urls = []
     for lang in LANGS:
         urls.append((build_home(lang), lang, '/'))
         for g in CAT['groups']:
-            urls.append((build_group(lang, g), lang, '/g/%s/' % g['key']))
+            urls.append((build_group(lang, g), lang, 'g/%s' % g['key']))
             for c in g['categories']:
-                urls.append((build_category(lang, c['key'], c['count']), lang, '/c/%s/' % c['key']))
+                urls.append((build_category(lang, c['key'], c['count']), lang,
+                             'c/%s' % c['key']))
         for p in CAT['products']:
-            urls.append((build_product(lang, p), lang, '/p/%s/' % p['handle']))
+            urls.append((build_product(lang, p), lang, 'p/%s' % p['handle']))
         for slug, url in (('about', '/about/'), ('delivery', '/delivery/'),
                           ('partners', '/partners/'), ('returns', '/returns/'),
                           ('warranty', '/warranty/')):
@@ -1103,43 +1748,145 @@ def main():
         urls.append((build_contact(lang), lang, '/contact/'))
     build_404()
 
-    # The interactive tools live at one address each, but the header on a Russian page
-    # must link to a Russian tool page, so each gets a copy under the language prefix.
-    for lang in ('ru', 'en'):
-        for tool in ('catalog.html', 'search.html', 'vehicle.html', 'cart.html'):
-            src = os.path.join(ROOT, tool)
-            dst = os.path.join(ROOT, lang, tool)
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            shutil.copyfile(src, dst)
+    # The interactive tools live at one address per language. They are built, not copied:
+    # see TOOLS above for why. Only the two with content of their own go in the sitemap.
+    tool_urls = []
+    for lang in LANGS:
+        for tool in TOOLS:
+            loc = build_tool(lang, tool)
+            if TOOLS[tool]['index']:
+                tool_urls.append((loc, lang, '/' + tool))
 
     # sitemap, with the hreflang set repeated on every entry as Google requires
     by_path = {}
-    for loc, lang, path in urls:
+    for loc, lang, path in urls + tool_urls:
         by_path.setdefault(path, {})[lang] = loc
+    # lastmod: today only for the pages whose HTML actually changed since the last build.
+    # A missing or unreadable store means a first build -- everything is dated today, which
+    # is true, because everything was just written.
+    store_path = os.path.join(DATA, 'lastmod.json')
+    try:
+        store = json.load(open(store_path, encoding='utf-8'))
+    except (OSError, ValueError):
+        store = {}
+    today = datetime.date.today().isoformat()
+    fresh = {}
+    for url, h in PAGE_HASH.items():
+        prev = store.get(url)
+        fresh[url] = {'h': h, 'd': prev['d'] if prev and prev.get('h') == h else today}
+    with open(store_path, 'w', encoding='utf-8') as f:
+        json.dump(fresh, f, ensure_ascii=False, indent=0, sort_keys=True)
+
     entries = []
     for path, locs in by_path.items():
-        prio = '1.0' if path == '/' else '0.9' if path.startswith('/c/') else \
-               '0.8' if path.startswith('/p/') else '0.7'
+        # The three languages no longer share a category or group path, so those group by
+        # a language-neutral key ("c/silicone-hose") instead. Everything else still groups
+        # by its path, which is the same in all three.
+        prio = ('1.0' if path == '/' else
+                '0.9' if path.startswith('c/') else
+                '0.8' if path.startswith('p/') else
+                '0.7' if path.startswith('g/') else
+                '0.6' if path.endswith('.html') else '0.7')
+        # Product photographs are a real share of the traffic for parts like these: someone
+        # searches an image of a Camlock type and lands on the page that sells it. Naming
+        # them here means Google Images does not have to render the page to find them, and
+        # that the ones sitting behind the gallery are seen at all.
+        imgs = ''.join('<image:image><image:loc>%s</image:loc></image:image>' % e(u)
+                       for u in PAGE_IMAGES.get(path, []))
         for lang, loc in locs.items():
             alts = ''.join('<xhtml:link rel="alternate" hreflang="%s" href="%s"/>' % (l, u)
                            for l, u in locs.items())
             alts += '<xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % locs['ro']
-            entries.append('<url><loc>%s</loc>%s<changefreq>weekly</changefreq>'
-                           '<priority>%s</priority></url>' % (loc, alts, prio))
-    # the interactive tools, indexable but lower priority
-    for tool in ('/catalog.html', '/vehicle.html', '/search.html'):
-        entries.append('<url><loc>%s%s</loc><priority>0.6</priority></url>' % (SITE, tool))
+            entries.append('<url><loc>%s</loc>%s<lastmod>%s</lastmod>%s'
+                           '<changefreq>weekly</changefreq><priority>%s</priority></url>'
+                           % (loc, alts, fresh[loc]['d'], imgs, prio))
+
+    # The slug assignments, so the next build reuses them rather than inventing new URLs.
+    with open(SLUG_PATH, 'w', encoding='utf-8') as f:
+        json.dump(SLUGS, f, ensure_ascii=False, indent=1, sort_keys=True)
+
+    # Every address the site ever published, pointed at the one it uses now. The old
+    # key-based URLs (/c/silicone-hose/) are indexed and linked; without these they would
+    # 404 the moment this deploys. A rule whose source equals its target is skipped --
+    # English slugs often match the key exactly, and a redirect to itself is a loop.
+    #
+    # These are emitted twice, from this one list: vercel.json, which is what actually
+    # serves the site, and _redirects, which is the portable form Netlify and Cloudflare
+    # Pages both read. netlify.toml is not read by anything today -- see the README.
+    rules = []
+    # The addresses the old Shopify storefront used. They are still linked and bookmarked,
+    # and have been 404ing since the move, because the file that held them was never read
+    # by the host the site actually runs on.
+    for src, dst in (('/product.html', '/catalog.html'),
+                     ('/about.html', '/about/'), ('/contact.html', '/contact/'),
+                     ('/delivery.html', '/delivery/'), ('/partners.html', '/partners/'),
+                     ('/returns.html', '/returns/'), ('/warranty.html', '/warranty/'),
+                     ('/pages/about-us', '/about/'), ('/pages/delivery', '/delivery/'),
+                     ('/pages/contact', '/contact/'), ('/pages/partners', '/partners/'),
+                     ('/pages/return-policy', '/returns/'),
+                     ('/pages/warranty-plicy', '/warranty/')):
+        rules.append('%s %s 301' % (src, dst))
+    # The Cyrillic addresses those five products were published under, sent straight to
+    # where each one lives now -- one hop, not a chain through the transliterated handle.
+    for handle, old_handle in sorted(RETIRED_HANDLES.items()):
+        prod = BY_HANDLE.get(handle)
+        if not prod:
+            continue
+        for lang in LANGS:
+            src = '%s/p/%s/' % (PREFIX[lang], old_handle)
+            dst = PREFIX[lang] + ppath(lang, prod)
+            rules.append('%s %s 301' % (src, dst))
+            # Vercel matches the raw request path, so a source written in literal Cyrillic
+            # never fires: the browser sends %D0%BA%D0%B0%D0%BF... Both forms are listed.
+            enc = '%s/p/%s/' % (PREFIX[lang], urllib.parse.quote(old_handle))
+            if enc != src:
+                rules.append('%s %s 301' % (enc, dst))
+
+    # /products/<shopify handle> went to /p/<handle>/, which is no longer an address.
+    # Written out per product so it lands on the final URL in one hop instead of two.
+    for prod in CAT['products']:
+        rules.append('/products/%s %s 301' % (prod['handle'], ppath('ro', prod)))
+    for rec_key, rec in sorted(SLUGS.items()):
+        kind, key = rec_key.split('/', 1)
+        olds = {key} | {v for v in rec.get('was', {}).get('__all__', [])}
+        for lang in LANGS:
+            new_path = '%s/%s/%s/' % (PREFIX[lang], kind, rec['now'][lang])
+            for old_slug in sorted(olds | set(rec.get('was', {}).get(lang, []))):
+                src = '%s/%s/%s/' % (PREFIX[lang], kind, old_slug)
+                if src != new_path:
+                    rules.append('%s %s 301' % (src, new_path))
+    with open(os.path.join(ROOT, '_redirects'), 'w', encoding='utf-8') as f:
+        f.write('# Generated by scripts/build_static.py -- do not edit.\n'
+                '# Portable form, read by Netlify and Cloudflare Pages. The site runs on\n'
+                '# Vercel, which reads vercel.json instead; both come from one list.\n'
+                + '\n'.join(rules) + '\n')
+    write_vercel_json(rules)
+    print('%d redirect rules' % len(rules))
 
     with open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8') as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
-                'xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
+                'xmlns:xhtml="http://www.w3.org/1999/xhtml" '
+                'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' +
                 '\n'.join(entries) + '\n</urlset>\n')
 
+    # Disallow and noindex do not combine: a page a crawler is forbidden to fetch is a
+    # page whose noindex tag it never reads, so it can stay in the index as a bare URL.
+    # /search.html and /cart.html carry noindex in the HTML and are therefore left
+    # crawlable here on purpose, so the tag is actually seen and obeyed.
+    #
+    # The filtered views of the catalogue (/catalog.html?cat=...) are the one place the
+    # site can generate unbounded near-duplicate URLs. They are not blocked either --
+    # every one of them carries a canonical pointing back at /catalog.html, and a blocked
+    # URL is a canonical Google never gets to read. Yandex is named separately because it
+    # is a large share of Russian-language search in Moldova and it does read Clean-param,
+    # which folds those query strings onto one address at the crawler instead.
     with open(os.path.join(ROOT, 'robots.txt'), 'w', encoding='utf-8') as f:
-        f.write('User-agent: *\nAllow: /\n'
-                'Disallow: /cart.html\n'
-                'Disallow: /*?q=\n\n'
+        f.write('User-agent: *\n'
+                'Allow: /\n\n'
+                'User-agent: Yandex\n'
+                'Allow: /\n'
+                'Clean-param: q&cat&group&sort&dia&clamp&angle&material&type\n\n'
                 'Sitemap: %s/sitemap.xml\n' % SITE)
 
     print('%d pages, %d URLs in the sitemap' % (len(urls), len(entries)))

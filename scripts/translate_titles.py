@@ -172,13 +172,47 @@ PRE = [(re.compile(r'\b(Silicone)\s+(\d{2,3}\s*°)\s+(Elbow Hose|U-Shaped Hose)'
         lambda m: '%s %s %s' % (m.group(1), m.group(3), m.group(2)))]
 
 # Cyrillic titles already read correctly in Russian; they need a Romanian version.
-CYRILLIC = {
-    'ПОЛУРЕТАН В СТЕРЖНЯХ': 'Poliuretan în bare',
-    'КАПРАЛОН ГРАФИТОНАПОЛНЕННЫЙ': 'Caprolon grafitat',
-    'СИЛИКОНОВЫЙ ШНУР': 'Șnur din silicon',
-    'ТЕКСТОЛИТ В ЛИСТАХ': 'Textolit în foi',
-    'ПОЛИПРОПИЛЕН ЛИСТОВОЙ': 'Polipropilenă în foi',
-}
+# Five products arrive from the feed titled in Russian. Their Russian title is already
+# right, so it is kept; these give the Romanian and the English. (ro, en) per entry,
+# longest phrase first -- the substituter applies them in this order, so
+# 'TEXTOLITH ТЕКСТОЛИТ В ЛИСТАХ' resolves before 'ТЕКСТОЛИТ В ЛИСТАХ' and the English
+# does not come out as the redundant 'TEXTOLITH Textolite sheets'.
+#
+# The trailing halves matter as much as the names. 'ПОЛИПРОПИЛЕН ЛИСТОВОЙ 5 ММ ... ЛИСТЫ
+# 1000Х2000 ММ.ТВЁРДОСТЬ 75' was being half-translated: the product name became Romanian
+# and the sheet size and hardness stayed in Russian, in the middle of a Romanian title
+# and a Romanian page title. Only words are translated here -- every number, every
+# dimension and the hardness figure pass through untouched.
+CYRILLIC = [
+    ('TEXTOLITH ТЕКСТОЛИТ В ЛИСТАХ', ('Textolit în foi', 'Textolite sheets')),
+    ('КАПРАЛОН ГРАФИТОНАПОЛНЕННЫЙ', ('Caprolon grafitat', 'Graphite-filled caprolon')),
+    ('ПОЛИПРОПИЛЕН ЛИСТОВОЙ', ('Polipropilenă în foi', 'Polypropylene sheet')),
+    ('ПОЛУРЕТАН В СТЕРЖНЯХ', ('Poliuretan în bare', 'Polyurethane rod')),
+    ('ТЕКСТОЛИТ В ЛИСТАХ', ('Textolit în foi', 'Textolite sheets')),
+    ('СИЛИКОНОВЫЙ ШНУР', ('Șnur din silicon', 'Silicone cord')),
+    ('РАЗМЕР ЛИСТА', ('Dimensiune foaie', 'Sheet size')),
+    ('ТВЁРДОСТЬ', ('Duritate', 'Hardness')),
+    ('ТВЕРДОСТЬ', ('Duritate', 'Hardness')),
+    ('ЛИСТЫ', ('Foi', 'Sheets')),
+]
+
+# 1000Х2000 uses a Cyrillic Х for the multiplication sign. Only between digits: the
+# letter appears inside words too, and this must not touch those.
+CYR_TIMES = re.compile(r'(?<=\d)\s*[ХX]\s*(?=\d)')
+
+
+def from_cyrillic(title, idx):
+    """Romanian (idx 0) or English (idx 1) for a title that arrived in Russian."""
+    out = title
+    for cyr, pair in CYRILLIC:
+        out = out.replace(cyr, pair[idx])
+    out = CYR_TIMES.sub('×', out)
+    out = out.replace('ММ', 'mm').replace('МM', 'mm').replace('мм', 'mm')
+    # 'В ЛИСТАХ2 ММ' is missing a space in the feed, and 'Textolite sheets2 mm' reads as a
+    # typo in a search result. Only these five titles go through here and none of them
+    # carries a part code, so a letter running straight into a digit is always the typo.
+    out = re.sub(r'(?<=[^\W\d_])(?=\d)', ' ', out)
+    return re.sub(r'\s+', ' ', out).strip()
 
 # Brand names, type letters and codes that must survive untouched.
 KEEP = re.compile(r'^(mm|l\d+|pa\d+|nbr|epdm|pmb|abs|pvc|dn\d+|[a-z]{1,2}\d*|'
@@ -207,25 +241,31 @@ def main():
     path = os.path.join(DATA, 'products.json')
     cat = json.load(open(path, encoding='utf-8'))
 
-    unknown_all, changed = {}, 0
+    unknown_all, leftover, changed = {}, {}, 0
     for p in cat['products']:
         en = p['title']
         is_cyr = bool(re.search(r'[А-Яа-я]', en))
 
         if is_cyr:
-            ro = en
-            for k, v in CYRILLIC.items():
-                ro = ro.replace(k, v)
-            ro = ro.replace('ММ', 'mm').replace('МM', 'mm')
+            # These also need an English name. Without one, name('en', p) fell back to
+            # p['title'] and the English page was headed in shouting Russian capitals.
+            ro = from_cyrillic(en, 0)
+            en_name = from_cyrillic(en, 1)
             ru = en
         else:
             ro, u_ro = translate(en, 0)
             ru, u_ru = translate(en, 1)
+            en_name = en
             for w in u_ro:
                 unknown_all.setdefault(w, []).append(en)
 
         p['title_ro'] = ro
         p['title_ru'] = ru
+        p['title_en'] = en_name
+        for lang, text in (('ro', ro), ('en', en_name)):
+            left = re.findall(r'[А-Яа-яЁё]+', text)
+            if left:
+                leftover.setdefault(lang, []).append((p['handle'], left))
         if ro != en:
             changed += 1
 
@@ -233,6 +273,13 @@ def main():
     ro_hits = sum(1 for p in cat['products']
                   if re.search(r'furtun|cuplaj|colier|garnitur|reduc', p['title_ro'], re.I))
     print(f'{ro_hits} Romanian titles contain furtun/cuplaj/colier/garnitură/reducție')
+
+    for lang in sorted(leftover):
+        print(f'\n{len(leftover[lang])} {lang} title(s) still carry Russian words:')
+        for handle, words in leftover[lang]:
+            print(f'   {handle[:44]:<44} {" ".join(sorted(set(words)))[:40]}')
+    if not leftover:
+        print('no Russian left in any Romanian or English title')
 
     if unknown_all:
         print(f'\n{len(unknown_all)} word(s) left in English -- check whether they should be:')

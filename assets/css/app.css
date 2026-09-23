@@ -210,6 +210,23 @@ main > .wrap, main > div > .wrap:first-child { padding-top: 26px; }
 }
 .home-sec.ask h2 { margin: 0 0 4px; }
 .home-sec.ask p { margin: 0; }
+/* The band is already a wrapping flex row with space-between, so the phone and the
+   button need to travel together as one group rather than land on opposite edges. */
+.greview { margin-top: 22px; }
+.greview h3 { margin: 0 0 6px; }
+
+.fitment { margin-top: 26px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--bg-2); padding: 18px 20px; }
+.fitment h2 { margin: 0 0 10px; font-size: 1.12rem; }
+.fitlist { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 6px; }
+.fitlist li { line-height: 1.45; }
+.fitment p { margin: 0 0 6px; }
+/* Long OE strings must wrap rather than push the page sideways on a phone. */
+.oelist { overflow-wrap: anywhere; }
+
+.ask-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.ask-tel { font-weight: 700; white-space: nowrap; }
+@media (max-width: 560px) { .ask-actions { width: 100%; } .ask-actions > * { flex: 1 1 auto; } }
 
 .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 .gcard {

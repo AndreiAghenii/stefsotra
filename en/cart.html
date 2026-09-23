@@ -1,19 +1,40 @@
 <!doctype html>
-<html lang="ro">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cerere — Stefsotra</title>
-<link rel="stylesheet" href="/assets/css/app.css">
+<title>Your request | Stefsotra</title>
+<meta name="description" content="No online payment. You send the order and Stefsotra contacts you to confirm availability, the final price and delivery.">
+<meta name="robots" content="noindex,follow">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stefsotra">
+<meta property="og:title" content="Your request | Stefsotra">
+<meta property="og:description" content="No online payment. You send the order and Stefsotra contacts you to confirm availability, the final price and delivery.">
+<meta property="og:url" content="https://www.stefsotra.md/en/cart.html">
+<meta property="og:image" content="https://www.stefsotra.md/assets/img/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Your request | Stefsotra">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#bf2c2c">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#bf2c2c">
+<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+<link rel="stylesheet" href="/assets/css/app.css">
+
 </head>
 <body>
+<div class="announce"><div class="wrap">The Stefsotra business is for sale — details through <a href="/en/contact/">the contact form</a> or call <a href="tel:+37322553954">+373 (22) 55-39-54</a></div></div><header class="site"><div class="wrap bar"><a class="logo" href="/en/"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" width="400" height="98"></a><nav class="main" id="mainnav"><button type="button" class="menu-trigger" id="prodBtn" aria-expanded="false">Products<i></i></button><a href="/en/vehicle.html">Find by vehicle</a></nav><form class="hsearch" action="/en/search.html" method="get" role="search"><input type="search" name="q" aria-label="Search" placeholder="e.g. silicone hose 38 mm 90 degrees"><button type="submit" aria-label="Search">⌕</button></form><div class="bar-end"><a class="iconbtn cartlink" href="/en/cart.html"><span aria-hidden="true">🛒</span><span class="lbl">Cart</span><span class="badge" data-cart-badge style="display:none">0</span></a><div class="langs"><a href="/cart.html" data-lang="ro" aria-pressed="false">ro</a><a href="/ru/cart.html" data-lang="ru" aria-pressed="false">ru</a><a href="/en/cart.html" data-lang="en" aria-pressed="true">en</a></div><button class="menu-btn" type="button" aria-label="Menu">☰</button></div></div><div class="mega" id="mega" hidden><div class="wrap mega-in"><div class="mega-col"><a class="mega-h" href="/en/g/hoses/">Hoses</a><ul><li><a href="/en/c/silicone-hose/">Silicone hose<span>15</span></a></li><li><a href="/en/c/industrial-hose/">Industrial hose<span>16</span></a></li><li><a href="/en/c/pvc-hose/">PVC hose<span>6</span></a></li></ul></div><div class="mega-col"><a class="mega-h" href="/en/g/couplings-fittings/">Couplings &amp; fittings</a><ul><li><a href="/en/c/camlock-couplings/">Camlock couplings<span>19</span></a></li><li><a href="/en/c/storz-couplings/">Storz couplings<span>9</span></a></li><li><a href="/en/c/guillemin-couplings/">Guillemin couplings<span>9</span></a></li><li><a href="/en/c/bauer-couplings/">Bauer couplings<span>3</span></a></li><li><a href="/en/c/tw-couplings/">TW couplings<span>15</span></a></li><li><a href="/en/c/hose-heads-adapters/">Hose heads &amp; adapters<span>6</span></a></li><li><a href="/en/c/valves/">Valves<span>3</span></a></li></ul></div><div class="mega-col"><a class="mega-h" href="/en/g/clamps-sealing/">Clamps &amp; sealing</a><ul><li><a href="/en/c/clamps/">Clamps<span>2</span></a></li><li><a href="/en/c/gaskets/">Gaskets<span>1</span></a></li><li><a href="/en/c/rubber-cord-profile/">Rubber cord &amp; profile<span>3</span></a></li></ul></div><div class="mega-col"><a class="mega-h" href="/en/g/technical-materials/">Technical materials</a><ul><li><a href="/en/c/sheet-materials/">Sheet materials<span>8</span></a></li><li><a href="/en/c/rods-tubes/">Rods &amp; tubes<span>4</span></a></li></ul></div><div class="mega-col"><a class="mega-h" href="/en/g/vehicle-agriculture/">Vehicle &amp; agriculture</a><ul><li><a href="/en/c/vehicle-parts/">Vehicle parts<span>6</span></a></li><li><a href="/en/c/agriculture-garden/">Agriculture &amp; garden<span>5</span></a></li></ul></div><div class="mega-col mega-cta"><a class="mega-h" href="/en/catalog.html">Catalogue</a><p class="small muted">All 130</p><a class="btn ghost small-btn" href="/en/vehicle.html">Find by vehicle</a></div></div></div></header>
+<!-- Body fragment for /cart.html. scripts/build_static.py wraps this in the head,
+     header and footer for each language and writes /, /ru/ and /en/ copies, so the
+     three copies stop being byte-identical pages with no canonical between them.
+     app.js and assistant.js are added by the builder; do not add them here. -->
 <main><div class="wrap" style="max-width:820px">
-  <h1 data-t="cart.h1">&nbsp;</h1>
+  <h1 data-t="cart.h1">Your cart</h1>
   <p class="lead" data-t="empty.cartP">&nbsp;</p>
   <div id="lines"></div>
   <div id="checkout" hidden>
@@ -54,11 +75,12 @@
       <p id="err" class="small" style="color:var(--bad)" hidden></p>
       <button class="btn" type="submit" id="submit" style="width:100%" data-t="cart.submit">&nbsp;</button>
       <p class="small muted" id="orEmail" style="margin-top:10px;text-align:center"></p>
+      <p class="small muted" id="orCall" style="margin-top:4px;text-align:center"></p>
     </form>
   </div>
 </div></main>
-<script src="/assets/js/app.js"></script>
-<script src="/assets/js/assistant.js"></script>
+<footer class="site"><div class="wrap foot"><div class="foot-brand"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" class="foot-logo" width="400" height="98" loading="lazy" decoding="async"><p class="small">Industrial hoses, couplings and fittings</p><p class="small"><a href="tel:+37322553954">+373 (22) 55-39-54</a></p><p class="small"><a href="tel:+37369127212">+373 69 12 72 12</a></p><p class="small"><a href="mailto:stefsotra@mail.ru">stefsotra@mail.ru</a></p><p class="small"><a href="https://www.google.com/maps/search/?api=1&amp;query=Soseaua+Muncesti+271,+MD-2002,+Chisinau,+Moldova" target="_blank" rel="noopener">Șoseaua Muncești 271, MD-2002, Chișinău, Moldova</a></p><p class="small hours">Mon–Fri 09:00–18:00 · Sat 09:00–14:00 · Sun Closed</p></div><div><h3>Products</h3><ul><li><a href="/en/catalog.html">Catalogue</a></li><li><a href="/en/vehicle.html">Find by vehicle</a></li><li><a href="/en/search.html">Smart search</a></li></ul></div><div><h3>Company</h3><ul><li><a href="/en/about/">About us</a></li><li><a href="/en/partners/">Partners</a></li><li><a href="/en/contact/">Contact</a></li></ul></div><div><h3>Information</h3><ul><li><a href="/en/delivery/">Delivery</a></li><li><a href="/en/returns/">Returns</a></li><li><a href="/en/warranty/">Warranty</a></li></ul></div></div><div class="wrap foot-cats small"><a href="/en/c/silicone-hose/">Silicone hose</a> · <a href="/en/c/industrial-hose/">Industrial hose</a> · <a href="/en/c/pvc-hose/">PVC hose</a> · <a href="/en/c/camlock-couplings/">Camlock couplings</a> · <a href="/en/c/storz-couplings/">Storz couplings</a> · <a href="/en/c/guillemin-couplings/">Guillemin couplings</a> · <a href="/en/c/bauer-couplings/">Bauer couplings</a> · <a href="/en/c/tw-couplings/">TW couplings</a> · <a href="/en/c/hose-heads-adapters/">Hose heads &amp; adapters</a> · <a href="/en/c/valves/">Valves</a> · <a href="/en/c/clamps/">Clamps</a> · <a href="/en/c/gaskets/">Gaskets</a> · <a href="/en/c/rubber-cord-profile/">Rubber cord &amp; profile</a> · <a href="/en/c/sheet-materials/">Sheet materials</a> · <a href="/en/c/rods-tubes/">Rods &amp; tubes</a> · <a href="/en/c/vehicle-parts/">Vehicle parts</a> · <a href="/en/c/agriculture-garden/">Agriculture &amp; garden</a></div><div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · <a href="https://www.stefsotra.md">stefsotra.md</a></span><span class="madeby"><a href="https://aggento.com" target="_blank" rel="noopener">Site made by Aggento</a></span></div></footer>
+<script>window.__CONTACT={"email":"stefsotra@mail.ru","phone":"+373 (22) 55-39-54","phone_href":"+37322553954","phone2":"+373 69 12 72 12","phone2_href":"+37369127212","address":"Șoseaua Muncești 271, MD-2002, Chișinău, Moldova","maps":"https://www.google.com/maps/search/?api=1&query=Soseaua+Muncesti+271,+MD-2002,+Chisinau,+Moldova","review_url":""};</script><script>window.__GSLUG={"hoses":"hoses","couplings":"couplings-fittings","sealing":"clamps-sealing","materials":"technical-materials","vehicle":"vehicle-agriculture"};</script><script>window.__PSLUG={"kamaz-maz-silicone-hoses":"silicone-hoses-for-kamaz-maz","mercedes-sprinter-silicone-hoses":"silicone-hoses-for-mercedes-sprinter","storz-latch":"storz-latch-aluminum","camlock-reducing-type-aa":"camlock-reducer-type-aa","camlock-reducing-type-dd":"camlock-reducer-type-dd","camlock-reducing-type-da":"camlock-reducer-type-da","camlock-reducing-type-f":"camlock-reducer-type-f","camlock-reducing-type-e":"camlock-reducer-type-e","camlock-reducing-type-d":"camlock-reducer-type-d","camlock-reducing-type-c":"camlock-reducer-type-c","camlock-reducing-type-b":"camlock-reducer-type-b","camlock-reducing-type-a":"camlock-reducer-type-a","bauer-coupling-2":"bauer-coupling-alt","storz-reducer-2":"storz-reducer-alt","vb":"vb-coupling","mb":"mb-coupling","mk":"mk-coupling","vk":"vk-coupling","universal-gasket":"universal-coupling-gasket","guillemin-gasket":"guillemin-gasket","guillemin-hose":"guillemin-hose-end","guillemin-female":"guillemin-female-without-latch","guillemin-male":"guillemin-male-with-latch","bauer-gasket":"bauer-gasket","bauer-coupling":"bauer-coupling-aluminum","camlock-handle":"camlock-handle","camlock-gasket":"camlock-gasket","storz-gasket":"storz-gasket","storz-cap":"storz-cap-aluminum","storz-reducer":"storz-reducer-aluminum","storz-hose-end":"storz-hose-end-aluminum","storz-coupling-female":"storz-coupling-female-aluminum","poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm":"polyurethane-rod-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm","silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm":"silicone-cord-5-mm-10-mm-15-mm-20-mm","tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm":"textolite-sheets-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm","polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75":"polypropylene-sheet-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm","kapralon-grafitonapolnennyy":"graphite-filled-caprolon","hose-head":"hose-head","toyota-hilux-bed-liner":"toyota-hilux-bed-liner","auto-compressor-628-4x4-2-cylinder":"auto-compressor-628-4x4-2-cylinder","truck-cargo-roof-canopy":"truck-cargo-roof-canopy","rubber-cord-nbr":"rubber-cord-nbr","paronite-pmb":"paronite-pmb","pvc-curtains":"pvc-curtains","polyurethane-sheet":"polyurethane-sheet","porous-sponge-rubber-epdm":"porous-sponge-rubber-epdm","kenda-klever-m-t-tires":"kenda-klever-m-t-tires","bearway-tires":"bearway-tires","nylon-tube-pa6":"nylon-tube-pa6","riezinovyie-rulony-piatachok":"rubber-roll-flooring-pyatachok","fuel-hose-with-braided-cover":"fuel-hose-with-braided-cover","camlock-type-dp":"camlock-type-dp","camlock-type-dc":"camlock-type-dc","camlock-type-f":"camlock-type-f","camlock-type-e":"camlock-type-e","camlock-type-d":"camlock-type-d","camlock-type-c":"camlock-type-c","camlock-type-b":"camlock-type-b","camlock-type-a":"camlock-type-a","fregat-sprinkler":"fregat-sprinkler","reinforced-silicone-damper-hose-with-three-rings-l203":"reinforced-silicone-damper-hose-with-three-rings-l203","reinforced-silicone-hose-damper-with-one-ring-l102":"reinforced-silicone-hose-damper-with-one-ring-l102","silicone-hose-double-damper-l102":"silicone-hose-double-damper-l102","ball-valve-for-water":"ball-valve-for-water","silicone_pipe_elbow_45":"silicone-45-elbow-hose","pipe_with_silicone_transition":"silicone-straight-hose-with-transition-l102","silicone_pipe_straight_l1000":"silicone-straight-hose-l1000mm","food_grade_hoses_suction":"food-grade-suction-hoses","food_grade_hoses":"food-grade-pressure-and-suction-hoses","adapters_plastic_abs":"abs-plastic-hose-adapters","oil_resistant_hoses":"oil-and-fuel-resistant-hoses","polypropylene-ball-valve":"polypropylene-ball-valve","oxygen_hoses":"oxygen-hoses","caprolon_rod":"caprolon","wire-fan-rake":"wire-fan-rakes","fan-rake_01":"fan-rake","fan-lawn-rake":"fan-lawn-rakes","adapter-hose-head":"transition-hose-head","air-hose":"air-hoses","aluminum-flex-duct":"aluminum-ducts","socket-coupling-head":"coupling-head","ventilation-hoses":"ventilation-hoses","storz-coupling-with-internal-thread":"storz-coupling-with-internal-thread","aluminum-nuts-for-water-pumps":"aluminum-nuts-for-water-pumps","drive-belts":"drive-belts","shaft-seals":"shaft-seals","storz-coupling-with-tail-for-hose":"storz-coupling-with-tail-for-hose","hose-clamps":"hose-clamps","heavy-duty-clamp":"heavy-duty-clamp","shlangh-lay-flat":"shlangh-lay-flat","pvc-corrugated-hoses-for-water":"pvc-corrugated-hose-for-water","cement-discharge-hose2":"cement-discharge-hose2","sprayer-hose":"sprayer-hose","high-pressure-hoses":"high-pressure-hoses","hoses-for-sewage-truck":"hoses-for-sewage-trucks","pvc-pressure-hoses":"pvc-pressure-hoses","water-hoses":"water-hoses","pvc-oil-and-gasoline-resistant-hose":"pvc-oil-and-gasoline-resistant-hose","plastering-hose":"plastering-hoses","straight-silicone-spigot-d38-l1100":"silicone-elbow-hose-with-transition-45-l102-102mm","silicone-tube-d110-l1100":"silicone-90-elbow-hose-l102-102mm","silicone-tube-d60-l1100":"silicone-elbow-hose-with-transition-90-l102-102mm","silicone-tube-d85-l1100":"silicone-135-elbow-hose-l102-102mm","flexible-silicone-hose-l700":"silicone-corrugated-hose-l700mm","pipe-silicone-straight-l1100-d080":"silicone-u-shaped-hose-180","silicone-tube-d50-l1100":"stefsotra-silicone-damper-hose-l102","cement-discharge-hose":"polyurethane-aspiration-hose","broom-round-typesetting-without-handle":"round-broom","silicone-sheet":"silicone-sheet","lay-flat-hose":"layflat-hose-reinforced","return-valve":"return-valve","food-tech-plate":"food-grade-technical-plate","technical-plate":"rubber-sheet-techno-plate","fire-hoses":"fire-hose","tw-coupling-vb-stainless":"vb-coupling-stainless-steel","tw-coupling-mb-stainless":"mb-coupling-stainless-steel","tw-coupling-mk-stainless":"mk-coupling-stainless-steel","tw-coupling-vk-stainless":"vk-coupling-stainless-steel","tw-coupling-vb-brass":"vb-coupling-brass","tw-coupling-mb-brass":"mb-coupling-brass","tw-coupling-mk-brass":"mk-coupling-brass","tw-coupling-vk-brass":"vk-coupling-brass","tw-blind-cap-bk":"bk-blind-cap-for-tw-coupling","tw-blind-adapter-bv":"bv-blind-adapter-for-tw-coupling","tw-coupling-gasket":"tw-coupling-gasket","guillemin-female-with-latch":"guillemin-female-with-latch","guillemin-male-without-latch":"guillemin-male-without-latch","guillemin-hose-end-with-latch":"guillemin-hose-end-with-latch","guillemin-blind-cap":"guillemin-blind-cap-with-latch","guillemin-reducer":"guillemin-reducing-adapter"};</script><script src="/assets/js/app.js"></script><script src="/assets/js/assistant.js"></script>
 <script>
 S.load(['catalogue']).then(function () {
   S.chrome('/cart.html');
@@ -69,6 +91,14 @@ S.load(['catalogue']).then(function () {
   var oe = document.getElementById('orEmail');
   oe.innerHTML = S.esc(S.t('cart.orEmail', { e: '' })).replace(/\s*$/, '') +
     ' <a href="#" id="mailLink">' + S.esc(S.contact().email) + '</a>';
+  // The sales line, next to the email one: sending an order is a request for a quote,
+  // and some customers would rather say it out loud than fill the form in.
+  var c = S.contact();
+  if (c.phone2) {
+    document.getElementById('orCall').innerHTML =
+      S.esc(S.t('form.orCall', { p: '' })).replace(/\s*$/, '') +
+      ' <a href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a>';
+  }
   document.getElementById('mailLink').addEventListener('click', function (e) {
     e.preventDefault();
     sendByEmail();
@@ -99,7 +129,7 @@ function render() {
       '<a class="btn ghost" href="' + S.url('/vehicle.html') + '">' + S.esc(S.t('nav.vehicle')) + '</a></p></div>' +
       '<h2 style="margin-top:34px">' + S.esc(S.t('empty.browse')) + '</h2>' +
       '<div class="cards">' + S.catalogue.groups.map(function (g) {
-        return '<a class="gcard" href="' + S.url('/g/' + encodeURIComponent(g.key) + '/') + '">' +
+        return '<a class="gcard" href="' + S.groupUrl(g.key) + '">' +
           '<span class="gcard-t">' + S.esc(S.groupLabel(g.key)) +
           '<i>' + S.esc(S.t('cat.results', { n: g.count })) + '</i></span></a>';
       }).join('') + '</div>';
@@ -111,7 +141,7 @@ function render() {
     var img = S.img(r.p);
     return '<div class="cart-line">' +
       (img ? '<img src="' + S.esc(img) + '" alt="">' : '<div style="width:66px;height:66px"></div>') +
-      '<div><a href="' + S.url('/p/' + encodeURIComponent(r.p.handle) + '/') + '">' +
+      '<div><a href="' + S.productUrl(r.p.handle) + '">' +
         S.esc(S.name(r.p)) + '</a>' +
         // A product with one unnamed option has no size to print, and a per-metre item
         // is not priced "each" -- the /m already says what the price is per.
@@ -181,7 +211,7 @@ function submit(e) {
   var btn = document.getElementById('submit');
   btn.disabled = true; btn.textContent = S.t('cart.sending');
 
-  fetch('/', {
+  fetch('/api/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams(new FormData(f)).toString()
@@ -191,15 +221,25 @@ function submit(e) {
     document.querySelector('main .wrap').innerHTML =
       '<div class="note ok"><strong>' + S.esc(S.t('cart.ok')) + '</strong><br>' +
       S.esc(S.t('cart.sentTo', { e: S.contact().email })) + '</div>' +
+      // The one moment a customer is demonstrably happy with us. Reviews on the Business
+      // Profile are what put a shop in the box above the organic results, and they only
+      // come from customers who were asked. Nothing shows until review_url is set.
+      (S.contact().review_url
+        ? '<div class="note"><strong>' + S.esc(S.t('rev.googleH')) + '</strong><br>' +
+          S.esc(S.t('rev.googleP')) + '<br><a class="btn ghost small-btn" target="_blank" ' +
+          'rel="noopener" href="' + S.esc(S.contact().review_url) + '">' +
+          S.esc(S.t('rev.googleCta')) + '</a></div>'
+        : '') +
       '<a class="btn ghost" href="' + S.url('/catalog.html') + '">' + S.esc(S.t('cart.emptyCta')) + '</a>';
   }).catch(function () {
-    // Netlify only handles the POST on a deployed site, so this is the expected path
-    // when testing locally -- and the safety net if it is ever misconfigured. The order
-    // must not be lost either way, so it goes to the shop's address by mail instead.
+    // /api/submit only exists on a deployed site, so this is the expected path when
+    // testing locally -- and the safety net if delivery is ever unconfigured or broken.
+    // The order must not be lost either way, so it goes to the shop by mail instead.
     btn.disabled = false; btn.textContent = S.t('cart.submit');
     sendByEmail();
   });
 }
 </script>
+
 </body>
 </html>
