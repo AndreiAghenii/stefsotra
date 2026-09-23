@@ -1,0 +1,9 @@
+# Kept out of the deployment entirely. scripts/build_catalogue.py names the source
+# store and MDL_PER_FEED_USD, the multiplier from feed dollars to our lei prices --
+# it was downloadable from the live site until this file existed.
+scripts/
+netlify/
+data/_audit/
+import/
+photos_in/
+AUDIT.md

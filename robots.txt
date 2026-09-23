@@ -5,4 +5,4 @@ User-agent: Yandex
 Allow: /
 Clean-param: q&cat&group&sort&dia&clamp&angle&material&type
 
-Sitemap: https://stefsotra.md/sitemap.xml
+Sitemap: https://www.stefsotra.md/sitemap.xml

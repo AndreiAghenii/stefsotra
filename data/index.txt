@@ -30,11 +30,11 @@ storz-cap | Storz Cap – Aluminum | storz | 50-100mm | aluminium | 460-2060 MDL
 storz-reducer | Storz Reducer – Aluminum | storz | aluminium | 544 MDL | 1 sizes
 storz-hose-end | Storz Hose End – Aluminum | storz | 50-100mm | aluminium | 320-1320 MDL | 4 sizes
 storz-coupling-female | Storz Coupling – Female – Aluminum | storz | 50-100mm | aluminium | 320-1320 MDL | 4 sizes
-полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм | ПОЛУРЕТАН В СТЕРЖНЯХ 20 ММ.30 ММ.40 ММ.50 ММ.60 ММ.70 ММ.80 ММ.90 ММ.100ММ. | plastic-stock | 454 MDL | 1 sizes
-силиконовый-шнур-5-мм-10-мм-15-мм-20-мм | СИЛИКОНОВЫЙ ШНУР 5 ММ.10 ММ.15 ММ.20 ММ | rubber-profile | 218 MDL | 1 sizes
-текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм | TEXTOLITH ТЕКСТОЛИТ В ЛИСТАХ2 ММ.3 ММ.4 ММ.5 ММ.6 ММ.7 ММ.10 ММ.12 ММ.15 ММ.20 ММ.30 ММ. РАЗМЕР ЛИСТА 1000Х2000 ММ | sheet-material | 0 MDL | 1 sizes
-полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75 | ПОЛИПРОПИЛЕН ЛИСТОВОЙ 5 ММ.10 ММ.15ММ.20ММ.25ММ.30ММ.40ММ.50ММ.60ММ.70ММ ЛИСТЫ 1000Х2000 ММ.ТВЁРДОСТЬ 75+/ | sheet-material | 127 MDL | 1 sizes
-капралон-графитонаполненный | КАПРАЛОН ГРАФИТОНАПОЛНЕННЫЙ | plastic-stock | 417 MDL | 1 sizes
+poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm | ПОЛУРЕТАН В СТЕРЖНЯХ 20 ММ.30 ММ.40 ММ.50 ММ.60 ММ.70 ММ.80 ММ.90 ММ.100ММ. | plastic-stock | 454 MDL | 1 sizes
+silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm | СИЛИКОНОВЫЙ ШНУР 5 ММ.10 ММ.15 ММ.20 ММ | rubber-profile | 218 MDL | 1 sizes
+tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm | TEXTOLITH ТЕКСТОЛИТ В ЛИСТАХ2 ММ.3 ММ.4 ММ.5 ММ.6 ММ.7 ММ.10 ММ.12 ММ.15 ММ.20 ММ.30 ММ. РАЗМЕР ЛИСТА 1000Х2000 ММ | sheet-material | 0 MDL | 1 sizes
+polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75 | ПОЛИПРОПИЛЕН ЛИСТОВОЙ 5 ММ.10 ММ.15ММ.20ММ.25ММ.30ММ.40ММ.50ММ.60ММ.70ММ ЛИСТЫ 1000Х2000 ММ.ТВЁРДОСТЬ 75+/ | sheet-material | 127 MDL | 1 sizes
+kapralon-grafitonapolnennyy | КАПРАЛОН ГРАФИТОНАПОЛНЕННЫЙ | plastic-stock | 417 MDL | 1 sizes
 hose-head | Hose Head | hose-fitting | 50-100mm | 65-429 MDL | 3 sizes
 toyota-hilux-bed-liner | TOYOTA Hilux Bed Liner | vehicle-part | 14475 MDL | 1 sizes
 auto-compressor-628-4x4-2-cylinder | Auto Compressor 628 4x4 2-Cylinder | vehicle-part | 499 MDL | 1 sizes

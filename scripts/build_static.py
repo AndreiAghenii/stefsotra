@@ -33,11 +33,14 @@ import datetime
 import hashlib
 import re
 import shutil
+import urllib.parse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, 'data')
-SITE = 'https://stefsotra.md'          # change if the new site gets its own domain
+SITE = 'https://www.stefsotra.md'      # the host Vercel serves: the apex 308s to www,
+                                       # so canonicals must name www or every page
+                                       # declares a canonical that redirects elsewhere
 
 # <lastmod> has to mean something or Google stops reading it. Writing today's date on all
 # 483 URLs at every build is the usual way to make it meaningless. Instead each page's HTML
@@ -119,12 +122,22 @@ for g in CAT['groups']:
 # because a URL that moves on its own is a URL that breaks other people's links. To rename
 # one deliberately: edit "now" in data/slugs.json and push the old value onto "was", and
 # the next build will 301 the old address to the new one.
-FOLD = {'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ş': 's', 'ț': 't', 'ţ': 't', 'ё': 'е'}
+# Addresses stay ASCII. A Cyrillic slug percent-encodes into
+# /ru/c/%D1%85%D0%BE%D0%BC%D1%83%D1%82%D1%8B/ the moment anyone pastes it, and Vercel
+# matches redirects against that encoded form -- a rule written in literal Cyrillic never
+# fires, which build_catalogue.py had already found the hard way. Same BGN/PCGN table it
+# uses on the handles, so the two agree.
+FOLD = {'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ş': 's', 'ț': 't', 'ţ': 't',
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
+        'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+        'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts',
+        'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e',
+        'ю': 'yu', 'я': 'ya'}
 
 
 def slugify(text, limit=60):
     out = ''.join(FOLD.get(c, c) for c in (text or '').lower())
-    out = re.sub(r'[^a-z0-9\u0430-\u044f]+', '-', out.replace('×', 'x'))
+    out = re.sub(r'[^a-z0-9]+', '-', out.replace('×', 'x'))
     out = re.sub(r'-+', '-', out).strip('-')
     if len(out) > limit:
         out = out[:limit]
@@ -132,6 +145,24 @@ def slugify(text, limit=60):
             out = out[:out.rfind('-')]
     return out.strip('-')
 
+
+# Five products left Shopify with Cyrillic handles. build_catalogue.py transliterates
+# them as the feed is read, so nothing downstream sees them any more -- but the original
+# addresses are indexed and linked, and the redirect that protected them lived in a
+# vercel.json this build now overwrites. They are kept here, pointed at wherever the
+# product lives today, so the rule survives every rebuild.
+RETIRED_HANDLES = {
+    'kapralon-grafitonapolnennyy':
+        'капралон-графитонаполненный',
+    'polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75':
+        'полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75',
+    'poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm':
+        'полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм',
+    'silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm':
+        'силиконовый-шнур-5-мм-10-мм-15-мм-20-мм',
+    'tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm':
+        'текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм',
+}
 
 SLUG_PATH = os.path.join(DATA, 'slugs.json')
 try:
@@ -296,10 +327,15 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
     # languages stopped sharing a slug. Each language's alternate has to name that
     # language's own address or the hreflang set points at pages that do not exist.
     paths = path if isinstance(path, dict) else {l: path for l in LANGS}
-    alts = ''.join(
-        '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], paths[l])
-        for l in LANGS)
-    alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, paths['ro'])
+    # A noindex page -- the 404 -- gets neither: its address is whatever was mistyped,
+    # so a canonical and an hreflang set could only name URLs that do not exist.
+    if noindex:
+        alts = ''
+    else:
+        alts = ''.join(
+            '<link rel="alternate" hreflang="%s" href="%s%s%s">' % (l, SITE, PREFIX[l], paths[l])
+            for l in LANGS)
+        alts += '<link rel="alternate" hreflang="x-default" href="%s%s">' % (SITE, paths['ro'])
     canonical = SITE + PREFIX[lang] + paths[lang]
     # 1.91:1 preview card. A square product photo was being cropped through the middle
     # by every chat app; these are drawn by scripts/build_og.py.
@@ -317,7 +353,7 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
         '<meta name="description" content="%s">\n' % e(desc) +
         ('<meta name="robots" content="noindex,follow">\n' if noindex else
          '<meta name="robots" content="index,follow,max-image-preview:large">\n') +
-        '<link rel="canonical" href="%s">\n' % e(canonical) +
+        ('' if noindex else '<link rel="canonical" href="%s">\n' % e(canonical)) +
         alts + '\n'
         '<meta property="og:type" content="%s">\n' % og_type +
         '<meta property="og:site_name" content="Stefsotra">\n'
@@ -340,6 +376,19 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
         '<link rel="stylesheet" href="/assets/css/app.css">\n' +
         blocks +
         '\n</head>\n<body>\n')
+
+
+def announce_html(lang):
+    """The company is for sale: said once at the top of every page, in red."""
+    px = PREFIX[lang]
+    # Escape the sentence first, then drop the two links in: the copy is translatable,
+    # the markup around it is not.
+    line = e(t(lang, 'biz.bar'))
+    line = line.replace('{form}', '<a href="%s/contact/">%s</a>'
+                        % (px, e(t(lang, 'biz.form'))))
+    line = line.replace('{phone}', '<a href="tel:%s">%s</a>'
+                        % (e(CONTACT['phone_href']), e(CONTACT['phone'])))
+    return '<div class="announce"><div class="wrap">%s</div></div>' % line
 
 
 def header_html(lang, current=''):
@@ -431,7 +480,7 @@ def footer_html(lang, path):
         '<p class="small"><a href="mailto:%s">%s</a></p>%s%s</div>%s</div>'
         '<div class="wrap foot-cats small">%s</div>'
         '<div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · '
-        '<a href="https://stefsotra.md">stefsotra.md</a></span>'
+        '<a href="https://www.stefsotra.md">stefsotra.md</a></span>'
         '<span class="madeby"><a href="https://aggento.com" target="_blank" '
         'rel="noopener">%s</a></span></div>'
         '</footer>\n'
@@ -482,6 +531,7 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
     paths = path if isinstance(path, dict) else {l: path for l in LANGS}
     own = paths[lang]
     doc = (head(lang, title, desc, paths, image, jsonld, noindex, og_type, extra_meta) +
+           announce_html(lang) +
            # the language switcher must point at the other language's slug, not this one's
            header_html(lang, current).replace('{PATH}', '{LANGPATH}') +
            '<main>' + body + '</main>' +
@@ -1468,11 +1518,11 @@ def build_contact(lang):
         '<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
         '<div class="wrap"><div class="contact-grid">'
         '<div class="contact-facts">%s</div>'
-        '<div class="contact-form"><h2>%s</h2>%s%s</div></div>'
+        '<div class="contact-form"><h2>%s</h2><p class="note">%s</p>%s%s</div></div>'
         '<section class="home-sec"><h2>%s</h2>%s</section></div>'
         % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (t(lang, 'ct.h1'), '')]),
            e(t(lang, 'ct.h1')), e(t(lang, 'ct.lead')), facts,
-           e(t(lang, 'ct.formH')), form, google_review_cta(lang),
+           e(t(lang, 'ct.formH')), e(t(lang, 'ct.biz')), form, google_review_cta(lang),
            e(t(lang, 'flow.h')), flow))
 
     title = '%s — Stefsotra %s | %s' % (t(lang, 'ct.h1'), GEO[lang], CONTACT['phone'])
@@ -1577,6 +1627,7 @@ def build_tool(lang, filename):
     jsonld = [crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (title.split(' — ')[0].split(' | ')[0], path)])] \
         if spec['index'] else None
     doc = (head(lang, title, desc, path, None, jsonld, noindex=not spec['index']) +
+           announce_html(lang) +
            header_html(lang, spec['current']).replace('{PATH}', path) +
            markup +
            footer_html(lang, path) +
@@ -1600,7 +1651,8 @@ def build_404():
             '<h1>%s</h1><p class="lead" style="margin:0 auto 22px">%s</p>'
             '<a class="btn" href="/catalog.html">%s</a></div>'
             % (e(t(lang, 'nf.h')), e(t(lang, 'nf.p')), e(t(lang, 'nf.cta'))))
-    doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404', noindex=True) +
+    doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404.html', noindex=True) +
+           announce_html(lang) +
            header_html(lang).replace('{PATH}', '/') + '<main>' + body + '</main>' +
            footer_html(lang, '/') +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
@@ -1629,13 +1681,9 @@ def write_vercel_json(rules):
     Headers here replace the ones in netlify.toml, which Vercel never reads, so the build
     inputs under /templates, /scripts, /data and /i18n have been crawlable all along.
     """
-    redirects = [
-        # One hostname. Google has the home page indexed as www while every canonical
-        # says the apex; this settles it at the server instead of leaving it to chance.
-        {'source': '/:path*',
-         'has': [{'type': 'host', 'value': 'www.stefsotra.md'}],
-         'destination': 'https://stefsotra.md/:path*', 'statusCode': 301},
-    ]
+    # No host rule here. The apex already 308s to www at the platform, which is why SITE
+    # names www; a www-to-apex rule would fight it and loop.
+    redirects = []
     for line in rules:
         src, dst, _ = line.split()
         redirects.append({'source': src, 'destination': dst, 'statusCode': 301})
@@ -1775,6 +1823,22 @@ def main():
                      ('/pages/return-policy', '/returns/'),
                      ('/pages/warranty-plicy', '/warranty/')):
         rules.append('%s %s 301' % (src, dst))
+    # The Cyrillic addresses those five products were published under, sent straight to
+    # where each one lives now -- one hop, not a chain through the transliterated handle.
+    for handle, old_handle in sorted(RETIRED_HANDLES.items()):
+        prod = BY_HANDLE.get(handle)
+        if not prod:
+            continue
+        for lang in LANGS:
+            src = '%s/p/%s/' % (PREFIX[lang], old_handle)
+            dst = PREFIX[lang] + ppath(lang, prod)
+            rules.append('%s %s 301' % (src, dst))
+            # Vercel matches the raw request path, so a source written in literal Cyrillic
+            # never fires: the browser sends %D0%BA%D0%B0%D0%BF... Both forms are listed.
+            enc = '%s/p/%s/' % (PREFIX[lang], urllib.parse.quote(old_handle))
+            if enc != src:
+                rules.append('%s %s 301' % (enc, dst))
+
     # /products/<shopify handle> went to /p/<handle>/, which is no longer an address.
     # Written out per product so it lands on the final URL in one hop instead of two.
     for prod in CAT['products']:

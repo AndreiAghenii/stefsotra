@@ -156,15 +156,19 @@ What is in place:
   "furtun chisinau" does it with a Romanian URL — `supraten.md/furtunuri-…`,
   `volta.md/irigare/furtune`, `profmet.md/272-furtunuri` — while ours said
   `/c/silicone-hose/`. Categories and groups are now named in the page's own language:
-  `/c/furtun-din-silicon/`, `/g/furtunuri/`, `/ru/c/силиконовые-шланги/`, and so are
-  products: `/p/reductie-camlock-tip-aa/`, `/ru/p/силиконовые-патрубки-для-kamaz-maz/`.
+  `/c/furtun-din-silicon/`, `/g/furtunuri/`, `/ru/c/khomuty/`, and so are products:
+  `/p/reductie-camlock-tip-aa/`, `/ru/p/silikonovyye-patrubki-dlya-kamaz-maz/`. Russian
+  slugs are transliterated BGN/PCGN, not left in Cyrillic — same table
+  `build_catalogue.py` uses on the handles, and for the same reason: a Cyrillic address
+  percent-encodes into something unreadable the moment it is pasted, and Vercel matches
+  redirects against that encoded form, so a rule written in Cyrillic never fires.
   The four interactive pages draw their own tiles, so the build inlines the slug map for
   whichever language the page is (`window.__PSLUG`, about 4 KB).
 - **Slugs are permanent.** `data/slugs.json` records the assignment. The build hands out a
   slug the first time it sees a key and never changes it again, even if the label it came
   from is reworded, because a URL that moves on its own breaks other people's links. To
   rename one deliberately, edit `now` and push the old value onto `was`; the next build
-  writes the 301. `_redirects` is generated from that history — 397 rules today, covering
+  writes the 301. `_redirects` is generated from that history — 570 rules today, covering
   every address the site published before the migration. A slug is refused if another page
   lives there *or ever did*: an old address has to stay a redirect source, and a slug that
   is both source and target makes a chain. Two products hit exactly that, their English
@@ -219,22 +223,25 @@ prices change, re-derive it the same way rather than adjusting it by feel.
 
 ## Deploying
 
-The site runs on **Vercel**. `scripts/build_static.py` writes `vercel.json` — 541 redirects
+The site runs on **Vercel**. `scripts/build_static.py` writes `vercel.json` — 570 redirects
 and the header rules — so deploying is a matter of pushing the built folder; there is
-nothing to configure by hand.
+nothing to configure by hand. `SITE` names **www**: the apex 308s to www at the platform,
+so a canonical naming the apex would declare an address that redirects.
 
 Two settings in there are load-bearing and should not be flipped casually:
 
 - `trailingSlash: true`. Every canonical, `hreflang` and sitemap entry this build writes
   ends in a slash. Vercel's default strips it, which would point all 483 canonicals at
   addresses that redirect.
+- No host redirect is emitted. The apex already 308s to www at the platform; a rule the
+  other way would fight it and loop.
 - `cleanUrls: false`. The four tool pages are canonicalised as `/catalog.html`, not
   `/catalog`.
 
-`netlify.toml` is **not in use** and never was on this host — which is why the old Shopify
-addresses were 404ing and `/scripts`, `/data` and `/templates` stayed crawlable. It is kept
-only as a starting point if the site ever moves to Netlify. `_redirects` is the portable
-form of the same generated list, read by Netlify and Cloudflare Pages.
+`netlify.toml` is gone — it was never read on this host, which is why the old Shopify
+addresses were 404ing and `/scripts` and `/data` stayed crawlable. `_redirects` remains as
+the portable form of the same generated list, read by Netlify and Cloudflare Pages if the
+site ever moves.
 
 **Still to do on Vercel: the forms and the assistant.** Both were written against Netlify
 and neither works here. See below.

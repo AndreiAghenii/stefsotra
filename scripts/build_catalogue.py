@@ -265,6 +265,33 @@ def categorise(title, tags):
 
 # ---------------------------------------------------------------- build
 
+# ---------------------------------------------------------------- handles
+
+# Five products came out of Shopify with Cyrillic handles, which percent-encode into
+# addresses like /p/%D0%BA%D0%B0%D0%BF%D1%80%D0%B0%D0%BB%D0%BE%D0%BD.../ -- unreadable
+# in a search result and in any link anyone pastes. Transliteration is BGN/PCGN, the
+# romanisation a Russian speaker recognises on a road sign.
+TRANSLIT = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
+    'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+    'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts',
+    'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu',
+    'я': 'ya',
+    # Romanian, in case a handle ever arrives with diacritics
+    'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ş': 's', 'ț': 't', 'ţ': 't',
+}
+
+
+def slug(handle):
+    """An ASCII handle. Returns the input unchanged when it is already ASCII."""
+    if handle.isascii():
+        return handle
+    out = []
+    for ch in handle.lower():
+        out.append(TRANSLIT[ch] if ch in TRANSLIT else ch if (ch.isalnum() and ch.isascii()) or ch == '-' else '-')
+    return re.sub(r'-{2,}', '-', ''.join(out)).strip('-')
+
+
 def main():
     offline = '--offline' in sys.argv
     if offline and os.path.exists(RAW):
@@ -280,6 +307,8 @@ def main():
     # wipe them. A handle already present in Shopify always wins -- the store is the
     # source of truth for anything it knows about.
     feed = list(raw['products'])
+    for p in feed:
+        p['handle'] = slug(p['handle'])
     feed_handles = {p['handle'] for p in feed}
     added = []
     if os.path.exists(EXTRA):

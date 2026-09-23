@@ -27,7 +27,12 @@ import os
 import re
 import sys
 
-SITE = 'https://stefsotra.md'
+# Read from the builder rather than repeated here: the two disagreeing is exactly the
+# kind of fault this script exists to catch, and it cannot catch it in itself.
+SITE = re.search(r"^SITE = '([^']+)'",
+                 open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                   'scripts', 'build_static.py'), encoding='utf-8').read(),
+                 re.M).group(1)
 SKIP_DIRS = ('assets/', 'templates/', 'netlify/', 'photos_in/', 'node_modules/')
 TITLE_MAX, DESC_MAX = 70, 165
 DESC_MIN = 60
@@ -64,8 +69,10 @@ def main():
                 '%s (%d)' % (f, len(desc)))
         if not robots:
             bad['no robots tag'].append(f)
+        noindex = bool(robots and 'noindex' in robots)
         if not canon:
-            bad['no canonical'].append(f)
+            if not noindex:
+                bad['no canonical'].append(f)
         else:
             want = SITE + '/' + (f[:-len('index.html')] if f.endswith('index.html') else f)
             if canon.rstrip('/') != want.rstrip('/'):
@@ -75,10 +82,11 @@ def main():
             canons[canon] = f
 
         alts = re.findall(r'hreflang="[a-z-]+" href="([^"]+)"', s)
-        if len(alts) != 4:
-            bad['hreflang set is not 4 links'].append('%s (%d)' % (f, len(alts)))
-        elif canon and canon not in alts:
-            bad['hreflang set omits the page itself'].append(f)
+        if not noindex:
+            if len(alts) != 4:
+                bad['hreflang set is not 4 links'].append('%s (%d)' % (f, len(alts)))
+            elif canon and canon not in alts:
+                bad['hreflang set omits the page itself'].append(f)
 
         for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', s, re.S):
             try:
@@ -95,7 +103,7 @@ def main():
             bad['header is not in the HTML'].append(f)
         if '<footer class="site"' not in s:
             bad['footer is not in the HTML'].append(f)
-        if robots and 'noindex' not in robots:
+        if not noindex:
             indexable.add(f)
 
     sitemap = open('sitemap.xml', encoding='utf-8').read()

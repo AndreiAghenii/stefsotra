@@ -4,17 +4,6 @@
   "cleanUrls": false,
   "redirects": [
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.stefsotra.md"
-        }
-      ],
-      "destination": "https://stefsotra.md/:path*",
-      "statusCode": 301
-    },
-    {
       "source": "/product.html",
       "destination": "/catalog.html",
       "statusCode": 301
@@ -77,6 +66,156 @@
     {
       "source": "/pages/warranty-plicy",
       "destination": "/warranty/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/капралон-графитонаполненный/",
+      "destination": "/p/caprolon-grafitat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/%D0%BA%D0%B0%D0%BF%D1%80%D0%B0%D0%BB%D0%BE%D0%BD-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%82%D0%BE%D0%BD%D0%B0%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9/",
+      "destination": "/p/caprolon-grafitat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/капралон-графитонаполненный/",
+      "destination": "/ru/p/kapralon-grafitonapolnennyy/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/%D0%BA%D0%B0%D0%BF%D1%80%D0%B0%D0%BB%D0%BE%D0%BD-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%82%D0%BE%D0%BD%D0%B0%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9/",
+      "destination": "/ru/p/kapralon-grafitonapolnennyy/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/капралон-графитонаполненный/",
+      "destination": "/en/p/graphite-filled-caprolon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/%D0%BA%D0%B0%D0%BF%D1%80%D0%B0%D0%BB%D0%BE%D0%BD-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%82%D0%BE%D0%BD%D0%B0%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9/",
+      "destination": "/en/p/graphite-filled-caprolon/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
+      "destination": "/p/polipropilena-in-foi-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/%D0%BF%D0%BE%D0%BB%D0%B8%D0%BF%D1%80%D0%BE%D0%BF%D0%B8%D0%BB%D0%B5%D0%BD-%D0%BB%D0%B8%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B9-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15%D0%BC%D0%BC-20%D0%BC%D0%BC-25%D0%BC%D0%BC-30%D0%BC%D0%BC-40%D0%BC%D0%BC-50%D0%BC%D0%BC-60%D0%BC%D0%BC-70%D0%BC%D0%BC-%D0%BB%D0%B8%D1%81%D1%82%D1%8B-1000%D1%852000-%D0%BC%D0%BC-%D1%82%D0%B2%D1%91%D1%80%D0%B4%D0%BE%D1%81%D1%82%D1%8C-75/",
+      "destination": "/p/polipropilena-in-foi-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
+      "destination": "/ru/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/%D0%BF%D0%BE%D0%BB%D0%B8%D0%BF%D1%80%D0%BE%D0%BF%D0%B8%D0%BB%D0%B5%D0%BD-%D0%BB%D0%B8%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B9-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15%D0%BC%D0%BC-20%D0%BC%D0%BC-25%D0%BC%D0%BC-30%D0%BC%D0%BC-40%D0%BC%D0%BC-50%D0%BC%D0%BC-60%D0%BC%D0%BC-70%D0%BC%D0%BC-%D0%BB%D0%B8%D1%81%D1%82%D1%8B-1000%D1%852000-%D0%BC%D0%BC-%D1%82%D0%B2%D1%91%D1%80%D0%B4%D0%BE%D1%81%D1%82%D1%8C-75/",
+      "destination": "/ru/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
+      "destination": "/en/p/polypropylene-sheet-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/%D0%BF%D0%BE%D0%BB%D0%B8%D0%BF%D1%80%D0%BE%D0%BF%D0%B8%D0%BB%D0%B5%D0%BD-%D0%BB%D0%B8%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B9-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15%D0%BC%D0%BC-20%D0%BC%D0%BC-25%D0%BC%D0%BC-30%D0%BC%D0%BC-40%D0%BC%D0%BC-50%D0%BC%D0%BC-60%D0%BC%D0%BC-70%D0%BC%D0%BC-%D0%BB%D0%B8%D1%81%D1%82%D1%8B-1000%D1%852000-%D0%BC%D0%BC-%D1%82%D0%B2%D1%91%D1%80%D0%B4%D0%BE%D1%81%D1%82%D1%8C-75/",
+      "destination": "/en/p/polypropylene-sheet-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
+      "destination": "/p/poliuretan-in-bare-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/%D0%BF%D0%BE%D0%BB%D1%83%D1%80%D0%B5%D1%82%D0%B0%D0%BD-%D0%B2-%D1%81%D1%82%D0%B5%D1%80%D0%B6%D0%BD%D1%8F%D1%85-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-40-%D0%BC%D0%BC-50-%D0%BC%D0%BC-60-%D0%BC%D0%BC-70-%D0%BC%D0%BC-80-%D0%BC%D0%BC-90-%D0%BC%D0%BC-100%D0%BC%D0%BC/",
+      "destination": "/p/poliuretan-in-bare-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
+      "destination": "/ru/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/%D0%BF%D0%BE%D0%BB%D1%83%D1%80%D0%B5%D1%82%D0%B0%D0%BD-%D0%B2-%D1%81%D1%82%D0%B5%D1%80%D0%B6%D0%BD%D1%8F%D1%85-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-40-%D0%BC%D0%BC-50-%D0%BC%D0%BC-60-%D0%BC%D0%BC-70-%D0%BC%D0%BC-80-%D0%BC%D0%BC-90-%D0%BC%D0%BC-100%D0%BC%D0%BC/",
+      "destination": "/ru/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
+      "destination": "/en/p/polyurethane-rod-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/%D0%BF%D0%BE%D0%BB%D1%83%D1%80%D0%B5%D1%82%D0%B0%D0%BD-%D0%B2-%D1%81%D1%82%D0%B5%D1%80%D0%B6%D0%BD%D1%8F%D1%85-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-40-%D0%BC%D0%BC-50-%D0%BC%D0%BC-60-%D0%BC%D0%BC-70-%D0%BC%D0%BC-80-%D0%BC%D0%BC-90-%D0%BC%D0%BC-100%D0%BC%D0%BC/",
+      "destination": "/en/p/polyurethane-rod-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/",
+      "destination": "/p/snur-din-silicon-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/%D1%81%D0%B8%D0%BB%D0%B8%D0%BA%D0%BE%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-%D1%88%D0%BD%D1%83%D1%80-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC/",
+      "destination": "/p/snur-din-silicon-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/",
+      "destination": "/ru/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/%D1%81%D0%B8%D0%BB%D0%B8%D0%BA%D0%BE%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-%D1%88%D0%BD%D1%83%D1%80-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC/",
+      "destination": "/ru/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/",
+      "destination": "/en/p/silicone-cord-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/%D1%81%D0%B8%D0%BB%D0%B8%D0%BA%D0%BE%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-%D1%88%D0%BD%D1%83%D1%80-5-%D0%BC%D0%BC-10-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC/",
+      "destination": "/en/p/silicone-cord-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
+      "destination": "/p/textolit-in-foi-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BE%D0%BB%D0%B8%D1%82-%D0%B2-%D0%BB%D0%B8%D1%81%D1%82%D0%B0%D1%852-%D0%BC%D0%BC-3-%D0%BC%D0%BC-4-%D0%BC%D0%BC-5-%D0%BC%D0%BC-6-%D0%BC%D0%BC-7-%D0%BC%D0%BC-10-%D0%BC%D0%BC-12-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80-%D0%BB%D0%B8%D1%81%D1%82%D0%B0-1000%D1%852000-%D0%BC%D0%BC/",
+      "destination": "/p/textolit-in-foi-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
+      "destination": "/ru/p/textolith-tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BE%D0%BB%D0%B8%D1%82-%D0%B2-%D0%BB%D0%B8%D1%81%D1%82%D0%B0%D1%852-%D0%BC%D0%BC-3-%D0%BC%D0%BC-4-%D0%BC%D0%BC-5-%D0%BC%D0%BC-6-%D0%BC%D0%BC-7-%D0%BC%D0%BC-10-%D0%BC%D0%BC-12-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80-%D0%BB%D0%B8%D1%81%D1%82%D0%B0-1000%D1%852000-%D0%BC%D0%BC/",
+      "destination": "/ru/p/textolith-tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
+      "destination": "/en/p/textolite-sheets-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BE%D0%BB%D0%B8%D1%82-%D0%B2-%D0%BB%D0%B8%D1%81%D1%82%D0%B0%D1%852-%D0%BC%D0%BC-3-%D0%BC%D0%BC-4-%D0%BC%D0%BC-5-%D0%BC%D0%BC-6-%D0%BC%D0%BC-7-%D0%BC%D0%BC-10-%D0%BC%D0%BC-12-%D0%BC%D0%BC-15-%D0%BC%D0%BC-20-%D0%BC%D0%BC-30-%D0%BC%D0%BC-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80-%D0%BB%D0%B8%D1%81%D1%82%D0%B0-1000%D1%852000-%D0%BC%D0%BC/",
+      "destination": "/en/p/textolite-sheets-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
       "statusCode": 301
     },
     {
@@ -240,27 +379,27 @@
       "statusCode": 301
     },
     {
-      "source": "/products/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм",
+      "source": "/products/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm",
       "destination": "/p/poliuretan-in-bare-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80/",
       "statusCode": 301
     },
     {
-      "source": "/products/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм",
+      "source": "/products/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm",
       "destination": "/p/snur-din-silicon-5-mm-10-mm-15-mm-20-mm/",
       "statusCode": 301
     },
     {
-      "source": "/products/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм",
+      "source": "/products/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm",
       "destination": "/p/textolit-in-foi-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
       "statusCode": 301
     },
     {
-      "source": "/products/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75",
+      "source": "/products/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75",
       "destination": "/p/polipropilena-in-foi-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
       "statusCode": 301
     },
     {
-      "source": "/products/капралон-графитонаполненный",
+      "source": "/products/kapralon-grafitonapolnennyy",
       "destination": "/p/caprolon-grafitat/",
       "statusCode": 301
     },
@@ -736,7 +875,7 @@
     },
     {
       "source": "/ru/c/agri/",
-      "destination": "/ru/c/агро-и-сад/",
+      "destination": "/ru/c/agro-i-sad/",
       "statusCode": 301
     },
     {
@@ -751,7 +890,7 @@
     },
     {
       "source": "/ru/c/bauer/",
-      "destination": "/ru/c/соединения-bauer/",
+      "destination": "/ru/c/soedineniya-bauer/",
       "statusCode": 301
     },
     {
@@ -766,7 +905,7 @@
     },
     {
       "source": "/ru/c/camlock/",
-      "destination": "/ru/c/соединения-camlock/",
+      "destination": "/ru/c/soedineniya-camlock/",
       "statusCode": 301
     },
     {
@@ -781,7 +920,7 @@
     },
     {
       "source": "/ru/c/clamp/",
-      "destination": "/ru/c/хомуты/",
+      "destination": "/ru/c/khomuty/",
       "statusCode": 301
     },
     {
@@ -796,7 +935,7 @@
     },
     {
       "source": "/ru/c/gasket/",
-      "destination": "/ru/c/прокладки/",
+      "destination": "/ru/c/prokladki/",
       "statusCode": 301
     },
     {
@@ -811,7 +950,7 @@
     },
     {
       "source": "/ru/c/guillemin/",
-      "destination": "/ru/c/соединения-guillemin/",
+      "destination": "/ru/c/soedineniya-guillemin/",
       "statusCode": 301
     },
     {
@@ -826,7 +965,7 @@
     },
     {
       "source": "/ru/c/hose-fitting/",
-      "destination": "/ru/c/головки-и-адаптеры/",
+      "destination": "/ru/c/golovki-i-adaptery/",
       "statusCode": 301
     },
     {
@@ -841,7 +980,7 @@
     },
     {
       "source": "/ru/c/industrial-hose/",
-      "destination": "/ru/c/промышленные-рукава/",
+      "destination": "/ru/c/promyshlennye-rukava/",
       "statusCode": 301
     },
     {
@@ -851,7 +990,7 @@
     },
     {
       "source": "/ru/c/plastic-stock/",
-      "destination": "/ru/c/стержни-и-трубы/",
+      "destination": "/ru/c/sterzhni-i-truby/",
       "statusCode": 301
     },
     {
@@ -866,7 +1005,7 @@
     },
     {
       "source": "/ru/c/pvc-hose/",
-      "destination": "/ru/c/пвх-шланги/",
+      "destination": "/ru/c/pvkh-shlangi/",
       "statusCode": 301
     },
     {
@@ -876,7 +1015,7 @@
     },
     {
       "source": "/ru/c/rubber-profile/",
-      "destination": "/ru/c/шнур-и-профиль/",
+      "destination": "/ru/c/shnur-i-profil/",
       "statusCode": 301
     },
     {
@@ -891,7 +1030,7 @@
     },
     {
       "source": "/ru/c/sheet-material/",
-      "destination": "/ru/c/листовые-материалы/",
+      "destination": "/ru/c/listovye-materialy/",
       "statusCode": 301
     },
     {
@@ -906,7 +1045,7 @@
     },
     {
       "source": "/ru/c/silicone-hose/",
-      "destination": "/ru/c/силиконовые-шланги/",
+      "destination": "/ru/c/silikonovye-shlangi/",
       "statusCode": 301
     },
     {
@@ -916,7 +1055,7 @@
     },
     {
       "source": "/ru/c/storz/",
-      "destination": "/ru/c/соединения-storz/",
+      "destination": "/ru/c/soedineniya-storz/",
       "statusCode": 301
     },
     {
@@ -931,7 +1070,7 @@
     },
     {
       "source": "/ru/c/tw-coupling/",
-      "destination": "/ru/c/соединения-tw/",
+      "destination": "/ru/c/soedineniya-tw/",
       "statusCode": 301
     },
     {
@@ -946,7 +1085,7 @@
     },
     {
       "source": "/ru/c/valve/",
-      "destination": "/ru/c/краны-и-клапаны/",
+      "destination": "/ru/c/krany-i-klapany/",
       "statusCode": 301
     },
     {
@@ -961,7 +1100,7 @@
     },
     {
       "source": "/ru/c/vehicle-part/",
-      "destination": "/ru/c/автозапчасти/",
+      "destination": "/ru/c/avtozapchasti/",
       "statusCode": 301
     },
     {
@@ -976,7 +1115,7 @@
     },
     {
       "source": "/ru/g/couplings/",
-      "destination": "/ru/g/соединения-и-фитинги/",
+      "destination": "/ru/g/soedineniya-i-fitingi/",
       "statusCode": 301
     },
     {
@@ -991,7 +1130,7 @@
     },
     {
       "source": "/ru/g/hoses/",
-      "destination": "/ru/g/шланги-и-рукава/",
+      "destination": "/ru/g/shlangi-i-rukava/",
       "statusCode": 301
     },
     {
@@ -1001,7 +1140,7 @@
     },
     {
       "source": "/ru/g/materials/",
-      "destination": "/ru/g/технические-материалы/",
+      "destination": "/ru/g/tekhnicheskie-materialy/",
       "statusCode": 301
     },
     {
@@ -1016,7 +1155,7 @@
     },
     {
       "source": "/ru/g/sealing/",
-      "destination": "/ru/g/хомуты-и-уплотнения/",
+      "destination": "/ru/g/khomuty-i-uplotneniya/",
       "statusCode": 301
     },
     {
@@ -1031,7 +1170,7 @@
     },
     {
       "source": "/ru/g/vehicle/",
-      "destination": "/ru/g/авто-и-агро/",
+      "destination": "/ru/g/avto-i-agro/",
       "statusCode": 301
     },
     {
@@ -1046,7 +1185,7 @@
     },
     {
       "source": "/ru/p/adapter-hose-head/",
-      "destination": "/ru/p/переходная-головка-для-шланга/",
+      "destination": "/ru/p/perekhodnaya-golovka-dlya-shlanga/",
       "statusCode": 301
     },
     {
@@ -1061,7 +1200,7 @@
     },
     {
       "source": "/ru/p/adapters_plastic_abs/",
-      "destination": "/ru/p/адаптеры-для-шланга-из-abs-пластика/",
+      "destination": "/ru/p/adaptery-dlya-shlanga-iz-abs-plastika/",
       "statusCode": 301
     },
     {
@@ -1076,7 +1215,7 @@
     },
     {
       "source": "/ru/p/air-hose/",
-      "destination": "/ru/p/воздушные-рукава/",
+      "destination": "/ru/p/vozdushnye-rukava/",
       "statusCode": 301
     },
     {
@@ -1091,7 +1230,7 @@
     },
     {
       "source": "/ru/p/aluminum-flex-duct/",
-      "destination": "/ru/p/алюминиевые-воздуховоды/",
+      "destination": "/ru/p/alyuminievye-vozdukhovody/",
       "statusCode": 301
     },
     {
@@ -1106,7 +1245,7 @@
     },
     {
       "source": "/ru/p/aluminum-nuts-for-water-pumps/",
-      "destination": "/ru/p/алюминиевые-гайки-для-водяных-насосов/",
+      "destination": "/ru/p/alyuminievye-gayki-dlya-vodyanykh-nasosov/",
       "statusCode": 301
     },
     {
@@ -1116,7 +1255,7 @@
     },
     {
       "source": "/ru/p/auto-compressor-628-4x4-2-cylinder/",
-      "destination": "/ru/p/автомобильный-компрессор-628-4x4-2-cylinder/",
+      "destination": "/ru/p/avtomobilnyy-kompressor-628-4x4-2-cylinder/",
       "statusCode": 301
     },
     {
@@ -1126,7 +1265,7 @@
     },
     {
       "source": "/ru/p/ball-valve-for-water/",
-      "destination": "/ru/p/шаровой-кран-для-воды/",
+      "destination": "/ru/p/sharovoy-kran-dlya-vody/",
       "statusCode": 301
     },
     {
@@ -1136,7 +1275,7 @@
     },
     {
       "source": "/ru/p/bauer-coupling/",
-      "destination": "/ru/p/соединение-bauer-алюминий/",
+      "destination": "/ru/p/soedinenie-bauer-alyuminiy/",
       "statusCode": 301
     },
     {
@@ -1151,7 +1290,7 @@
     },
     {
       "source": "/ru/p/bauer-coupling-2/",
-      "destination": "/ru/p/соединение-bauer-alt/",
+      "destination": "/ru/p/soedinenie-bauer-alt/",
       "statusCode": 301
     },
     {
@@ -1166,7 +1305,7 @@
     },
     {
       "source": "/ru/p/bauer-gasket/",
-      "destination": "/ru/p/прокладка-bauer/",
+      "destination": "/ru/p/prokladka-bauer/",
       "statusCode": 301
     },
     {
@@ -1176,7 +1315,7 @@
     },
     {
       "source": "/ru/p/bearway-tires/",
-      "destination": "/ru/p/bearway-шины/",
+      "destination": "/ru/p/bearway-shiny/",
       "statusCode": 301
     },
     {
@@ -1186,7 +1325,7 @@
     },
     {
       "source": "/ru/p/broom-round-typesetting-without-handle/",
-      "destination": "/ru/p/метла-круглая/",
+      "destination": "/ru/p/metla-kruglaya/",
       "statusCode": 301
     },
     {
@@ -1201,7 +1340,7 @@
     },
     {
       "source": "/ru/p/camlock-gasket/",
-      "destination": "/ru/p/прокладка-camlock/",
+      "destination": "/ru/p/prokladka-camlock/",
       "statusCode": 301
     },
     {
@@ -1211,7 +1350,7 @@
     },
     {
       "source": "/ru/p/camlock-handle/",
-      "destination": "/ru/p/ручка-camlock/",
+      "destination": "/ru/p/ruchka-camlock/",
       "statusCode": 301
     },
     {
@@ -1221,7 +1360,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-a/",
-      "destination": "/ru/p/переходник-camlock-тип-a/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-a/",
       "statusCode": 301
     },
     {
@@ -1236,7 +1375,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-aa/",
-      "destination": "/ru/p/переходник-camlock-тип-aa/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-aa/",
       "statusCode": 301
     },
     {
@@ -1251,7 +1390,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-b/",
-      "destination": "/ru/p/переходник-camlock-тип-b/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-b/",
       "statusCode": 301
     },
     {
@@ -1266,7 +1405,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-c/",
-      "destination": "/ru/p/переходник-camlock-тип-c/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-c/",
       "statusCode": 301
     },
     {
@@ -1281,7 +1420,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-d/",
-      "destination": "/ru/p/переходник-camlock-тип-d/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-d/",
       "statusCode": 301
     },
     {
@@ -1296,7 +1435,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-da/",
-      "destination": "/ru/p/переходник-camlock-тип-da/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-da/",
       "statusCode": 301
     },
     {
@@ -1311,7 +1450,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-dd/",
-      "destination": "/ru/p/переходник-camlock-тип-dd/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-dd/",
       "statusCode": 301
     },
     {
@@ -1326,7 +1465,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-e/",
-      "destination": "/ru/p/переходник-camlock-тип-e/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-e/",
       "statusCode": 301
     },
     {
@@ -1341,7 +1480,7 @@
     },
     {
       "source": "/ru/p/camlock-reducing-type-f/",
-      "destination": "/ru/p/переходник-camlock-тип-f/",
+      "destination": "/ru/p/perekhodnik-camlock-tip-f/",
       "statusCode": 301
     },
     {
@@ -1356,7 +1495,7 @@
     },
     {
       "source": "/ru/p/camlock-type-a/",
-      "destination": "/ru/p/camlock-тип-a/",
+      "destination": "/ru/p/camlock-tip-a/",
       "statusCode": 301
     },
     {
@@ -1366,7 +1505,7 @@
     },
     {
       "source": "/ru/p/camlock-type-b/",
-      "destination": "/ru/p/camlock-тип-b/",
+      "destination": "/ru/p/camlock-tip-b/",
       "statusCode": 301
     },
     {
@@ -1376,7 +1515,7 @@
     },
     {
       "source": "/ru/p/camlock-type-c/",
-      "destination": "/ru/p/camlock-тип-c/",
+      "destination": "/ru/p/camlock-tip-c/",
       "statusCode": 301
     },
     {
@@ -1386,7 +1525,7 @@
     },
     {
       "source": "/ru/p/camlock-type-d/",
-      "destination": "/ru/p/camlock-тип-d/",
+      "destination": "/ru/p/camlock-tip-d/",
       "statusCode": 301
     },
     {
@@ -1396,7 +1535,7 @@
     },
     {
       "source": "/ru/p/camlock-type-dc/",
-      "destination": "/ru/p/camlock-тип-dc/",
+      "destination": "/ru/p/camlock-tip-dc/",
       "statusCode": 301
     },
     {
@@ -1406,7 +1545,7 @@
     },
     {
       "source": "/ru/p/camlock-type-dp/",
-      "destination": "/ru/p/camlock-тип-dp/",
+      "destination": "/ru/p/camlock-tip-dp/",
       "statusCode": 301
     },
     {
@@ -1416,7 +1555,7 @@
     },
     {
       "source": "/ru/p/camlock-type-e/",
-      "destination": "/ru/p/camlock-тип-e/",
+      "destination": "/ru/p/camlock-tip-e/",
       "statusCode": 301
     },
     {
@@ -1426,7 +1565,7 @@
     },
     {
       "source": "/ru/p/camlock-type-f/",
-      "destination": "/ru/p/camlock-тип-f/",
+      "destination": "/ru/p/camlock-tip-f/",
       "statusCode": 301
     },
     {
@@ -1436,7 +1575,7 @@
     },
     {
       "source": "/ru/p/caprolon_rod/",
-      "destination": "/ru/p/капролон/",
+      "destination": "/ru/p/kaprolon/",
       "statusCode": 301
     },
     {
@@ -1451,7 +1590,7 @@
     },
     {
       "source": "/ru/p/cement-discharge-hose/",
-      "destination": "/ru/p/полиуретановый-аспирационный-рукав/",
+      "destination": "/ru/p/poliuretanovyy-aspiratsionnyy-rukav/",
       "statusCode": 301
     },
     {
@@ -1466,7 +1605,7 @@
     },
     {
       "source": "/ru/p/cement-discharge-hose2/",
-      "destination": "/ru/p/рукав-для-подачи-цемента/",
+      "destination": "/ru/p/rukav-dlya-podachi-tsementa/",
       "statusCode": 301
     },
     {
@@ -1476,7 +1615,7 @@
     },
     {
       "source": "/ru/p/drive-belts/",
-      "destination": "/ru/p/приводные-ремни/",
+      "destination": "/ru/p/privodnye-remni/",
       "statusCode": 301
     },
     {
@@ -1486,7 +1625,7 @@
     },
     {
       "source": "/ru/p/fan-lawn-rake/",
-      "destination": "/ru/p/веерные-грабли-для-газона/",
+      "destination": "/ru/p/veernye-grabli-dlya-gazona/",
       "statusCode": 301
     },
     {
@@ -1501,7 +1640,7 @@
     },
     {
       "source": "/ru/p/fan-rake_01/",
-      "destination": "/ru/p/веерные-грабли/",
+      "destination": "/ru/p/veernye-grabli/",
       "statusCode": 301
     },
     {
@@ -1516,7 +1655,7 @@
     },
     {
       "source": "/ru/p/fire-hoses/",
-      "destination": "/ru/p/пожарный-рукав/",
+      "destination": "/ru/p/pozharnyy-rukav/",
       "statusCode": 301
     },
     {
@@ -1531,7 +1670,7 @@
     },
     {
       "source": "/ru/p/flexible-silicone-hose-l700/",
-      "destination": "/ru/p/силиконовый-гофрированный-патрубок-l700mm/",
+      "destination": "/ru/p/silikonovyy-gofrirovannyy-patrubok-l700mm/",
       "statusCode": 301
     },
     {
@@ -1546,7 +1685,7 @@
     },
     {
       "source": "/ru/p/food-tech-plate/",
-      "destination": "/ru/p/пластина-техническая-пищевая/",
+      "destination": "/ru/p/plastina-tekhnicheskaya-pishchevaya/",
       "statusCode": 301
     },
     {
@@ -1561,7 +1700,7 @@
     },
     {
       "source": "/ru/p/food_grade_hoses/",
-      "destination": "/ru/p/пищевые-напорно-всасывающие-рукава/",
+      "destination": "/ru/p/pishchevye-naporno-vsasyvayushchie-rukava/",
       "statusCode": 301
     },
     {
@@ -1576,7 +1715,7 @@
     },
     {
       "source": "/ru/p/food_grade_hoses_suction/",
-      "destination": "/ru/p/пищевые-всасывающие-рукава/",
+      "destination": "/ru/p/pishchevye-vsasyvayushchie-rukava/",
       "statusCode": 301
     },
     {
@@ -1591,7 +1730,7 @@
     },
     {
       "source": "/ru/p/fregat-sprinkler/",
-      "destination": "/ru/p/дождеватель-фрегат/",
+      "destination": "/ru/p/dozhdevatel-fregat/",
       "statusCode": 301
     },
     {
@@ -1601,7 +1740,7 @@
     },
     {
       "source": "/ru/p/fuel-hose-with-braided-cover/",
-      "destination": "/ru/p/топливный-шланг-в-оплетке/",
+      "destination": "/ru/p/toplivnyy-shlang-v-oplyotke/",
       "statusCode": 301
     },
     {
@@ -1611,7 +1750,7 @@
     },
     {
       "source": "/ru/p/guillemin-blind-cap/",
-      "destination": "/ru/p/заглушка-guillemin-с-защелкой/",
+      "destination": "/ru/p/zaglushka-guillemin-s-zashchyolkoy/",
       "statusCode": 301
     },
     {
@@ -1626,7 +1765,7 @@
     },
     {
       "source": "/ru/p/guillemin-female/",
-      "destination": "/ru/p/guillemin-гайка-без-защелки/",
+      "destination": "/ru/p/guillemin-gayka-bez-zashchyolki/",
       "statusCode": 301
     },
     {
@@ -1641,7 +1780,7 @@
     },
     {
       "source": "/ru/p/guillemin-female-with-latch/",
-      "destination": "/ru/p/guillemin-гайка-с-защелкой/",
+      "destination": "/ru/p/guillemin-gayka-s-zashchyolkoy/",
       "statusCode": 301
     },
     {
@@ -1651,7 +1790,7 @@
     },
     {
       "source": "/ru/p/guillemin-gasket/",
-      "destination": "/ru/p/прокладка-guillemin/",
+      "destination": "/ru/p/prokladka-guillemin/",
       "statusCode": 301
     },
     {
@@ -1661,7 +1800,7 @@
     },
     {
       "source": "/ru/p/guillemin-hose/",
-      "destination": "/ru/p/guillemin-наконечник-для-шланга/",
+      "destination": "/ru/p/guillemin-nakonechnik-dlya-shlanga/",
       "statusCode": 301
     },
     {
@@ -1676,7 +1815,7 @@
     },
     {
       "source": "/ru/p/guillemin-hose-end-with-latch/",
-      "destination": "/ru/p/guillemin-наконечник-для-шланга-с-защелкой/",
+      "destination": "/ru/p/guillemin-nakonechnik-dlya-shlanga-s-zashchyolkoy/",
       "statusCode": 301
     },
     {
@@ -1686,7 +1825,7 @@
     },
     {
       "source": "/ru/p/guillemin-male/",
-      "destination": "/ru/p/guillemin-ниппель-с-защелкой/",
+      "destination": "/ru/p/guillemin-nippel-s-zashchyolkoy/",
       "statusCode": 301
     },
     {
@@ -1701,7 +1840,7 @@
     },
     {
       "source": "/ru/p/guillemin-male-without-latch/",
-      "destination": "/ru/p/guillemin-ниппель-без-защелки/",
+      "destination": "/ru/p/guillemin-nippel-bez-zashchyolki/",
       "statusCode": 301
     },
     {
@@ -1711,7 +1850,7 @@
     },
     {
       "source": "/ru/p/guillemin-reducer/",
-      "destination": "/ru/p/редуцирующий-переходник-guillemin/",
+      "destination": "/ru/p/redutsiruyushchiy-perekhodnik-guillemin/",
       "statusCode": 301
     },
     {
@@ -1726,7 +1865,7 @@
     },
     {
       "source": "/ru/p/heavy-duty-clamp/",
-      "destination": "/ru/p/усиленный-хомут/",
+      "destination": "/ru/p/usilennyy-khomut/",
       "statusCode": 301
     },
     {
@@ -1736,7 +1875,7 @@
     },
     {
       "source": "/ru/p/high-pressure-hoses/",
-      "destination": "/ru/p/рукава-высокого-давления/",
+      "destination": "/ru/p/rukava-vysokogo-davleniya/",
       "statusCode": 301
     },
     {
@@ -1746,7 +1885,7 @@
     },
     {
       "source": "/ru/p/hose-clamps/",
-      "destination": "/ru/p/хомуты-для-шланга/",
+      "destination": "/ru/p/khomuty-dlya-shlanga/",
       "statusCode": 301
     },
     {
@@ -1756,7 +1895,7 @@
     },
     {
       "source": "/ru/p/hose-head/",
-      "destination": "/ru/p/головка-для-шланга/",
+      "destination": "/ru/p/golovka-dlya-shlanga/",
       "statusCode": 301
     },
     {
@@ -1766,7 +1905,7 @@
     },
     {
       "source": "/ru/p/hoses-for-sewage-truck/",
-      "destination": "/ru/p/рукава-для-ассенизаторских-машин/",
+      "destination": "/ru/p/rukava-dlya-assenizatorskikh-mashin/",
       "statusCode": 301
     },
     {
@@ -1781,12 +1920,22 @@
     },
     {
       "source": "/ru/p/kamaz-maz-silicone-hoses/",
-      "destination": "/ru/p/силиконовые-патрубки-для-kamaz-maz/",
+      "destination": "/ru/p/silikonovye-patrubki-dlya-kamaz-maz/",
       "statusCode": 301
     },
     {
       "source": "/en/p/kamaz-maz-silicone-hoses/",
       "destination": "/en/p/silicone-hoses-for-kamaz-maz/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/kapralon-grafitonapolnennyy/",
+      "destination": "/p/caprolon-grafitat/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/kapralon-grafitonapolnennyy/",
+      "destination": "/en/p/graphite-filled-caprolon/",
       "statusCode": 301
     },
     {
@@ -1796,7 +1945,7 @@
     },
     {
       "source": "/ru/p/kenda-klever-m-t-tires/",
-      "destination": "/ru/p/kenda-klever-m-t-шины/",
+      "destination": "/ru/p/kenda-klever-m-t-shiny/",
       "statusCode": 301
     },
     {
@@ -1806,7 +1955,7 @@
     },
     {
       "source": "/ru/p/lay-flat-hose/",
-      "destination": "/ru/p/плоскосворачиваемый-рукав-армированный/",
+      "destination": "/ru/p/ploskosvorachivaemyy-rukav-armirovannyy/",
       "statusCode": 301
     },
     {
@@ -1821,7 +1970,7 @@
     },
     {
       "source": "/ru/p/mb/",
-      "destination": "/ru/p/соединение-mb/",
+      "destination": "/ru/p/soedinenie-mb/",
       "statusCode": 301
     },
     {
@@ -1836,7 +1985,7 @@
     },
     {
       "source": "/ru/p/mercedes-sprinter-silicone-hoses/",
-      "destination": "/ru/p/силиконовые-патрубки-для-mercedes-sprinter/",
+      "destination": "/ru/p/silikonovye-patrubki-dlya-mercedes-sprinter/",
       "statusCode": 301
     },
     {
@@ -1851,7 +2000,7 @@
     },
     {
       "source": "/ru/p/mk/",
-      "destination": "/ru/p/соединение-mk/",
+      "destination": "/ru/p/soedinenie-mk/",
       "statusCode": 301
     },
     {
@@ -1866,7 +2015,7 @@
     },
     {
       "source": "/ru/p/nylon-tube-pa6/",
-      "destination": "/ru/p/полиамидная-труба-pa6/",
+      "destination": "/ru/p/poliamidnaya-truba-pa6/",
       "statusCode": 301
     },
     {
@@ -1876,7 +2025,7 @@
     },
     {
       "source": "/ru/p/oil_resistant_hoses/",
-      "destination": "/ru/p/маслобензостойкие-рукава/",
+      "destination": "/ru/p/maslobenzostoykie-rukava/",
       "statusCode": 301
     },
     {
@@ -1891,7 +2040,7 @@
     },
     {
       "source": "/ru/p/oxygen_hoses/",
-      "destination": "/ru/p/кислородные-рукава/",
+      "destination": "/ru/p/kislorodnye-rukava/",
       "statusCode": 301
     },
     {
@@ -1906,7 +2055,7 @@
     },
     {
       "source": "/ru/p/paronite-pmb/",
-      "destination": "/ru/p/паронит-pmb/",
+      "destination": "/ru/p/paronit-pmb/",
       "statusCode": 301
     },
     {
@@ -1916,7 +2065,7 @@
     },
     {
       "source": "/ru/p/pipe-silicone-straight-l1100-d080/",
-      "destination": "/ru/p/силиконовый-патрубок-u-образный-180/",
+      "destination": "/ru/p/silikonovyy-patrubok-u-obraznyy-180/",
       "statusCode": 301
     },
     {
@@ -1931,7 +2080,7 @@
     },
     {
       "source": "/ru/p/pipe_with_silicone_transition/",
-      "destination": "/ru/p/силиконовый-прямой-патрубок-с-переходом-l102/",
+      "destination": "/ru/p/silikonovyy-pryamoy-patrubok-s-perekhodom-l102/",
       "statusCode": 301
     },
     {
@@ -1946,12 +2095,42 @@
     },
     {
       "source": "/ru/p/plastering-hose/",
-      "destination": "/ru/p/рукава-для-штукатурки/",
+      "destination": "/ru/p/rukava-dlya-shtukaturki/",
       "statusCode": 301
     },
     {
       "source": "/en/p/plastering-hose/",
       "destination": "/en/p/plastering-hoses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/",
+      "destination": "/p/polipropilena-in-foi-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/",
+      "destination": "/ru/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/polipropilen-listovoy-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm-50mm-60mm-70mm-listy-1000kh2000-mm-tvyordost-75/",
+      "destination": "/en/p/polypropylene-sheet-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/",
+      "destination": "/p/poliuretan-in-bare-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/",
+      "destination": "/ru/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/poluretan-v-sterzhnyakh-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm-90-mm-100mm/",
+      "destination": "/en/p/polyurethane-rod-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm/",
       "statusCode": 301
     },
     {
@@ -1961,7 +2140,7 @@
     },
     {
       "source": "/ru/p/polypropylene-ball-valve/",
-      "destination": "/ru/p/шаровой-кран-из-полипропилена/",
+      "destination": "/ru/p/sharovoy-kran-iz-polipropilena/",
       "statusCode": 301
     },
     {
@@ -1971,7 +2150,7 @@
     },
     {
       "source": "/ru/p/polyurethane-sheet/",
-      "destination": "/ru/p/полиуретановый-лист/",
+      "destination": "/ru/p/poliuretanovyy-list/",
       "statusCode": 301
     },
     {
@@ -1981,7 +2160,7 @@
     },
     {
       "source": "/ru/p/porous-sponge-rubber-epdm/",
-      "destination": "/ru/p/пористая-губчатая-резина-epdm/",
+      "destination": "/ru/p/poristaya-gubchataya-rezina-epdm/",
       "statusCode": 301
     },
     {
@@ -1991,7 +2170,7 @@
     },
     {
       "source": "/ru/p/pvc-corrugated-hoses-for-water/",
-      "destination": "/ru/p/пвх-гофрированный-шланг-для-воды/",
+      "destination": "/ru/p/pvkh-gofrirovannyy-shlang-dlya-vody/",
       "statusCode": 301
     },
     {
@@ -2006,7 +2185,7 @@
     },
     {
       "source": "/ru/p/pvc-curtains/",
-      "destination": "/ru/p/пвх-завесы/",
+      "destination": "/ru/p/pvkh-zavesy/",
       "statusCode": 301
     },
     {
@@ -2016,7 +2195,7 @@
     },
     {
       "source": "/ru/p/pvc-oil-and-gasoline-resistant-hose/",
-      "destination": "/ru/p/пвх-рукав-маслобензостойкий/",
+      "destination": "/ru/p/pvkh-rukav-maslobenzostoykiy/",
       "statusCode": 301
     },
     {
@@ -2026,7 +2205,7 @@
     },
     {
       "source": "/ru/p/pvc-pressure-hoses/",
-      "destination": "/ru/p/пвх-напорные-рукава/",
+      "destination": "/ru/p/pvkh-napornye-rukava/",
       "statusCode": 301
     },
     {
@@ -2036,7 +2215,7 @@
     },
     {
       "source": "/ru/p/reinforced-silicone-damper-hose-with-three-rings-l203/",
-      "destination": "/ru/p/армированный-силиконовый-демпферный-шланг-с-тремя-кольцами/",
+      "destination": "/ru/p/armirovannyy-silikonovyy-dempfernyy-shlang-s-tremya/",
       "statusCode": 301
     },
     {
@@ -2046,7 +2225,7 @@
     },
     {
       "source": "/ru/p/reinforced-silicone-hose-damper-with-one-ring-l102/",
-      "destination": "/ru/p/армированный-силиконовый-демпферный-шланг-с-одним-кольцом/",
+      "destination": "/ru/p/armirovannyy-silikonovyy-dempfernyy-shlang-s-odnim-koltsom/",
       "statusCode": 301
     },
     {
@@ -2056,7 +2235,7 @@
     },
     {
       "source": "/ru/p/return-valve/",
-      "destination": "/ru/p/обратный-клапан/",
+      "destination": "/ru/p/obratnyy-klapan/",
       "statusCode": 301
     },
     {
@@ -2066,7 +2245,7 @@
     },
     {
       "source": "/ru/p/riezinovyie-rulony-piatachok/",
-      "destination": "/ru/p/резиновое-рулонное-покрытие-pyatachok/",
+      "destination": "/ru/p/rezinovoe-rulonnoe-pokrytie-pyatachok/",
       "statusCode": 301
     },
     {
@@ -2081,7 +2260,7 @@
     },
     {
       "source": "/ru/p/rubber-cord-nbr/",
-      "destination": "/ru/p/резиновый-шнур-nbr/",
+      "destination": "/ru/p/rezinovyy-shnur-nbr/",
       "statusCode": 301
     },
     {
@@ -2091,7 +2270,7 @@
     },
     {
       "source": "/ru/p/shaft-seals/",
-      "destination": "/ru/p/сальники/",
+      "destination": "/ru/p/salniki/",
       "statusCode": 301
     },
     {
@@ -2101,7 +2280,7 @@
     },
     {
       "source": "/ru/p/shlangh-lay-flat/",
-      "destination": "/ru/p/плоскосворачиваемый-рукав/",
+      "destination": "/ru/p/ploskosvorachivaemyy-rukav/",
       "statusCode": 301
     },
     {
@@ -2111,7 +2290,7 @@
     },
     {
       "source": "/ru/p/silicone-hose-double-damper-l102/",
-      "destination": "/ru/p/силиконовый-шланг-с-двойным-демпфером-l102/",
+      "destination": "/ru/p/silikonovyy-shlang-s-dvoynym-dempferom-l102/",
       "statusCode": 301
     },
     {
@@ -2121,7 +2300,7 @@
     },
     {
       "source": "/ru/p/silicone-sheet/",
-      "destination": "/ru/p/силиконовая-пластина/",
+      "destination": "/ru/p/silikonovaya-plastina/",
       "statusCode": 301
     },
     {
@@ -2131,7 +2310,7 @@
     },
     {
       "source": "/ru/p/silicone-tube-d110-l1100/",
-      "destination": "/ru/p/силиконовый-патрубок-колено-90-l102-102mm/",
+      "destination": "/ru/p/silikonovyy-patrubok-koleno-90-l102-102mm/",
       "statusCode": 301
     },
     {
@@ -2146,7 +2325,7 @@
     },
     {
       "source": "/ru/p/silicone-tube-d50-l1100/",
-      "destination": "/ru/p/stefsotra-силиконовый-демпферный-шланг-l102/",
+      "destination": "/ru/p/stefsotra-silikonovyy-dempfernyy-shlang-l102/",
       "statusCode": 301
     },
     {
@@ -2161,7 +2340,7 @@
     },
     {
       "source": "/ru/p/silicone-tube-d60-l1100/",
-      "destination": "/ru/p/силиконовый-патрубок-колено-с-переходом-90-l102-102mm/",
+      "destination": "/ru/p/silikonovyy-patrubok-koleno-s-perekhodom-90-l102-102mm/",
       "statusCode": 301
     },
     {
@@ -2176,7 +2355,7 @@
     },
     {
       "source": "/ru/p/silicone-tube-d85-l1100/",
-      "destination": "/ru/p/силиконовый-патрубок-колено-135-l102-102mm/",
+      "destination": "/ru/p/silikonovyy-patrubok-koleno-135-l102-102mm/",
       "statusCode": 301
     },
     {
@@ -2191,7 +2370,7 @@
     },
     {
       "source": "/ru/p/silicone_pipe_elbow_45/",
-      "destination": "/ru/p/силиконовый-патрубок-колено-45/",
+      "destination": "/ru/p/silikonovyy-patrubok-koleno-45/",
       "statusCode": 301
     },
     {
@@ -2206,12 +2385,22 @@
     },
     {
       "source": "/ru/p/silicone_pipe_straight_l1000/",
-      "destination": "/ru/p/силиконовый-прямой-патрубок-l1000mm/",
+      "destination": "/ru/p/silikonovyy-pryamoy-patrubok-l1000mm/",
       "statusCode": 301
     },
     {
       "source": "/en/p/silicone_pipe_straight_l1000/",
       "destination": "/en/p/silicone-straight-hose-l1000mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/",
+      "destination": "/p/snur-din-silicon-5-mm-10-mm-15-mm-20-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/silikonovyy-shnur-5-mm-10-mm-15-mm-20-mm/",
+      "destination": "/en/p/silicone-cord-5-mm-10-mm-15-mm-20-mm/",
       "statusCode": 301
     },
     {
@@ -2221,7 +2410,7 @@
     },
     {
       "source": "/ru/p/socket-coupling-head/",
-      "destination": "/ru/p/головка-соединительная/",
+      "destination": "/ru/p/golovka-soedinitelnaya/",
       "statusCode": 301
     },
     {
@@ -2236,7 +2425,7 @@
     },
     {
       "source": "/ru/p/sprayer-hose/",
-      "destination": "/ru/p/шланг-для-опрыскивателя/",
+      "destination": "/ru/p/shlang-dlya-opryskivatelya/",
       "statusCode": 301
     },
     {
@@ -2246,7 +2435,7 @@
     },
     {
       "source": "/ru/p/storz-cap/",
-      "destination": "/ru/p/заглушка-storz-алюминий/",
+      "destination": "/ru/p/zaglushka-storz-alyuminiy/",
       "statusCode": 301
     },
     {
@@ -2261,7 +2450,7 @@
     },
     {
       "source": "/ru/p/storz-coupling-female/",
-      "destination": "/ru/p/соединение-storz-гайка-алюминий/",
+      "destination": "/ru/p/soedinenie-storz-gayka-alyuminiy/",
       "statusCode": 301
     },
     {
@@ -2276,7 +2465,7 @@
     },
     {
       "source": "/ru/p/storz-coupling-with-internal-thread/",
-      "destination": "/ru/p/соединение-storz-с-внутренней-резьбой/",
+      "destination": "/ru/p/soedinenie-storz-s-vnutrenney-rezboy/",
       "statusCode": 301
     },
     {
@@ -2286,7 +2475,7 @@
     },
     {
       "source": "/ru/p/storz-coupling-with-tail-for-hose/",
-      "destination": "/ru/p/соединение-storz-с-хвостовиком-под-шланг/",
+      "destination": "/ru/p/soedinenie-storz-s-khvostovikom-pod-shlang/",
       "statusCode": 301
     },
     {
@@ -2296,7 +2485,7 @@
     },
     {
       "source": "/ru/p/storz-gasket/",
-      "destination": "/ru/p/прокладка-storz/",
+      "destination": "/ru/p/prokladka-storz/",
       "statusCode": 301
     },
     {
@@ -2306,7 +2495,7 @@
     },
     {
       "source": "/ru/p/storz-hose-end/",
-      "destination": "/ru/p/storz-наконечник-для-шланга-алюминий/",
+      "destination": "/ru/p/storz-nakonechnik-dlya-shlanga-alyuminiy/",
       "statusCode": 301
     },
     {
@@ -2321,7 +2510,7 @@
     },
     {
       "source": "/ru/p/storz-latch/",
-      "destination": "/ru/p/защелка-storz-алюминий/",
+      "destination": "/ru/p/zashchyolka-storz-alyuminiy/",
       "statusCode": 301
     },
     {
@@ -2336,7 +2525,7 @@
     },
     {
       "source": "/ru/p/storz-reducer/",
-      "destination": "/ru/p/переходник-storz-алюминий/",
+      "destination": "/ru/p/perekhodnik-storz-alyuminiy/",
       "statusCode": 301
     },
     {
@@ -2351,7 +2540,7 @@
     },
     {
       "source": "/ru/p/storz-reducer-2/",
-      "destination": "/ru/p/переходник-storz-alt/",
+      "destination": "/ru/p/perekhodnik-storz-alt/",
       "statusCode": 301
     },
     {
@@ -2366,7 +2555,7 @@
     },
     {
       "source": "/ru/p/straight-silicone-spigot-d38-l1100/",
-      "destination": "/ru/p/силиконовый-патрубок-колено-с-переходом-45-l102-102mm/",
+      "destination": "/ru/p/silikonovyy-patrubok-koleno-s-perekhodom-45-l102-102mm/",
       "statusCode": 301
     },
     {
@@ -2381,12 +2570,27 @@
     },
     {
       "source": "/ru/p/technical-plate/",
-      "destination": "/ru/p/резина-листовая-технопластина/",
+      "destination": "/ru/p/rezina-listovaya-tekhnoplastina/",
       "statusCode": 301
     },
     {
       "source": "/en/p/technical-plate/",
       "destination": "/en/p/rubber-sheet-techno-plate/",
+      "statusCode": 301
+    },
+    {
+      "source": "/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/",
+      "destination": "/p/textolit-in-foi-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/",
+      "destination": "/ru/p/textolith-tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/p/tekstolit-v-listakh2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm-15-mm-20-mm-30-mm-razmer-lista-1000kh2000-mm/",
+      "destination": "/en/p/textolite-sheets-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
       "statusCode": 301
     },
     {
@@ -2396,7 +2600,7 @@
     },
     {
       "source": "/ru/p/toyota-hilux-bed-liner/",
-      "destination": "/ru/p/toyota-hilux-вкладыш-в-кузов/",
+      "destination": "/ru/p/toyota-hilux-vkladysh-v-kuzov/",
       "statusCode": 301
     },
     {
@@ -2406,7 +2610,7 @@
     },
     {
       "source": "/ru/p/truck-cargo-roof-canopy/",
-      "destination": "/ru/p/тент-на-кузов-грузовика/",
+      "destination": "/ru/p/tent-na-kuzov-gruzovika/",
       "statusCode": 301
     },
     {
@@ -2416,7 +2620,7 @@
     },
     {
       "source": "/ru/p/tw-blind-adapter-bv/",
-      "destination": "/ru/p/bv-ниппель-заглушка-для-соединения-tw/",
+      "destination": "/ru/p/bv-nippel-zaglushka-dlya-soedineniya-tw/",
       "statusCode": 301
     },
     {
@@ -2431,7 +2635,7 @@
     },
     {
       "source": "/ru/p/tw-blind-cap-bk/",
-      "destination": "/ru/p/bk-заглушка-для-соединения-tw/",
+      "destination": "/ru/p/bk-zaglushka-dlya-soedineniya-tw/",
       "statusCode": 301
     },
     {
@@ -2446,7 +2650,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-gasket/",
-      "destination": "/ru/p/прокладка-для-соединения-tw/",
+      "destination": "/ru/p/prokladka-dlya-soedineniya-tw/",
       "statusCode": 301
     },
     {
@@ -2456,7 +2660,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-mb-brass/",
-      "destination": "/ru/p/соединение-mb-латунь/",
+      "destination": "/ru/p/soedinenie-mb-latun/",
       "statusCode": 301
     },
     {
@@ -2471,7 +2675,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-mb-stainless/",
-      "destination": "/ru/p/соединение-mb-нержавеющая-сталь/",
+      "destination": "/ru/p/soedinenie-mb-nerzhaveyushchaya-stal/",
       "statusCode": 301
     },
     {
@@ -2486,7 +2690,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-mk-brass/",
-      "destination": "/ru/p/соединение-mk-латунь/",
+      "destination": "/ru/p/soedinenie-mk-latun/",
       "statusCode": 301
     },
     {
@@ -2501,7 +2705,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-mk-stainless/",
-      "destination": "/ru/p/соединение-mk-нержавеющая-сталь/",
+      "destination": "/ru/p/soedinenie-mk-nerzhaveyushchaya-stal/",
       "statusCode": 301
     },
     {
@@ -2516,7 +2720,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-vb-brass/",
-      "destination": "/ru/p/соединение-vb-латунь/",
+      "destination": "/ru/p/soedinenie-vb-latun/",
       "statusCode": 301
     },
     {
@@ -2531,7 +2735,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-vb-stainless/",
-      "destination": "/ru/p/соединение-vb-нержавеющая-сталь/",
+      "destination": "/ru/p/soedinenie-vb-nerzhaveyushchaya-stal/",
       "statusCode": 301
     },
     {
@@ -2546,7 +2750,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-vk-brass/",
-      "destination": "/ru/p/соединение-vk-латунь/",
+      "destination": "/ru/p/soedinenie-vk-latun/",
       "statusCode": 301
     },
     {
@@ -2561,7 +2765,7 @@
     },
     {
       "source": "/ru/p/tw-coupling-vk-stainless/",
-      "destination": "/ru/p/соединение-vk-нержавеющая-сталь/",
+      "destination": "/ru/p/soedinenie-vk-nerzhaveyushchaya-stal/",
       "statusCode": 301
     },
     {
@@ -2576,7 +2780,7 @@
     },
     {
       "source": "/ru/p/universal-gasket/",
-      "destination": "/ru/p/универсальная-прокладка-для-соединения/",
+      "destination": "/ru/p/universalnaya-prokladka-dlya-soedineniya/",
       "statusCode": 301
     },
     {
@@ -2591,7 +2795,7 @@
     },
     {
       "source": "/ru/p/vb/",
-      "destination": "/ru/p/соединение-vb/",
+      "destination": "/ru/p/soedinenie-vb/",
       "statusCode": 301
     },
     {
@@ -2606,7 +2810,7 @@
     },
     {
       "source": "/ru/p/ventilation-hoses/",
-      "destination": "/ru/p/вентиляционные-рукава/",
+      "destination": "/ru/p/ventilyatsionnye-rukava/",
       "statusCode": 301
     },
     {
@@ -2616,7 +2820,7 @@
     },
     {
       "source": "/ru/p/vk/",
-      "destination": "/ru/p/соединение-vk/",
+      "destination": "/ru/p/soedinenie-vk/",
       "statusCode": 301
     },
     {
@@ -2631,7 +2835,7 @@
     },
     {
       "source": "/ru/p/water-hoses/",
-      "destination": "/ru/p/водяные-шланги/",
+      "destination": "/ru/p/vodyanye-shlangi/",
       "statusCode": 301
     },
     {
@@ -2641,77 +2845,12 @@
     },
     {
       "source": "/ru/p/wire-fan-rake/",
-      "destination": "/ru/p/веерные-грабли-проволочные/",
+      "destination": "/ru/p/veernye-grabli-provolochnye/",
       "statusCode": 301
     },
     {
       "source": "/en/p/wire-fan-rake/",
       "destination": "/en/p/wire-fan-rakes/",
-      "statusCode": 301
-    },
-    {
-      "source": "/p/капралон-графитонаполненный/",
-      "destination": "/p/caprolon-grafitat/",
-      "statusCode": 301
-    },
-    {
-      "source": "/en/p/капралон-графитонаполненный/",
-      "destination": "/en/p/graphite-filled-caprolon/",
-      "statusCode": 301
-    },
-    {
-      "source": "/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
-      "destination": "/p/polipropilena-in-foi-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
-      "statusCode": 301
-    },
-    {
-      "source": "/ru/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
-      "destination": "/ru/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм/",
-      "statusCode": 301
-    },
-    {
-      "source": "/en/p/полипропилен-листовой-5-мм-10-мм-15мм-20мм-25мм-30мм-40мм-50мм-60мм-70мм-листы-1000х2000-мм-твёрдость-75/",
-      "destination": "/en/p/polypropylene-sheet-5-mm-10-mm-15mm-20mm-25mm-30mm-40mm/",
-      "statusCode": 301
-    },
-    {
-      "source": "/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
-      "destination": "/p/poliuretan-in-bare-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80/",
-      "statusCode": 301
-    },
-    {
-      "source": "/ru/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
-      "destination": "/ru/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80/",
-      "statusCode": 301
-    },
-    {
-      "source": "/en/p/полуретан-в-стержнях-20-мм-30-мм-40-мм-50-мм-60-мм-70-мм-80-мм-90-мм-100мм/",
-      "destination": "/en/p/polyurethane-rod-20-mm-30-mm-40-mm-50-mm-60-mm-70-mm-80-mm/",
-      "statusCode": 301
-    },
-    {
-      "source": "/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/",
-      "destination": "/p/snur-din-silicon-5-mm-10-mm-15-mm-20-mm/",
-      "statusCode": 301
-    },
-    {
-      "source": "/en/p/силиконовый-шнур-5-мм-10-мм-15-мм-20-мм/",
-      "destination": "/en/p/silicone-cord-5-mm-10-mm-15-mm-20-mm/",
-      "statusCode": 301
-    },
-    {
-      "source": "/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
-      "destination": "/p/textolit-in-foi-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
-      "statusCode": 301
-    },
-    {
-      "source": "/ru/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
-      "destination": "/ru/p/textolith-текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм/",
-      "statusCode": 301
-    },
-    {
-      "source": "/en/p/текстолит-в-листах2-мм-3-мм-4-мм-5-мм-6-мм-7-мм-10-мм-12-мм-15-мм-20-мм-30-мм-размер-листа-1000х2000-мм/",
-      "destination": "/en/p/textolite-sheets-2-mm-3-mm-4-mm-5-mm-6-mm-7-mm-10-mm-12-mm/",
       "statusCode": 301
     }
   ],
