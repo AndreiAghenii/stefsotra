@@ -4,7 +4,7 @@
  * the browser sends comes through here, the key is read from the environment, and the
  * reply goes back as plain JSON.
  *
- * Set ANTHROPIC_API_KEY in Netlify (Site settings -> Environment variables). Without
+ * Set ANTHROPIC_API_KEY in Vercel -> Project Settings -> Environment Variables. Without
  * it this returns 501 and the front end quietly falls back to rule-based search, so
  * the site is never broken by a missing key.
  */
@@ -103,13 +103,11 @@ async function anthropic(key, body) {
   return (d.content || []).filter(c => c.type === 'text').map(c => c.text).join('').trim();
 }
 
-const json = (code, obj) => ({
-  statusCode: code,
-  headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
-  body: JSON.stringify(obj)
-});
+// Netlify handed the handler an event and took an object back. Vercel passes req and
+// res instead, so the shape is built here and written out at the bottom of the file.
+const json = (code, obj) => ({ code, obj });
 
-exports.handler = async (event) => {
+const handler = async (event) => {
   if (event.httpMethod !== 'POST') return json(405, { error: 'POST only' });
 
   const key = process.env.ANTHROPIC_API_KEY;
@@ -164,4 +162,15 @@ exports.handler = async (event) => {
     console.error(err);
     return json(502, { error: 'upstream failed' });
   }
+};
+
+module.exports = async (req, res) => {
+  // The handler above was written against a raw JSON string; req.body arrives already
+  // parsed when the content type says JSON, so it is turned back into one either way.
+  const body = typeof req.body === 'string' ? req.body
+             : req.body ? JSON.stringify(req.body) : '';
+  const { code, obj } = await handler({ httpMethod: req.method, body });
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
+  res.status(code).end(JSON.stringify(obj));
 };

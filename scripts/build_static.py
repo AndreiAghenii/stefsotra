@@ -1696,6 +1696,9 @@ def write_vercel_json(rules):
         '$schema': 'https://openapi.vercel.sh/vercel.json',
         'trailingSlash': True,
         'cleanUrls': False,
+        # The assistant reads the catalogue index off disk at runtime. Vercel bundles only
+        # what a function requires, and this is opened with fs, so it has to be named.
+        'functions': {'api/assistant.js': {'includeFiles': 'data/index.txt'}},
         'redirects': redirects,
         'headers': [
             hdr('/templates/(.*)', X_Robots_Tag='noindex, nofollow'),

@@ -243,29 +243,41 @@ addresses were 404ing and `/scripts` and `/data` stayed crawlable. `_redirects` 
 the portable form of the same generated list, read by Netlify and Cloudflare Pages if the
 site ever moves.
 
-**Still to do on Vercel: the forms and the assistant.** Both were written against Netlify
-and neither works here. See below.
+Both serverless functions live in `/api`, where Vercel looks for them.
 
 Three things work only once deployed:
 
-**Orders, messages and reviews — BROKEN on Vercel.** The basket, the contact form and the
-review form all post to Netlify Forms (`data-netlify="true"`), which is the only backend
-this site has. Vercel does not implement it, so `quote-request`, `contact` and
-`product-review` submissions currently go nowhere: a customer can fill in the order form,
-press send, and nothing reaches anyone. Replacing it means three small Vercel Functions
-under `/api` and somewhere to put the result — email, or a sheet. Until then the basket's
-"send by email" fallback is the only path that works.
+**Orders, messages and reviews.** The basket, the contact form and the review form post to
+`/api/submit`. It was Netlify Forms before, which Vercel does not implement, so every
+submission had been falling through to the page's mail-client fallback — which works, but
+only for a customer who has a mail client configured and presses send in it.
 
-**The AI assistant — also not running.** `netlify/functions/assistant.js` is a Netlify
-function; on Vercel it needs to move to `/api/assistant.js` and the key set in Project
-Settings → Environment Variables. Search still works without it: there is a rule-based
-reader that handles sizes, angles, materials and product words in all three languages.
-Set `ANTHROPIC_API_KEY` in Site settings → Environment variables.
+`api/submit.js` has no dependencies, because this repo has no `npm install`. It delivers
+through whichever of these is set in Vercel → Project Settings → Environment Variables:
+
+```
+RESEND_API_KEY + FORM_TO     email each submission (resend.com, free tier)
+FORM_WEBHOOK_URL             POST the JSON somewhere — a sheet, Zapier, your own box
+```
+
+With neither set it answers **501**, and with delivery configured but broken, **502** —
+and on any non-2xx the page hands the message to the mail client exactly as it does now.
+So nothing is worse while it is unconfigured, and a submission is never lost to a
+misconfiguration nobody can see. It drops bot submissions that fill the honeypot, rejects
+a form missing its required fields, and reads a urlencoded or a JSON body without trusting
+the runtime to have guessed the content type.
+
+**The AI assistant.** `api/assistant.js`. Set `ANTHROPIC_API_KEY` in Vercel → Project
+Settings → Environment Variables. Until you do it returns 501 and the site says plainly
+that the assistant is not switched on. Search keeps working regardless — it also has a
+rule-based reader that handles sizes, angles, materials and product words in Romanian,
+Russian and English. `vercel.json` names `data/index.txt` under `functions.includeFiles`
+because the function opens it with `fs`, and Vercel bundles only what a function requires.
 Until you do, the endpoint returns 501 and the site says plainly that the assistant is not
 switched on. Search keeps working regardless — it also has a rule-based reader that handles
 sizes, angles, materials and product words in Romanian, Russian and English.
 
-The key stays server-side in `netlify/functions/assistant.js`. The assistant is given
+The key stays server-side in `api/assistant.js`. The assistant is given
 `data/index.txt` and told to recommend only what is in it, and the products it names are
 rendered from our own catalogue rather than from its text, so it cannot show an invented
 price.
