@@ -73,6 +73,45 @@ CAT = json.load(open(os.path.join(DATA, 'products.json'), encoding='utf-8'))
 PAGES = json.load(open(os.path.join(DATA, 'pages.json'), encoding='utf-8'))
 REVIEWS = json.load(open(os.path.join(DATA, 'reviews.json'), encoding='utf-8'))
 FITMENT = json.load(open(os.path.join(DATA, 'fitment.json'), encoding='utf-8'))
+
+# Synthetic reviews exist for one legitimate reason: seeing how the section lays out with
+# thirty of them on a page, which an empty file cannot show. They must never reach a
+# visitor. Two rules enforce that, and they are deliberately hard to get around:
+#
+#   1. A production build REFUSES to start if any entry in data/reviews.json carries
+#      "synthetic": true. Not a warning -- the build stops.
+#   2. data/reviews.staging.json is read only with STEFSOTRA_PREVIEW=1, and a preview
+#      build stamps every page with a banner and noindex, so a screenshot of it can never
+#      be mistaken for the live site and a stray deploy of one cannot be indexed.
+#
+# Publishing invented reviews is unlawful under the EU Omnibus Directive and Moldovan
+# consumer-protection law, and Google treats fake review markup as spam.
+PREVIEW = os.environ.get('STEFSOTRA_PREVIEW') == '1'
+
+
+def _reject_synthetic(reviews, where):
+    bad = [(h, r.get('name', '?')) for h, rs in reviews.get('products', {}).items()
+           for r in rs if r.get('synthetic')]
+    if bad:
+        raise SystemExit(
+            'REFUSING TO BUILD: %d review(s) in %s are marked "synthetic": true.\n'
+            '  first: %s / %s\n'
+            '  Synthetic reviews belong in data/reviews.staging.json, which is only read\n'
+            '  by a preview build (STEFSOTRA_PREVIEW=1) and is never published.'
+            % (len(bad), where, bad[0][0], bad[0][1]))
+
+
+_reject_synthetic(REVIEWS, 'data/reviews.json')
+
+if PREVIEW:
+    try:
+        _staging = json.load(open(os.path.join(DATA, 'reviews.staging.json'),
+                                  encoding='utf-8'))
+        REVIEWS.setdefault('products', {}).update(_staging.get('products', {}))
+        print('PREVIEW BUILD: %d staging reviews merged in. DO NOT DEPLOY THIS BUILD.'
+              % sum(len(v) for v in _staging.get('products', {}).values()))
+    except (OSError, ValueError) as _e:
+        print('preview mode, but data/reviews.staging.json could not be read: %s' % _e)
 CONTACT = PAGES['_contact']
 
 BY_HANDLE = {p['handle']: p for p in CAT['products']}
@@ -378,6 +417,15 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
         '\n</head>\n<body>\n')
 
 
+def preview_banner():
+    """Stamped on every page of a preview build so it cannot be mistaken for the site."""
+    if not PREVIEW:
+        return ''
+    return ('<div style="background:#b00;color:#fff;font:700 13px/1.5 system-ui;'
+            'padding:8px 16px;text-align:center">PREVIEW BUILD — contains synthetic '
+            'reviews for layout testing. Not for deployment.</div>')
+
+
 def announce_html(lang):
     """The company is for sale: said once at the top of every page, in red."""
     px = PREFIX[lang]
@@ -530,8 +578,9 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
     title, desc = clamp(title, TITLE_MAX), clamp(desc, DESC_MAX)
     paths = path if isinstance(path, dict) else {l: path for l in LANGS}
     own = paths[lang]
-    doc = (head(lang, title, desc, paths, image, jsonld, noindex, og_type, extra_meta) +
-           announce_html(lang) +
+    doc = (head(lang, title, desc, paths, image, jsonld, noindex or PREVIEW,
+                og_type, extra_meta) +
+           preview_banner() + announce_html(lang) +
            # the language switcher must point at the other language's slug, not this one's
            header_html(lang, current).replace('{PATH}', '{LANGPATH}') +
            '<main>' + body + '</main>' +
@@ -1627,7 +1676,7 @@ def build_tool(lang, filename):
     jsonld = [crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (title.split(' — ')[0].split(' | ')[0], path)])] \
         if spec['index'] else None
     doc = (head(lang, title, desc, path, None, jsonld, noindex=not spec['index']) +
-           announce_html(lang) +
+           preview_banner() + announce_html(lang) +
            header_html(lang, spec['current']).replace('{PATH}', path) +
            markup +
            footer_html(lang, path) +
