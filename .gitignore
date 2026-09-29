@@ -16,3 +16,4 @@ data/_img_cache/
 
 # contact sheets built by the image audit; regenerate when needed
 data/_audit/
+data/reviews.staging.json

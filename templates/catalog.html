@@ -1,0 +1,314 @@
+<!-- Body fragment for /catalog.html. scripts/build_static.py wraps this in the head,
+     header and footer for each language and writes /, /ru/ and /en/ copies, so the
+     three copies stop being byte-identical pages with no canonical between them.
+     app.js and assistant.js are added by the builder; do not add them here. -->
+<main>
+  <div class="wrap">
+    <h1 id="h1">&nbsp;</h1>
+    <div class="layout">
+      <aside class="filters">
+        <h2 id="fh">&nbsp;</h2>
+        <div class="field">
+          <label data-t="cat.search">&nbsp;</label>
+          <input type="text" id="q" data-t-ph="cat.search">
+        </div>
+        <div class="field">
+          <label data-t="prod.category">&nbsp;</label>
+          <select id="cat"></select>
+        </div>
+        <div id="facets"></div>
+        <button class="btn ghost" id="clear" style="width:100%" data-t="cat.clear">&nbsp;</button>
+      </aside>
+      <section>
+        <div class="listbar">
+          <p class="muted small" id="count"></p>
+          <label class="sortwrap"><span data-t="cat.sort">&nbsp;</span>
+            <select id="sort"></select></label>
+        </div>
+        <div id="active" class="chips"></div>
+        <div class="grid" id="grid"></div>
+      </section>
+    </div>
+  </div>
+</main>
+<script>
+var Q = { q: '', cat: '', group: '', sort: '' };   // plus one entry per active facet
+
+/* Filters are built from the products actually in view, not from a fixed list.
+   A clamp has no bore and no angle; it has a clamping range. A Guillemin coupling is
+   sized by DN. A rubber sheet has neither. Showing all five controls everywhere meant
+   four of them did nothing in most categories, which reads as a broken page. */
+
+var FACETS = [
+  { key: 'dia', label: 'cat.diameter', type: 'range', unit: ' mm',
+    values: function (ps) {
+      return uniqNums(ps, function (v) { return v.dims.id_mm; });
+    },
+    match: function (p, val) {
+      return p.variants.some(function (v) {
+        var d = v.dims;
+        return d.id_min != null && val >= d.id_min - 3 && val <= d.id_max + 3;
+      });
+    } },
+
+  { key: 'clamp', label: 'cat.clampRange', type: 'range', unit: ' mm',
+    values: function (ps) {
+      var s = {};
+      ps.forEach(function (p) { p.variants.forEach(function (v) {
+        if (v.dims.clamp_min != null) { s[v.dims.clamp_min] = 1; s[v.dims.clamp_max] = 1; }
+      }); });
+      return Object.keys(s).map(Number).sort(function (a, b) { return a - b; });
+    },
+    match: function (p, val) {
+      return p.variants.some(function (v) {
+        var d = v.dims;
+        return d.clamp_min != null && val >= d.clamp_min && val <= d.clamp_max;
+      });
+    } },
+
+  { key: 'ang', label: 'cat.angle', type: 'select', fmt: function (v) { return v + '°'; },
+    values: function (ps) { return uniqVals(ps, function (p) { return p.attrs.angle; }); },
+    match: function (p, val) { return String(p.attrs.angle || '') === val; } },
+
+  { key: 'len', label: 'cat.length', type: 'select', fmt: function (v) { return v + ' mm'; },
+    values: function (ps) { return uniqVals(ps, function (p) { return p.attrs.length_mm; }); },
+    match: function (p, val) { return String(p.attrs.length_mm || '') === val; } },
+
+  { key: 'dn', label: 'cat.dn', type: 'select', fmt: function (v) { return 'DN' + v; },
+    values: function (ps) {
+      return uniqVals(ps, function (p) {
+        return p.variants.map(function (v) { return v.dims.dn; });
+      });
+    },
+    match: function (p, val) {
+      return p.variants.some(function (v) { return String(v.dims.dn || '') === val; });
+    } },
+
+  { key: 'thr', label: 'cat.thread', type: 'select',
+    values: function (ps) {
+      return uniqVals(ps, function (p) {
+        return p.variants.map(function (v) { return v.dims.thread; });
+      });
+    },
+    match: function (p, val) {
+      return p.variants.some(function (v) { return v.dims.thread === val; });
+    } },
+
+  { key: 'mat', label: 'cat.material', type: 'select',
+    values: function (ps) {
+      return uniqVals(ps, function (p) {
+        return [p.attrs.material].concat(p.variants.map(function (v) { return v.dims.material; }));
+      });
+    },
+    match: function (p, val) {
+      return p.attrs.material === val ||
+             p.variants.some(function (v) { return v.dims.material === val; });
+    } }
+];
+
+S.load(['catalogue']).then(function () {
+  S.chrome('/catalog.html');
+  S.applyStatic();
+
+  var url = new URLSearchParams(location.search);
+  ['cat', 'group', 'q', 'sort'].forEach(function (k) { Q[k] = url.get(k) || ''; });
+  FACETS.forEach(function (f) {
+    var v = url.get(f.key);
+    if (v) Q[f.key] = f.type === 'range' ? Number(v) : v;
+  });
+
+  document.getElementById('cat').innerHTML =
+    '<option value="">' + S.esc(S.t('cat.all')) + '</option>' +
+    S.catalogue.groups.map(function (g) {
+      return '<optgroup label="' + S.esc(S.groupLabel(g.key)) + '">' +
+        g.categories.map(function (c) {
+          return '<option value="' + S.esc(c.key) + '">' + S.esc(S.catLabel(c.key)) +
+                 ' (' + c.count + ')</option>';
+        }).join('') + '</optgroup>';
+    }).join('');
+  document.getElementById('cat').value = Q.cat;
+  document.getElementById('q').value = Q.q;
+
+  fillSort();
+  document.getElementById('q').addEventListener('input', function (e) { Q.q = e.target.value; render(); });
+  document.getElementById('sort').addEventListener('input', function (e) { Q.sort = e.target.value; render(); });
+  document.getElementById('cat').addEventListener('input', function (e) {
+    Q.cat = e.target.value;
+    if (Q.cat) Q.group = '';
+    dropFacets();               // last category's facets do not apply to this one
+    render();
+  });
+  document.getElementById('clear').addEventListener('click', function () {
+    Q = { q: '', cat: '', group: '', sort: '' };
+    document.getElementById('cat').value = '';
+    document.getElementById('q').value = '';
+    document.getElementById('sort').value = '';
+    render();
+  });
+  render();
+}).catch(S.fail);
+
+function dropFacets() { FACETS.forEach(function (f) { delete Q[f.key]; }); }
+
+function uniqVals(ps, fn) {
+  var s = {};
+  ps.forEach(function (p) {
+    var v = fn(p);
+    (Array.isArray(v) ? v : [v]).forEach(function (x) { if (x) s[x] = 1; });
+  });
+  return Object.keys(s).sort(function (a, b) {
+    return (Number(a) || 0) - (Number(b) || 0) || a.localeCompare(b);
+  });
+}
+function uniqNums(ps, fn) {
+  var s = {};
+  ps.forEach(function (p) { p.variants.forEach(function (v) {
+    var x = fn(v); if (x != null) s[x] = 1;
+  }); });
+  return Object.keys(s).map(Number).sort(function (a, b) { return a - b; });
+}
+function fillSort() {
+  document.getElementById('sort').innerHTML =
+    '<option value="">' + S.esc(S.t('cat.sortRel')) + '</option>' +
+    [['low', 'cat.sortLow'], ['high', 'cat.sortHigh'], ['az', 'cat.sortAZ'], ['size', 'cat.sortSize']]
+      .map(function (o) {
+        return '<option value="' + o[0] + '"' + (Q.sort === o[0] ? ' selected' : '') + '>' +
+          S.esc(S.t(o[1])) + '</option>';
+      }).join('');
+}
+
+// Products in the current category or group, before any facet is applied. Facets are
+// built from this so they can never offer a value that returns nothing.
+function scope() {
+  return S.catalogue.products.filter(function (p) {
+    if (Q.cat && p.category !== Q.cat) return false;
+    if (Q.group && p.group !== Q.group) return false;
+    return true;
+  });
+}
+
+function activeFacets(ps) {
+  return FACETS.filter(function (f) { return f.values(ps).length > 1; });
+}
+
+function renderFacets(ps, shown) {
+  var box = document.getElementById('facets');
+  box.innerHTML = shown.length
+    ? shown.map(function (f) {
+        var vals = f.values(ps);
+        if (f.type === 'range') {
+          var lo = vals[0], hi = vals[vals.length - 1], cur = Q[f.key] || 0;
+          return '<div class="field"><label for="f_' + f.key + '">' + S.esc(S.t(f.label)) +
+            ' <span class="muted">' + (cur ? '≈ ' + cur + f.unit : '') + '</span></label>' +
+            '<input type="range" id="f_' + f.key + '" data-f="' + f.key + '" min="0" max="' + hi +
+            '" step="1" value="' + cur + '" style="padding:0">' +
+            '<span class="rangeends small muted">' + lo + f.unit + ' – ' + hi + f.unit + '</span></div>';
+        }
+        return '<div class="field"><label for="f_' + f.key + '">' + S.esc(S.t(f.label)) + '</label>' +
+          '<select id="f_' + f.key + '" data-f="' + f.key + '">' +
+          '<option value="">' + S.esc(S.t('cat.any')) + '</option>' +
+          vals.map(function (v) {
+            return '<option value="' + S.esc(v) + '"' + (Q[f.key] === v ? ' selected' : '') + '>' +
+              S.esc(f.fmt ? f.fmt(v) : v) + '</option>';
+          }).join('') + '</select></div>';
+      }).join('')
+    : '<p class="small muted">' + S.esc(S.t('cat.noFilters')) + '</p>';
+
+  box.querySelectorAll('[data-f]').forEach(function (el) {
+    el.addEventListener('input', function () {
+      var f = FACETS.filter(function (x) { return x.key === el.dataset.f; })[0];
+      var v = f.type === 'range' ? Number(el.value) : el.value;
+      if (v) Q[f.key] = v; else delete Q[f.key];
+      render();
+    });
+  });
+}
+
+function render() {
+  var ps = scope();
+  var shown = activeFacets(ps);
+  // a facet that is no longer offered must not keep filtering invisibly
+  FACETS.forEach(function (f) {
+    if (Q[f.key] != null && shown.indexOf(f) < 0) delete Q[f.key];
+  });
+  renderFacets(ps, shown);
+
+  var heading = Q.cat ? S.catLabel(Q.cat) : Q.group ? S.groupLabel(Q.group) : S.t('cat.h1');
+  document.getElementById('h1').textContent = heading;
+  document.getElementById('fh').textContent =
+    (Q.cat || Q.group) ? S.t('cat.scope', { c: heading }) : S.t('cat.filters');
+  document.title = heading + ' — Stefsotra';
+
+  var list = ps.filter(function (p) {
+    return FACETS.every(function (f) {
+      return Q[f.key] == null || f.match(p, Q[f.key]);
+    });
+  });
+  if (Q.q) {
+    var terms = Q.q.toLowerCase().split(/\s+/).filter(Boolean);
+    list = list.filter(function (p) {
+      var hay = (S.name(p) + ' ' + p.title + ' ' + p.tags.join(' ') + ' ' +
+        p.variants.map(function (v) { return v.title + ' ' + v.sku; }).join(' ')).toLowerCase();
+      return terms.every(function (t) { return hay.indexOf(t) >= 0; });
+    });
+  }
+  list = sortList(list);
+
+  document.getElementById('count').textContent = S.t('cat.results', { n: list.length });
+  document.getElementById('grid').innerHTML = list.length
+    ? list.map(S.tile).join('')
+    : '<p class="muted">' + S.esc(S.t('cat.none')) + '</p>';
+  activeChips(shown);
+
+  var qs = Object.keys(Q).filter(function (k) { return Q[k]; })
+    .map(function (k) { return k + '=' + encodeURIComponent(Q[k]); }).join('&');
+  history.replaceState(null, '', S.url('/catalog.html') + (qs ? '?' + qs : ''));
+}
+
+function sortList(list) {
+  var by = {
+    low:  function (a, b) { return a.price_min - b.price_min; },
+    high: function (a, b) { return b.price_max - a.price_max; },
+    az:   function (a, b) { return S.name(a).localeCompare(S.name(b)); },
+    size: function (a, b) { return b.variants.length - a.variants.length; }
+  }[Q.sort];
+  return by ? list.slice().sort(by) : list;
+}
+
+function activeChips(shown) {
+  var on = [];
+  if (Q.group) on.push(['group', S.groupLabel(Q.group)]);
+  if (Q.cat) on.push(['cat', S.catLabel(Q.cat)]);
+  shown.forEach(function (f) {
+    if (Q[f.key] != null) {
+      on.push([f.key, S.t(f.label) + ': ' +
+        (f.type === 'range' ? Q[f.key] + f.unit : (f.fmt ? f.fmt(Q[f.key]) : Q[f.key]))]);
+    }
+  });
+  if (Q.q) on.push(['q', '“' + Q.q + '”']);
+
+  var box = document.getElementById('active');
+  box.innerHTML = on.length
+    ? '<span class="small muted" style="align-self:center">' + S.esc(S.t('cat.active')) + '</span>' +
+      on.map(function (c) {
+        return '<button type="button" class="chip" data-k="' + c[0] + '">' + S.esc(c[1]) + ' <i>✕</i></button>';
+      }).join('')
+    : '';
+  box.querySelectorAll('.chip').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var k = b.dataset.k;
+      if (k === 'cat' || k === 'group' || k === 'q') {
+        Q[k] = '';
+        var el = document.getElementById(k === 'group' ? 'cat' : k);
+        if (el) el.value = '';
+        if (k === 'cat' || k === 'group') dropFacets();
+      } else {
+        delete Q[k];
+      }
+      render();
+    });
+  });
+}
+</script>
+<script>
+</script>

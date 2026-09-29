@@ -138,8 +138,9 @@
       paint(5);
     }
 
-    // Netlify accepts a urlencoded POST to any path on the site, which is what lets a
-    // static page take a submission without a backend.
+    // /api/submit takes these. It answers 501 while no delivery is configured and 502 if
+    // delivery breaks, and either way the catch below hands the message to the mail
+    // client -- so a message is never lost to a misconfiguration it cannot see.
     [['rf', 'rok', 'Recenzie Stefsotra'], ['cf', 'ok', 'Mesaj de pe stefsotra.md']]
       .forEach(function (spec) {
         var f = document.getElementById(spec[0]);
@@ -147,7 +148,7 @@
         if (!f || !ok) return;
         f.addEventListener('submit', function (e) {
           e.preventDefault();
-          fetch('/', {
+          fetch('/api/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(new FormData(f)).toString()
@@ -155,8 +156,8 @@
             if (!r.ok) throw new Error(r.status);
             f.hidden = true; ok.hidden = false;
           }).catch(function () {
-            // Netlify unreachable or not configured: hand it to the mail client so the
-            // message still reaches the shop rather than vanishing.
+            // The endpoint is unreachable or has nowhere to deliver: hand it to the
+            // mail client so the message still reaches the shop rather than vanishing.
             var lines = [];
             new FormData(f).forEach(function (v, k) {
               if (k !== 'form-name' && k !== 'company' && v) lines.push(k + ': ' + v);

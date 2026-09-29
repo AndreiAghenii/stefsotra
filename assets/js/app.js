@@ -37,8 +37,28 @@
 
   // The same page in another language: strip any prefix, then add the new one.
   S.langUrl = function (lang) {
+    // A pre-rendered page's address in another language cannot be derived from this
+    // one's: the slug is the page's own name, so /c/coliere/ is /ru/c/хомуты/, not
+    // /ru/c/coliere/. The header already carries the real address for each language,
+    // written by the build; read it rather than guess. The JS-rendered tool pages have
+    // no per-language slug, so swapping the prefix is still right for them.
+    var a = document.querySelector('header.site .langs [data-lang="' + lang + '"]');
+    var href = a && a.getAttribute('href');
+    if (href) return href + location.search;
     var p = location.pathname.replace(/^\/(ru|en)(?=\/|$)/, '') || '/';
     return (lang === 'ro' ? '' : '/' + lang) + p + location.search;
+  };
+
+  // Group addresses are the group's own name in the page's language now, so a key is no
+  // longer a path. build_static.py inlines the map for whichever language this page is.
+  S.productUrl = function (handle) {
+    var m = window.__PSLUG || {};
+    return S.url('/p/' + encodeURIComponent(m[handle] || handle) + '/');
+  };
+
+  S.groupUrl = function (key) {
+    var m = window.__GSLUG || {};
+    return S.url('/g/' + encodeURIComponent(m[key] || key) + '/');
   };
 
   // Every internal link goes through here so the language prefix is never dropped.
@@ -131,7 +151,8 @@
   // literal is only a last resort so a form can never lose its destination.
   S.contact = function () {
     return (window.__CONTACT) || S.pagesContact ||
-           { email: 'stefsotra@mail.ru', phone: '+373 (22) 55-39-54', phone_href: '+37322553954' };
+           { email: 'stefsotra@mail.ru', phone: '+373 (22) 55-39-54', phone_href: '+37322553954',
+             phone2: '+373 69 12 72 12', phone2_href: '+37369127212' };
   };
 
   // A mailto with the whole request already written out. This is the fallback when
@@ -283,7 +304,7 @@
     var img = S.img(p);
     var one = p.variants.length === 1;
     return '<article class="tile" data-h="' + S.esc(p.handle) + '">' +
-      '<a class="tile-link" href="' + S.url('/p/' + encodeURIComponent(p.handle) + '/') + '">' +
+      '<a class="tile-link" href="' + S.productUrl(p.handle) + '">' +
         (img ? '<div class="ph"><img loading="lazy" src="' + S.esc(img) + '" alt="' + S.esc(S.name(p)) + '"></div>'
              : S.placeholder(p)) +
         '<div class="meta">' +
@@ -382,7 +403,7 @@
     return '<div class="announce"><div class="wrap">' + bar + '</div></div>' +
       '<header class="site">' +
       '<div class="wrap bar">' +
-        '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo.png" alt="STEFSOTRA"></a>' +
+        '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" width="400" height="98"></a>' +
         '<nav class="main" id="mainnav">' +
           '<button type="button" class="menu-trigger" id="prodBtn" aria-expanded="false"' +
             (onCat ? ' aria-current="page"' : '') + '>' +
@@ -424,9 +445,10 @@
 
     return '<footer class="site"><div class="wrap foot">' +
       '<div class="foot-brand">' +
-        '<img src="/assets/img/logo.png" alt="STEFSOTRA" class="foot-logo">' +
+        '<img src="/assets/img/logo-400.png" alt="STEFSOTRA" class="foot-logo" width="400" height="98" loading="lazy" decoding="async">' +
         '<p class="small">' + S.esc(S.t('site.tagline')) + '</p>' +
         (c.phone ? '<p class="small"><a href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a></p>' : '') +
+        (c.phone2 ? '<p class="small"><a href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a></p>' : '') +
         (c.email ? '<p class="small"><a href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a></p>' : '') +
         (c.address ? '<p class="small"><a href="' + S.esc(c.maps || '#') +
           '" target="_blank" rel="noopener">' + S.esc(c.address) + '</a></p>' : '') +
@@ -544,6 +566,7 @@
         '<h3>' + S.esc(S.t('pg.help')) + '</h3>' +
         '<p class="small">' + S.esc(S.t('pg.helpText')) + '</p>' +
         (c.phone ? '<a class="bigphone" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' : '') +
+        (c.phone2 ? '<a class="bigphone" href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a>' : '') +
         (c.email ? '<a class="small" href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a>' : '') +
         '<button type="button" class="btn ghost small-btn" data-ai-open>' +
           S.esc(S.t('nav.assistant')) + ' ✦</button>' +
@@ -624,7 +647,7 @@
       '<div class="drawer-back" id="drawerBack" hidden></div>' +
       '<aside class="drawer" id="drawer" hidden aria-label="' + S.esc(S.t('nav.menu')) + '">' +
         '<header>' +
-          '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo.png" alt="STEFSOTRA"></a>' +
+          '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" width="400" height="98"></a>' +
           '<button type="button" class="ai-x" id="drawerClose" aria-label="' + S.esc(S.t('nav.close')) + '">✕</button>' +
         '</header>' +
         '<form class="drawer-search" action="' + S.url('/search.html') + '" method="get" role="search">' +
@@ -641,6 +664,7 @@
             '" target="_blank" rel="noopener">' + S.esc(c.address) + '</a>' : '') +
           '<div class="drrow">' +
             '<a class="btn" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' +
+            (c.phone2 ? '<a class="btn" href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a>' : '') +
             '<div class="langs">' + langs + '</div>' +
           '</div>' +
         '</footer>' +
