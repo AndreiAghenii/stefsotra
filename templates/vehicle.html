@@ -1,7 +1,8 @@
 <!-- Body fragment for /vehicle.html. scripts/build_static.py wraps this in the head,
      header and footer for each language and writes /, /ru/ and /en/ copies, so the
      three copies stop being byte-identical pages with no canonical between them.
-     app.js and assistant.js are added by the builder; do not add them here. -->
+     app.js is added by the builder; do not add it here. assistant.js is not added:
+     app.js fetches it on the first press of the assistant button. -->
 <main><div class="wrap" id="root"></div></main>
 <script>
 /* Three steps, one visible at a time. The old page showed everything at once, which
@@ -256,9 +257,12 @@ function wire() {
 
   var ask = document.getElementById('askAI');
   if (ask) ask.addEventListener('click', function () {
-    S.assistant.open();
-    S.assistant.send(S.t('veh.id') + ' ' + V.id + (V.ang && V.ang !== '0' ? ', ' + V.ang + '°' : '') +
-      (carLabel() ? ', ' + carLabel() : ''));
+    // assistant.js is fetched on demand, so wait for it before talking to it.
+    S.aiReady().then(function (a) {
+      a.open();
+      a.send(S.t('veh.id') + ' ' + V.id + (V.ang && V.ang !== '0' ? ', ' + V.ang + '°' : '') +
+        (carLabel() ? ', ' + carLabel() : ''));
+    }).catch(S.fail);
   });
 }
 

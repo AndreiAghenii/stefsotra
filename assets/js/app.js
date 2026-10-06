@@ -460,6 +460,52 @@
       S.esc(S.t('foot.by')) + '</a></span></div></footer>';
   };
 
+  /* ------------------------------------------------------- assistant loading
+     assistant.js is 16 KB and most visits never open it, so the page ships the button
+     and fetches the script on the first click. The floating button and the in-page
+     "ask" buttons are wired here, where they cost nothing; everything behind them --
+     the panel, the chat, and the query parser search.html uses -- arrives on demand.
+
+     S.aiReady() resolves once S.assistant exists and is mounted, so any caller can
+     simply wait for it:  S.aiReady().then(function () { S.assistant.send(q); }). */
+
+  var aiPending = null;
+
+  S.aiReady = function () {
+    // search.html ships the script eagerly because it needs the query parser, so the
+    // object can already be here unmounted. mount() is a no-op once the panel exists.
+    if (S.assistant) { S.assistant.mount(); return Promise.resolve(S.assistant); }
+    if (!aiPending) {
+      aiPending = new Promise(function (resolve, reject) {
+        var el = document.createElement('script');
+        el.src = '/assets/js/assistant.js';
+        el.onload = function () {
+          if (!S.assistant) { aiPending = null; reject(new Error('assistant.js loaded but empty')); return; }
+          S.assistant.mount();
+          resolve(S.assistant);
+        };
+        // Let a failed fetch be retried on the next click rather than wedging for good.
+        el.onerror = function () { aiPending = null; reject(new Error('assistant.js unreachable')); };
+        document.head.appendChild(el);
+      });
+    }
+    return aiPending;
+  };
+
+  // One delegated handler covers the floating button, the buttons the builder writes
+  // into the home and company pages, and anything rendered after load.
+  function wireAssistant() {
+    if (document.querySelector('.ai-fab')) return;
+    document.body.insertAdjacentHTML('beforeend',
+      '<button type="button" class="ai-fab" data-ai-open aria-label="' +
+      S.esc(S.t('ai.open')) + '">\u2726</button>');
+    document.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('[data-ai-open]');
+      if (!b) return;
+      S.aiReady().then(function (a) { a.open(); }).catch(function () {});
+    });
+  }
+
   S.chrome = function (current) {
     if (S.pages && S.pages._contact) S.pagesContact = S.pages._contact;
     if (!document.querySelector('header.site')) {
@@ -505,7 +551,7 @@
 
     S.cart.paint();
     S.wireTiles(document);
-    if (S.assistant) S.assistant.mount();
+    wireAssistant();
   };
 
   /* ------------------------------------------------------- static content pages
@@ -593,7 +639,7 @@
       '</section></div>';
 
     document.querySelectorAll('.pageside [data-ai-open]').forEach(function (b) {
-      b.addEventListener('click', function () { if (S.assistant) S.assistant.open(); });
+      b.addEventListener('click', function () { S.aiReady().then(function (a) { a.open(); }); });
     });
   };
 

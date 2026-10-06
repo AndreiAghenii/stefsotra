@@ -586,8 +586,10 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
            '<main>' + body + '</main>' +
            footer_html(lang, own) +
            contact_js() + gslug_js(lang) +
+           # assistant.js is not here on purpose: app.js draws the button and fetches
+           # the script on the first press, so the 16 KB is not on the path of a visit
+           # that never opens it -- which is nearly all of them.
            '<script src="/assets/js/app.js"></script>'
-           '<script src="/assets/js/assistant.js"></script>'
            '<script src="/assets/js/static.js"></script>' + scripts +
            '\n</body>\n</html>\n')
     # {LANGPATH} is per-language: the "ru" button on a Romanian page has to carry the
@@ -1291,11 +1293,12 @@ def build_product(lang, p):
         ('<div class="lenpick"><label for="metres">%s</label>'
          '<div class="lenrow">'
          '<input type="range" id="metres" min="1" max="100" step="1" value="1">'
-         '<div class="lennum"><input type="number" id="metresN" min="1" max="9999" step="1" value="1">'
+         '<div class="lennum"><input type="number" id="metresN" min="1" max="9999" step="1"'
+         ' value="1" aria-label="%s">'
          '<span>m</span></div></div>'
          '<p class="chips lenquick">%s</p>'
          '<p class="small muted">%s</p></div>'
-         % (e(t(lang, 'prod.metres')),
+         % (e(t(lang, 'prod.metres')), e(t(lang, 'prod.metres')),
             ''.join('<button type="button" class="size-chip" data-m="%d">%d m</button>' % (m, m)
                     for m in (5, 10, 20, 50, 100)),
             e(t(lang, 'prod.cutNote'))) if p['unit'] == 'm' else '') +
@@ -1428,7 +1431,8 @@ def review_block(lang, p):
         '<input type="hidden" name="form-name" value="product-review">'
         '<input type="hidden" name="handle" value="%s">'
         '<p hidden><label>company <input name="company"></label></p>'
-        '<div class="field"><label>%s</label><div class="starpick">%s'
+        '<div class="field"><label id="rlab">%s</label>'
+        '<div class="starpick" role="group" aria-labelledby="rlab">%s'
         '<input type="hidden" name="rating" id="rval" value="5"></div></div>'
         '<div class="field"><label for="rname">%s</label>'
         '<input id="rname" name="name" type="text" required></div>'
@@ -1635,7 +1639,8 @@ TOOLS = {
     # page is the classic way to fill an index with near-duplicates, so both say noindex.
     # "follow" so the links on them still pass through.
     'search.html': {
-        'current': '', 'index': False, 'h1': 'srch.h1',
+        # The only page that needs assistant.js up front: its query parser lives there.
+        'current': '', 'index': False, 'h1': 'srch.h1', 'ai': True,
         'seed': {'<div class="wrap" id="root"></div>':
                  '<div class="wrap" id="root"><h1>%(h1)s</h1><p class="lead">%(lead)s</p></div>'},
         'title': {'ro': 'Căutare | Stefsotra', 'ru': 'Поиск | Stefsotra',
@@ -1681,9 +1686,9 @@ def build_tool(lang, filename):
            markup +
            footer_html(lang, path) +
            contact_js() + gslug_js(lang) + pslug_js(lang) +
-           '<script src="/assets/js/app.js"></script>'
-           '<script src="/assets/js/assistant.js"></script>\n' +
-           inline +
+           '<script src="/assets/js/app.js"></script>' +
+           ('<script src="/assets/js/assistant.js"></script>' if spec.get('ai') else '') +
+           '\n' + inline +
            '\n</body>\n</html>\n')
     out = os.path.join(ROOT, PREFIX[lang].lstrip('/'), filename)
     os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -1710,7 +1715,6 @@ def build_404():
                  'address', 'maps')},
                ensure_ascii=False, separators=(',', ':')) +
            '<script src="/assets/js/app.js"></script>'
-           '<script src="/assets/js/assistant.js"></script>'
            '<script src="/assets/js/static.js"></script></body></html>')
     with open(os.path.join(ROOT, '404.html'), 'w', encoding='utf-8') as f:
         f.write(doc)
