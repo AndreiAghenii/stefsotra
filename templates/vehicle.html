@@ -163,7 +163,7 @@ function stepResults() {
       (carLabel() ? S.esc(carLabel()) + ' · ' : '') +
       'Ø ' + V.id + ' mm' + (V.ang ? ' · ' + (V.ang === '0' ? S.esc(S.t('veh.straight')) : V.ang + '°') : '') +
       ' <button type="button" class="linkish" data-goto="2">' + S.esc(S.t('veh.change')) + '</button></p>' +
-    '<p class="muted small">' + S.esc(S.t('cat.results', { n: list.length })) + '</p>' +
+    '<p class="muted small">' + S.esc(S.count(list.length)) + '</p>' +
     (list.length
       ? '<div class="grid">' + list.map(function (r) {
           return S.tile(r.p).replace('<div class="dims">',

@@ -527,6 +527,9 @@ footer.site { border-top: 1px solid var(--line); background: var(--bg-2); margin
 .flowsteps p { margin: 0; color: var(--ink-2); font-size: .92rem; }
 
 .faq { border-top: 1px solid var(--line); margin: 6px 0 26px; }
+/* The questions on a category page sit below the grid, under their own heading. */
+.catfaq { margin: 40px 0 0; max-width: 760px; }
+.catfaq h2 { margin: 0 0 4px; }
 .faq details { border-bottom: 1px solid var(--line); }
 .faq summary { cursor: pointer; padding: 14px 28px 14px 0; font-weight: 600; position: relative; list-style: none; }
 .faq summary::-webkit-details-marker { display: none; }

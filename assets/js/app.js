@@ -82,6 +82,38 @@
     return s;
   };
 
+  /* "17 produse", "1 produs", "54 de produse", and the Russian three-way split.
+     Romanian and Russian do not pluralise the way English does, and this used to be a
+     plain "{n} produse", so a category with one product read "1 produse" and the
+     Russian "1 товаров". Mirrors count() in scripts/build_static.py -- the forms are
+     the same i18n strings, so the static page and the filtered count agree. */
+  /* Romanian counts "19 dimensiuni" but "20 de dimensiuni". The noun lives in the i18n
+     string, so the particle travels with the number. Mirrors nd() in build_static.py. */
+  S.nd = function (n) {
+    n = Number(n) || 0;
+    if (S.lang === 'ro' && n !== 1 && !(n === 0 || (n % 100 >= 1 && n % 100 <= 19))) {
+      return n + ' de';
+    }
+    return String(n);
+  };
+
+  S.count = function (n, kind) {
+    var forms = S.t('plur.' + (kind || 'product')).split('|');
+    n = Number(n) || 0;
+    if (S.lang === 'ru') {
+      var last = n % 10, tens = n % 100;
+      return n + ' ' + forms[(last === 1 && tens !== 11) ? 0
+        : (last >= 2 && last <= 4 && !(tens >= 12 && tens <= 14)) ? 1 : 2];
+    }
+    if (S.lang === 'ro') {
+      if (n === 1) return '1 ' + forms[0];
+      // Romanian inserts "de" from twenty up: 19 produse, but 20 de produse.
+      var de = (n === 0 || (n % 100 >= 1 && n % 100 <= 19)) ? '' : 'de ';
+      return n + ' ' + de + forms[1];
+    }
+    return n + ' ' + forms[n === 1 ? 0 : 1];
+  };
+
   S.applyStatic = function (root) {
     (root || document).querySelectorAll('[data-t]').forEach(function (el) {
       el.textContent = S.t(el.getAttribute('data-t'));
@@ -634,7 +666,7 @@
       '</div>' +
       '<div class="wrap"><section class="home-sec ask">' +
         '<div><h2>' + S.esc(S.t('pg.ctaH')) + '</h2>' +
-        '<p class="muted">' + S.esc(S.t('pg.ctaP', { n: S.catalogue ? S.catalogue.count : '', v: variants })) + '</p></div>' +
+        '<p class="muted">' + S.esc(S.t('pg.ctaP', { n: S.nd(S.catalogue ? S.catalogue.count : 0), v: S.nd(variants) })) + '</p></div>' +
         '<a class="btn" href="' + S.url('/catalog.html') + '">' + S.esc(S.t('nav.catalog')) + '</a>' +
       '</section></div>';
 

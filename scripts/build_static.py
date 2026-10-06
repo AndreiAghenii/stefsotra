@@ -242,6 +242,40 @@ def t(lang, key, **vars):
     return s
 
 
+def nd(lang, n):
+    """The number with Romanian's "de" attached when the noun after it needs one.
+
+    Romanian counts "19 dimensiuni" but "20 de dimensiuni", and the noun is part of the
+    i18n string rather than of the number, so the particle travels with the number:
+    "în {n} dimensiuni" is fed "19" or "20 de". Nothing is added for ru and en.
+    """
+    if lang == 'ro' and n != 1 and not (n == 0 or 1 <= n % 100 <= 19):
+        return '%d de' % n
+    return '%d' % n
+
+
+def count(lang, n, kind='product'):
+    """"17 produse", "1 produs", "54 de produse" -- and the Russian three-way split.
+
+    Romanian and Russian do not pluralise the way English does, and nothing here did it
+    at all: the one-product category read "1 produse" and the Russian "1 товаров". The
+    forms live in i18n as singular|plural (ro, en) or singular|paucal|plural (ru).
+    """
+    forms = STR[lang].get('plur.' + kind, kind).split('|')
+    if lang == 'ru':
+        # 1, 21, 31 take the singular; 2-4 the paucal; 11-14 and the rest the plural.
+        last, tens = n % 10, n % 100
+        i = 0 if (last == 1 and tens != 11) else \
+            1 if (2 <= last <= 4 and not 12 <= tens <= 14) else 2
+        return '%d %s' % (n, forms[i])
+    if lang == 'ro':
+        if n == 1:
+            return '1 %s' % forms[0]
+        # Romanian inserts "de" from twenty up: 19 produse, but 20 de produse.
+        return '%d %s%s' % (n, '' if n == 0 or 1 <= n % 100 <= 19 else 'de ', forms[1])
+    return '%d %s' % (n, forms[0] if n == 1 else forms[1])
+
+
 def cpath(lang, key):
     """A category's path in one language, e.g. /c/furtun-din-silicon/."""
     return '/c/%s/' % slug_for('c', key, lang, cat_label(lang, key))
@@ -879,7 +913,7 @@ def summary(lang, p):
     """
     out = []
     n = len(p['variants'])
-    out.append(t(lang, 'sum.is' if n > 1 else 'sum.is1', name=name(lang, p), n=n))
+    out.append(t(lang, 'sum.is' if n > 1 else 'sum.is1', name=name(lang, p), n=nd(lang, n)))
 
     ids = [v['dims']['id_mm'] for v in p['variants'] if v['dims'].get('id_mm') is not None]
     if ids:
@@ -970,14 +1004,17 @@ def build_home(lang):
     }[lang]
     desc = {
         'ro': 'Furtun din silicon și PVC, cuplaje Camlock, Storz, Guillemin și Bauer, coliere '
-              'și materiale tehnice. %d produse în %d dimensiuni, prețuri în lei. Livrare în '
-              'Chișinău și în toată Moldova.' % (CAT['count'], variants),
+              'și materiale tehnice. %s în %s, prețuri în lei. Livrare în '
+              'Chișinău și în toată Moldova.'
+              % (count(lang, CAT['count']), count(lang, variants, 'size')),
         'ru': 'Силиконовые и ПВХ шланги, соединения Camlock, Storz, Guillemin и Bauer, хомуты '
-              'и технические материалы. %d товаров в %d размерах, цены в леях. Доставка по '
-              'Кишинёву и Молдове.' % (CAT['count'], variants),
+              'и технические материалы. %s, %s, цены в леях. Доставка по '
+              'Кишинёву и Молдове.'
+              % (count(lang, CAT['count']), count(lang, variants, 'size')),
         'en': 'Silicone and PVC hose, Camlock, Storz, Guillemin and Bauer couplings, clamps and '
-              'technical materials. %d products in %d sizes, priced in lei. Delivery in Chisinau '
-              'and across Moldova.' % (CAT['count'], variants),
+              'technical materials. %s in %s, priced in lei. Delivery in Chisinau '
+              'and across Moldova.'
+              % (count(lang, CAT['count']), count(lang, variants, 'size')),
     }[lang]
 
     # Four products that look different from each other. Filtering only by category put
@@ -1016,7 +1053,7 @@ def build_home(lang):
             % (px, gpath(lang, g['key']),
                ('<img loading="lazy" src="%s" alt="" width="1200" height="1200">' % e(img))
                if img else '<span class="gcard-ph"></span>',
-               e(group_label(lang, g['key'])), e(t(lang, 'cat.results', n=g['count'])),
+               e(group_label(lang, g['key'])), e(count(lang, g['count'])),
                ' · '.join(e(cat_label(lang, c['key'])) for c in g['categories'][:4])))
 
     featured = sorted([p for p in CAT['products'] if p['images']],
@@ -1032,7 +1069,7 @@ def build_home(lang):
         '<button class="btn" type="submit">%s</button></form>'
         '</div><div class="hero-art">%s</div></div></section>'
         % (e(t(lang, 'home.kicker')), e(t(lang, 'home.heroH1')),
-           e(t(lang, 'home.heroSub', n=CAT['count'], v=variants)),
+           e(t(lang, 'home.heroSub', n=nd(lang, CAT['count']), v=nd(lang, variants))),
            px, e(t(lang, 'home.heroCta')), px, e(t(lang, 'home.heroAlt')),
            px, e(t(lang, 'srch.ph')), e(t(lang, 'srch.go')), e(t(lang, 'srch.go')), art) +
 
@@ -1068,30 +1105,197 @@ def build_home(lang):
                 jsonld=[org_ld(), site_ld])
 
 
-def build_category(lang, key, count):
+# -------------------------------------------------------------- category Q&A
+# A category page used to be a heading, a line of lead text and a grid of tiles. On the
+# small categories that was the whole page -- garnituri was 101 words for one product --
+# and a page with nothing to read ranks for nothing and answers nobody.
+#
+# Every answer below is read off the catalogue or off the delivery policy in
+# data/pages.json. Nothing here is written by hand per category, so nothing can claim a
+# size, a price or a term the shop does not actually have.
+#
+# Note on markup: this section deliberately carries no FAQPage JSON-LD. Google stopped
+# showing FAQ rich results for commercial sites in 2023 and withdrew the feature
+# altogether in May 2026, so the schema would be dead weight on 51 pages. The value is
+# in the text being on the page, where a featured snippet and a plain reader can reach it.
+
+def cat_facts(prods):
+    """The things a category page is allowed to say about itself."""
+    V = [v for p in prods for v in p['variants']]
+    ids = sorted({v['dims']['id_mm'] for v in V if v['dims'].get('id_mm')})
+    dn = sorted({v['dims']['dn'] for v in V if v['dims'].get('dn')})
+    cl = [(v['dims']['clamp_min'], v['dims']['clamp_max'])
+          for v in V if v['dims'].get('clamp_min') and v['dims'].get('clamp_max')]
+    priced = [p['price_min'] for p in prods if p['price_min'] > 0]
+    nice = lambda x: ('%g' % float(x))
+    return {
+        'n': len(prods), 'sizes': len(V),
+        'lo': min(priced) if priced else 0,
+        'dia': (nice(ids[0]), nice(ids[-1]), len(ids)) if ids else None,
+        'dn': (nice(dn[0]), nice(dn[-1])) if dn else None,
+        'clamp': (nice(min(a for a, b in cl)), nice(max(b for a, b in cl))) if cl else None,
+        'metre': any(p['unit'] == 'm' for p in prods),
+    }
+
+
+# The delivery answer repeats what /delivery/ already says, in the same words: courier in
+# the capital at a flat rate, post to the regions for small parcels, or collection.
+# The delivery answer repeats what /delivery/ already says, in the same words: courier in
+# the capital at a flat rate, post to the regions for small parcels, or collection.
+#
+# The phrasing is constrained by grammar. A category label goes in as it stands, so every
+# question has to read correctly with "Furtun PVC", "Coliere" and "Силиконовые шланги"
+# alike: Romanian takes the label after a preposition ("de %s", "pentru %s") where no
+# definite article is needed, and Russian only where the accusative matches the nominative
+# -- which it does for these, all being inanimate. The Russian size question drops the
+# label rather than guess a genitive the data cannot give us; the heading above it already
+# says which category this is.
+CAT_QA = {
+    'size': {
+        'ro': ('Ce dimensiuni de %(label)s aveți în stoc?',
+               'În stoc: %(prod)s, %(siz)s. %(range)s '
+               'Dacă dimensiunea de care aveți nevoie nu apare în listă, întrebați-ne.'),
+        'ru': ('Какие размеры есть в наличии?',
+               'В наличии: %(prod)s, %(siz)s. %(range)s '
+               'Если нужного размера нет в списке, спросите нас.'),
+        'en': ('What sizes of %(label)s are in stock?',
+               'In stock: %(prod)s, %(siz)s. %(range)s '
+               'If the size you need is not listed, ask us.'),
+    },
+    'price': {
+        'ro': ('De la cât pornesc prețurile pentru %(label)s?',
+               'De la %(lo)s. Prețul final îl confirmăm când răspundem la cerere: comanda '
+               'de pe acest site este o cerere de ofertă, nu o plată, și nu se plătește online.'),
+        'ru': ('Какая цена на %(label)s?',
+               'От %(lo)s. Окончательную цену подтверждаем при ответе на заявку: заказ на '
+               'этом сайте — это запрос цены, а не оплата, и онлайн оплатить нельзя.'),
+        'en': ('What is the price of %(label)s?',
+               'From %(lo)s. We confirm the final price when we answer your request: an order '
+               'on this site is a request for a quote, not a payment, and nothing is paid online.'),
+    },
+    'cut': {
+        'ro': ('Tăiați la lungimea de care am nevoie?',
+               'Da. Tăiem la dimensiunea cerută fără cost suplimentar — scrieți lungimea '
+               'în cerere și o pregătim așa.'),
+        'ru': ('Режете по нужной мне длине?',
+               'Да. Режем по заданному размеру без доплаты — укажите длину в заявке, '
+               'и мы подготовим её так.'),
+        'en': ('Will you cut it to the length I need?',
+               'Yes. We cut to the length you ask for at no extra cost — put the length in '
+               'your request and we will prepare it that way.'),
+    },
+    'delivery': {
+        'ro': ('Livrați %(label)s în toată Moldova?',
+               'Da. Curier în Chișinău: %(ship)s, indiferent de mărimea comenzii. În regiuni '
+               'prin poștă pentru colete sub 5 kg, tariful depinde de adresă. Pentru comenzi '
+               'mari livrăm direct la obiect. Puteți și ridica personal — sunați înainte ca '
+               'să pregătim comanda.'),
+        'ru': ('Доставляете %(label)s по всей Молдове?',
+               'Да. Курьер в Кишинёве: %(ship)s независимо от размера заказа. В регионы — '
+               'почтой для посылок до 5 кг, тариф зависит от адреса. Для крупных заказов '
+               'везём прямо на объект. Можно и забрать самому — позвоните заранее, '
+               'чтобы мы подготовили заказ.'),
+        'en': ('Do you deliver %(label)s across Moldova?',
+               'Yes. Courier in Chisinau: %(ship)s whatever the order size. To the regions by '
+               'post for parcels under 5 kg, with the rate depending on the address. Large '
+               'orders go straight to site. You can also collect in person — call ahead so '
+               'we have the order ready.'),
+    },
+}
+
+# The size sentence, which is the only part that varies with what the category measures.
+CAT_RANGE = {
+    'dia': {'ro': 'Diametrul interior merge de la %(a)s la %(b)s mm, în %(k)s.',
+            'ru': 'Внутренний диаметр — от %(a)s до %(b)s мм, %(k)s.',
+            'en': 'Inner diameters run from %(a)s to %(b)s mm, across %(k)s.'},
+    'dn': {'ro': 'Dimensiunile nominale merg de la DN%(a)s la DN%(b)s.',
+           'ru': 'Номинальные размеры — от DN%(a)s до DN%(b)s.',
+           'en': 'Nominal sizes run from DN%(a)s to DN%(b)s.'},
+    'clamp': {'ro': 'Intervalul de strângere acoperit este de la %(a)s la %(b)s mm.',
+              'ru': 'Диапазон зажима — от %(a)s до %(b)s мм.',
+              'en': 'The clamping range covered is %(a)s to %(b)s mm.'},
+}
+
+
+def label_in_sentence(label):
+    """The label mid-sentence. Lowercase the first letter, but not an acronym: "Furtun
+    PVC" becomes "furtun PVC", and "ПВХ шланги" is left as it is."""
+    if len(label) > 1 and label[1].isupper():
+        return label
+    return label[0].lower() + label[1:]
+
+
+def cat_faq(lang, label, prods):
+    """Four questions at most, and only the ones the data can answer."""
+    f = cat_facts(prods)
+    rng = ''
+    for k in ('dia', 'dn', 'clamp'):
+        if not f[k]:
+            continue
+        v = f[k]
+        if k == 'dia':
+            # With a single diameter there is no range to state and the plural would be
+            # wrong, so say only the span.
+            if v[2] < 2:
+                rng = CAT_RANGE['dn'][lang] % {'a': v[0], 'b': v[1]} if False else ''
+                rng = {'ro': 'Diametrul interior este de %s mm.' % v[0],
+                       'ru': 'Внутренний диаметр — %s мм.' % v[0],
+                       'en': 'The inner diameter is %s mm.' % v[0]}[lang]
+            else:
+                rng = CAT_RANGE['dia'][lang] % {'a': v[0], 'b': v[1],
+                                                'k': count(lang, v[2], 'dia')}
+        else:
+            rng = CAT_RANGE[k][lang] % {'a': v[0], 'b': v[1]}
+        break
+    fill = {'label': label_in_sentence(label),
+            'prod': count(lang, f['n'], 'product'),
+            'siz': count(lang, f['sizes'], 'size'),
+            'lo': money(f['lo'], lang), 'range': rng,
+            # one source of truth with the Offer shipping details further up
+            'ship': money(SHIPPING_CHISINAU['shippingRate']['value'], lang)}
+    keys = ['size', 'price'] + (['cut'] if f['metre'] else []) + ['delivery']
+    out = []
+    for k in keys:
+        q, a = CAT_QA[k][lang]
+        out.append((q % fill, ' '.join((a % fill).split())))
+    return out
+
+
+def cat_faq_html(lang, label, prods):
+    qa = cat_faq(lang, label, prods)
+    return ('<section class="catfaq"><h2>%s</h2><div class="faq">%s</div></section>'
+            % (e(t(lang, 'pg.faqH')),
+               ''.join('<details><summary>%s</summary><p>%s</p></details>'
+                       % (e(q), e(a)) for q, a in qa)))
+
+
+def build_category(lang, key):
     px = PREFIX[lang]
     prods = [p for p in CAT['products'] if p['category'] == key]
     label = cat_label(lang, key)
     priced = [p['price_min'] for p in prods if p['price_min'] > 0]
     lo = min(priced) if priced else 0
     sizes = sum(len(p['variants']) for p in prods)
+    # Romanian and Russian agree the noun with the number, so the counts are rendered
+    # rather than interpolated: a one-product category used to read "1 produse".
+    nprod, nsize = count(lang, len(prods)), count(lang, sizes, 'size')
     grp = CAT_OF.get(key, '')
 
     title = {
-        'ro': '%s Chișinău — %d produse, de la %s | Stefsotra' % (label, len(prods), money(lo, lang)),
-        'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra' % (label, len(prods), money(lo, lang)),
-        'en': '%s in Chisinau — %d products from %s | Stefsotra' % (label, len(prods), money(lo, lang)),
+        'ro': '%s Chișinău — %s, de la %s | Stefsotra' % (label, nprod, money(lo, lang)),
+        'ru': '%s Кишинёв — %s, от %s | Stefsotra' % (label, nprod, money(lo, lang)),
+        'en': '%s in Chisinau — %s from %s | Stefsotra' % (label, nprod, money(lo, lang)),
     }[lang]
     desc = {
-        'ro': '%s pe stoc la Stefsotra: %d produse, %d dimensiuni, preț de la %s. Livrare în %s '
+        'ro': '%s pe stoc la Stefsotra: %s, %s, preț de la %s. Livrare în %s '
               'și în toată Moldova, tăiere la dimensiune fără cost.'
-              % (label, len(prods), sizes, money(lo, lang), CITY[lang]),
-        'ru': '%s в наличии в Stefsotra: %d товаров, %d размеров, цена от %s. Доставка по %s '
+              % (label, nprod, nsize, money(lo, lang), CITY[lang]),
+        'ru': '%s в наличии в Stefsotra: %s, %s, цена от %s. Доставка по %s '
               'и всей Молдове, резка по размеру бесплатно.'
-              % (label, len(prods), sizes, money(lo, lang), CITY[lang]),
-        'en': '%s in stock at Stefsotra: %d products, %d sizes, from %s. Delivery in %s and '
+              % (label, nprod, nsize, money(lo, lang), CITY[lang]),
+        'en': '%s in stock at Stefsotra: %s, %s, from %s. Delivery in %s and '
               'across Moldova, cut to size free of charge.'
-              % (label, len(prods), sizes, money(lo, lang), CITY[lang]),
+              % (label, nprod, nsize, money(lo, lang), CITY[lang]),
     }[lang]
 
     siblings = [c['key'] for c in next(g for g in CAT['groups'] if g['key'] == grp)['categories']]
@@ -1103,12 +1307,14 @@ def build_category(lang, key, count):
     body = ('<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
             '<div class="wrap"><nav class="chips sibs">%s</nav>'
             '<p class="muted small">%s</p><div class="grid">%s</div>'
-            '<p style="margin-top:26px"><a class="btn ghost" href="%s/catalog.html">%s</a></p></div>'
+            '<p style="margin-top:26px"><a class="btn ghost" href="%s/catalog.html">%s</a></p>'
+            '%s</div>'
             % (crumb_html(lang, [(t(lang, 'nav.home'), '/'),
                                  (group_label(lang, grp), gpath(lang, grp)), (label, '')]),
                e(label), e(desc.split('.')[0] + '.'), related,
-               e(t(lang, 'cat.results', n=len(prods))),
-               ''.join(tile(lang, p) for p in prods), px, e(t(lang, 'cat.all'))))
+               e(count(lang, len(prods))),
+               ''.join(tile(lang, p) for p in prods), px, e(t(lang, 'cat.all')),
+               cat_faq_html(lang, label, prods)))
 
     lst = {'@context': 'https://schema.org', '@type': 'ItemList',
            'name': label, 'numberOfItems': len(prods),
@@ -1130,19 +1336,20 @@ def build_group(lang, g):
     sizes = sum(len(p['variants']) for p in prods)
     priced = [p['price_min'] for p in prods if p['price_min'] > 0]
     lo = min(priced) if priced else 0
+    nprod, nsize = count(lang, len(prods)), count(lang, sizes, 'size')
     title = {
-        'ro': '%s Chișinău — %d produse, de la %s | Stefsotra',
-        'ru': '%s Кишинёв — %d товаров, от %s | Stefsotra',
-        'en': '%s in Chisinau — %d products from %s | Stefsotra',
-    }[lang] % (label, len(prods), money(lo, lang))
+        'ro': '%s Chișinău — %s, de la %s | Stefsotra',
+        'ru': '%s Кишинёв — %s, от %s | Stefsotra',
+        'en': '%s in Chisinau — %s from %s | Stefsotra',
+    }[lang] % (label, nprod, money(lo, lang))
     desc = {
-        'ro': '%s la Stefsotra Chișinău: %d produse în %d dimensiuni, preț de la %s. %s. '
+        'ro': '%s la Stefsotra Chișinău: %s în %s, preț de la %s. %s. '
               'Tăiem la dimensiune fără cost, livrare în Chișinău și în toată Moldova.',
-        'ru': '%s в Stefsotra, Кишинёв: %d товаров в %d размерах, цена от %s. %s. '
+        'ru': '%s в Stefsotra, Кишинёв: %s, %s, цена от %s. %s. '
               'Режем по размеру бесплатно, доставка по Кишинёву и всей Молдове.',
-        'en': '%s at Stefsotra in Chisinau: %d products in %d sizes, from %s. %s. '
+        'en': '%s at Stefsotra in Chisinau: %s in %s, from %s. %s. '
               'Cut to size free of charge, delivery in Chișinău and across Moldova.',
-    }[lang] % (label, len(prods), sizes, money(lo, lang),
+    }[lang] % (label, nprod, nsize, money(lo, lang),
                ', '.join(cat_label(lang, c['key']) for c in g['categories']))
 
     cards = ''.join(
@@ -1153,7 +1360,7 @@ def build_group(lang, g):
                       if p['category'] == c['key'] and p['images']), '')))
            if any(p['images'] for p in CAT['products'] if p['category'] == c['key'])
            else '<span class="gcard-ph"></span>',
-           e(cat_label(lang, c['key'])), e(t(lang, 'cat.results', n=c['count'])))
+           e(cat_label(lang, c['key'])), e(count(lang, c['count'])))
         for c in g['categories'])
 
     # Every product in the group, not a sample of eight. Sixty-four couplings in one
@@ -1170,7 +1377,7 @@ def build_group(lang, g):
                      '<p class="muted small">%s</p><div class="grid">%s</div></section>'
                      % (c['key'], e(cat_label(lang, c['key'])), px, cpath(lang, c['key']),
                         e(t(lang, 'nav.allIn', n=c['count'])),
-                        e(t(lang, 'cat.results', n=len(in_cat))),
+                        e(count(lang, len(in_cat))),
                         ''.join(tile(lang, p) for p in in_cat)))
 
     jump = '<nav class="chips sibs">' + ''.join(
@@ -1180,7 +1387,7 @@ def build_group(lang, g):
     body = ('<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
             '<div class="wrap">%s<p class="muted small">%s</p><div class="cards">%s</div>%s</div>'
             % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (label, '')]),
-               e(label), e(desc), jump, e(t(lang, 'cat.results', n=len(prods))), cards, sections))
+               e(label), e(desc), jump, e(count(lang, len(prods))), cards, sections))
     return page(lang, gpaths(g['key']), title, desc, body,
                 jsonld=[crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
                                          (label, gpath(lang, g['key']))])])
@@ -1200,10 +1407,11 @@ def build_product(lang, p):
         title = '%s | Stefsotra %s' % (nm, GEO[lang])
     body_txt = strip_tags(summary(lang, p), 90)
     desc = {
-        'ro': '%s. %s. Preț de la %s, %d dimensiuni pe stoc. %sLivrare în %s și în toată Moldova.',
-        'ru': '%s. %s. Цена от %s, %d размеров в наличии. %sДоставка по %s и всей Молдове.',
-        'en': '%s. %s. From %s, %d sizes in stock. %sDelivery in %s and across Moldova.',
-    }[lang] % (nm, rng or label, money(p['price_min'], lang, p['unit']), len(p['variants']),
+        'ro': '%s. %s. Preț de la %s, %s pe stoc. %sLivrare în %s și în toată Moldova.',
+        'ru': '%s. %s. Цена от %s, %s в наличии. %sДоставка по %s и всей Молдове.',
+        'en': '%s. %s. From %s, %s in stock. %sDelivery in %s and across Moldova.',
+    }[lang] % (nm, rng or label, money(p['price_min'], lang, p['unit']),
+               count(lang, len(p['variants']), 'size'),
                body_txt + '. ' if body_txt else '', CITY[lang])
 
     imgs = p['images']
@@ -1514,7 +1722,7 @@ def build_content(lang, slug, url):
         '<a class="btn" href="%s/catalog.html">%s</a></div></section></div>'
         % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (d['title'], '')]),
            e(d['title']), ''.join(parts), side,
-           e(t(lang, 'pg.ctaH')), e(t(lang, 'pg.ctaP', n=CAT['count'], v=variants)),
+           e(t(lang, 'pg.ctaH')), e(t(lang, 'pg.ctaP', n=nd(lang, CAT['count']), v=nd(lang, variants))),
            sales_phone(lang), px, e(t(lang, 'nav.catalog'))))
 
     title = '%s | Stefsotra %s' % (d['title'], GEO[lang])
@@ -1606,17 +1814,17 @@ TOOLS = {
         'current': '/catalog.html', 'index': True, 'h1': 'cat.h1',
         'seed': {'<h1 id="h1">&nbsp;</h1>': '<h1 id="h1">%(h1)s</h1>'},
         'title': {
-            'ro': 'Catalog — %(n)d produse tehnice din cauciuc | Stefsotra Chișinău',
-            'ru': 'Каталог — %(n)d технических резиновых изделий | Stefsotra Кишинёв',
-            'en': 'Catalogue — %(n)d technical rubber products | Stefsotra Chisinau',
+            'ro': 'Catalog — %(prod)s tehnice din cauciuc | Stefsotra Chișinău',
+            'ru': 'Каталог — %(prod)s из технической резины | Stefsotra Кишинёв',
+            'en': 'Catalogue — %(prod)s in technical rubber | Stefsotra Chisinau',
         },
         'desc': {
-            'ro': 'Filtrează după diametru, material, unghi și tip de cuplaj. %(n)d produse în '
-                  '%(v)d dimensiuni, prețuri în lei. Livrare în Chișinău și în toată Moldova.',
-            'ru': 'Фильтр по диаметру, материалу, углу и типу соединения. %(n)d товаров в '
-                  '%(v)d размерах, цены в леях. Доставка по Кишинёву и всей Молдове.',
-            'en': 'Filter by diameter, material, angle and coupling type. %(n)d products in '
-                  '%(v)d sizes, priced in lei. Delivery in Chișinău and across Moldova.',
+            'ro': 'Filtrează după diametru, material, unghi și tip de cuplaj. %(prod)s în '
+                  '%(siz)s, prețuri în lei. Livrare în Chișinău și în toată Moldova.',
+            'ru': 'Фильтр по диаметру, материалу, углу и типу соединения. %(prod)s, '
+                  '%(siz)s, цены в леях. Доставка по Кишинёву и всей Молдове.',
+            'en': 'Filter by diameter, material, angle and coupling type. %(prod)s in '
+                  '%(siz)s, priced in lei. Delivery in Chișinău and across Moldova.',
         }},
     'vehicle.html': {
         'current': '/vehicle.html', 'index': True, 'h1': 'veh.h1',
@@ -1659,7 +1867,9 @@ def build_tool(lang, filename):
     """One interactive tool page, wrapped in the same chrome as every other page."""
     spec = TOOLS[filename]
     path = '/' + filename
-    fill = {'n': CAT['count'], 'v': sum(len(p['variants']) for p in CAT['products'])}
+    variants = sum(len(p['variants']) for p in CAT['products'])
+    fill = {'n': CAT['count'], 'v': variants,
+            'prod': count(lang, CAT['count']), 'siz': count(lang, variants, 'size')}
     fmt = lambda x: x % fill if '%(' in x else x
     title = clamp(fmt(spec['title'][lang]), TITLE_MAX)
     desc = clamp(fmt(spec['desc'][lang]), DESC_MAX)
@@ -1790,7 +2000,7 @@ def main():
         for g in CAT['groups']:
             urls.append((build_group(lang, g), lang, 'g/%s' % g['key']))
             for c in g['categories']:
-                urls.append((build_category(lang, c['key'], c['count']), lang,
+                urls.append((build_category(lang, c['key']), lang,
                              'c/%s' % c['key']))
         for p in CAT['products']:
             urls.append((build_product(lang, p), lang, 'p/%s' % p['handle']))

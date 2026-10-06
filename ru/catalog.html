@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Каталог — 130 технических резиновых изделий | Stefsotra Кишинёв</title>
-<meta name="description" content="Фильтр по диаметру, материалу, углу и типу соединения. 130 товаров в 1014 размерах, цены в леях. Доставка по Кишинёву и всей Молдове.">
+<title>Каталог — 130 товаров из технической резины | Stefsotra Кишинёв</title>
+<meta name="description" content="Фильтр по диаметру, материалу, углу и типу соединения. 130 товаров, 1014 размеров, цены в леях. Доставка по Кишинёву и всей Молдове.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://www.stefsotra.md/ru/catalog.html">
 <link rel="alternate" hreflang="ro" href="https://www.stefsotra.md/catalog.html"><link rel="alternate" hreflang="ru" href="https://www.stefsotra.md/ru/catalog.html"><link rel="alternate" hreflang="en" href="https://www.stefsotra.md/en/catalog.html"><link rel="alternate" hreflang="x-default" href="https://www.stefsotra.md/catalog.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Stefsotra">
-<meta property="og:title" content="Каталог — 130 технических резиновых изделий | Stefsotra Кишинёв">
-<meta property="og:description" content="Фильтр по диаметру, материалу, углу и типу соединения. 130 товаров в 1014 размерах, цены в леях. Доставка по Кишинёву и всей Молдове.">
+<meta property="og:title" content="Каталог — 130 товаров из технической резины | Stefsotra Кишинёв">
+<meta property="og:description" content="Фильтр по диаметру, материалу, углу и типу соединения. 130 товаров, 1014 размеров, цены в леях. Доставка по Кишинёву и всей Молдове.">
 <meta property="og:url" content="https://www.stefsotra.md/ru/catalog.html">
 <meta property="og:image" content="https://www.stefsotra.md/assets/img/og-default.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Каталог — 130 технических резиновых изделий | Stefsotra Кишинёв">
+<meta property="og:image:alt" content="Каталог — 130 товаров из технической резины | Stefsotra Кишинёв">
 <meta property="og:locale" content="ru_MD">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#bf2c2c">
@@ -289,7 +289,7 @@ function render() {
   }
   list = sortList(list);
 
-  document.getElementById('count').textContent = S.t('cat.results', { n: list.length });
+  document.getElementById('count').textContent = S.count(list.length);
   document.getElementById('grid').innerHTML = list.length
     ? list.map(S.tile).join('')
     : '<p class="muted">' + S.esc(S.t('cat.none')) + '</p>';

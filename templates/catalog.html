@@ -255,7 +255,7 @@ function render() {
   }
   list = sortList(list);
 
-  document.getElementById('count').textContent = S.t('cat.results', { n: list.length });
+  document.getElementById('count').textContent = S.count(list.length);
   document.getElementById('grid').innerHTML = list.length
     ? list.map(S.tile).join('')
     : '<p class="muted">' + S.esc(S.t('cat.none')) + '</p>';
