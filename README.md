@@ -27,66 +27,59 @@ per page. JavaScript then attaches the basket and the assistant to the page that
 there; it does not redraw anything, and it does not download the 395 KB catalogue.
 
 **Interactive pages** — `catalog.html` (filters), `search.html`, `vehicle.html`, `cart.html`.
-These need to react to input, so they are drawn in the browser and do fetch the catalogue.
+These need to react to input, so their contents are drawn in the browser and they do fetch
+the catalogue. Their bodies live in `templates/`; the build wraps each one in a head, a
+header and a footer per language and writes the `/`, `/ru/` and `/en/` copies. They used to
+be copied byte for byte, which left twelve URLs carrying the same shell, all of them
+`lang="ro"`, none with a canonical.
 
 ```
 /                       /ru/                /en/              home
 /c/<category>/          17 categories                         category listing
 /g/<group>/             5 groups                              group landing
-/p/<handle>/            114 products                          product
+/p/<handle>/            130 products                          product
 /about/ /delivery/ /partners/ /returns/ /warranty/ /contact/   company
 /catalog.html /search.html /vehicle.html /cart.html            tools
 ```
 
-429 pre-rendered pages in total.
+477 pre-rendered pages, plus the four tool pages in three languages: 489 HTML files
+and 483 indexable URLs.
 
 ## Building
 
 ```
 python3 scripts/build_catalogue.py --offline   # data/products.json from the cached feed
 python3 scripts/build_catalogue.py             # ...or refetch from the live store
-python3 scripts/translate_titles.py --write    # ALWAYS after the two above — see below
-python3 scripts/image_signatures.py --write    # ALWAYS after the two above — see below
-python3 scripts/mirror_images.py               # pull any new photo off Shopify, onto us
+python3 scripts/translate_titles.py --write    # ALWAYS after either of those two
 python3 scripts/build_vehicles.py              # vehicle tree (slow, ~10 min)
 python3 scripts/build_static.py                # THE SITE — run this after any of the above
+python3 scripts/audit_seo.py                   # ...then check it: exits non-zero on a fault
+python3 scripts/build_logo.py                  # only after replacing assets/img/logo.png
 ```
 
-**`build_catalogue.py` rewrites `data/products.json` from the feed, and the feed knows
-nothing about `title_ro`, `title_ru` or `img_sig`.** Running it alone silently drops all
-260 Romanian and Russian product names — the single thing the shop's local search traffic
-depends on — and the image hashes that keep four near-identical photographs off the home
-page. Both are deterministic and cost nothing to regenerate, so just always run the two
-scripts after it. Neither needs a network or an API key.
+**`translate_titles.py` is not optional and `build_catalogue.py` does not call it.**
+`build_catalogue.py` rewrites `data/products.json` from the feed, and the feed carries no
+`title_ro`, `title_ru` or `title_en` — so skipping this step silently drops every
+translated product name and puts the site back to English titles, which is the one thing
+the Romanian and Russian pages cannot rank without. Run it with `--write`, and read what
+it prints: it reports any term it did not recognise rather than guessing at it.
 
-`build_static.py` deletes and rewrites `/p`, `/c`, `/g`, `/ru`, `/en` and the company page
-folders, so a withdrawn product cannot survive as a live URL. **Run it after editing
-`data/pages.json`, `data/reviews.json` or any `i18n/*.json`** — those files feed the
-pre-rendered HTML, and editing them alone changes nothing that a visitor sees.
+`audit_seo.py` reads the built site the way a crawler would and fails on the things that
+cost rankings quietly: a missing or wrong canonical, two pages claiming the same one, an
+incomplete `hreflang` set, a title over 70 characters or a description outside 60–165, a
+second `<h1>`, JSON-LD that does not parse, a header that is not in the HTML, a sitemap
+entry with no file behind it, an indexable page missing from the sitemap. Run it before a
+deploy; it currently reports no problems across 489 pages.
+
+`build_static.py` deletes and rewrites `/p`, `/c`, `/g`, `/ru`, `/en`, the company page
+folders, the four tool pages at the root and `_redirects`, so a withdrawn product cannot survive as a
+live URL. Edit the tool pages in `templates/`, not at the root: the root copies are output.
+**Run it after editing `data/pages.json`, `data/reviews.json` or any `i18n/*.json`** —
+those files feed the pre-rendered HTML, and editing them alone changes nothing that a
+visitor sees.
 
 `build_catalogue.py` fails loudly: it prints any product it could not categorise and counts
 variant sizes it could not parse. Both should be zero.
-
-## Where this is hosted
-
-**Vercel.** `server: Vercel` on every response. This matters because the repository was
-written against Netlify and none of it was doing anything:
-
-* `netlify.toml` was never applied — all 29 redirects answered 404, so every old Shopify
-  address and every stale search result landed on a dead page from launch until Sept 2026.
-  The security headers never appeared and assets were served `max-age=0`. It is deleted;
-  `vercel.json` carries the same rules in the form this host reads.
-* `_redirects` / `_headers` are Netlify-only and were served as plain files. Also deleted.
-* **The AI assistant cannot work as built.** It calls `/.netlify/functions/assistant`,
-  which does not exist here. `netlify/functions/assistant.js` is kept as the reference
-  implementation; a port to `/api/assistant.js` plus `ANTHROPIC_API_KEY` in the Vercel
-  project would bring it back. Until then the front end falls back to rule-based search,
-  which is why nothing looks broken.
-* **The forms do not reach a server.** Both the contact form and the product-review form
-  are `data-netlify="true"` and POST to `/`, which answers 405 here. `static.js` catches
-  the failure and opens a pre-filled `mailto:` instead, so a message can still arrive —
-  but the page shows "message sent" either way, including when the visitor has no mail
-  client. This needs a real endpoint.
 
 ## SEO
 
@@ -95,18 +88,98 @@ What is in place:
 - **Real HTML for crawlers.** This is the one that matters. Everything below is wasted if
   the page is an empty `<div>`, which is what it was before this build step existed.
 - **A separate URL per language** with a full `hreflang` set (ro / ru / en / x-default) on
-  all 429 pages and in the sitemap, so Google serves the Russian page to a Russian searcher
+  all 489 pages and in the sitemap, so Google serves the Russian page to a Russian searcher
   instead of picking one and treating the rest as duplicates.
 - **Structured data**: Organization, WebSite with SearchAction, Product with AggregateOffer
   in MDL, ItemList on category pages, BreadcrumbList everywhere, FAQPage on delivery,
   returns and warranty.
 - **Titles and descriptions** written per page from real figures — product count, size
   count, lowest price, city — rather than one template repeated 400 times.
-- **Every size in the HTML.** People search "furtun silicon 38 mm", so all 957 variant
+- **Every size in the HTML.** People search "furtun silicon 38 mm", so all 1,014 variant
   sizes are written out as text, not left inside a `<select>`.
+- **A product name in each of the three languages, with no Russian left in the other two.**
+  Five products arrive from the feed titled in Russian. They had no English name at all, so
+  `/en/` was headed in Russian capitals, and their Romanian was half-done: the product name
+  was translated and the sheet size and hardness after it were not. `title_en` is written
+  now and those trailing halves are translated too — words only, every number and dimension
+  passes through untouched, and `translate_titles.py` reports any Cyrillic still standing in
+  a Romanian or English title instead of letting it ship.
 - Canonical tags, Open Graph and Twitter cards, `sitemap.xml`, `robots.txt`, a 404 page,
   301 redirects from the old Shopify `/pages/...` and `/products/...` addresses, image
-  `width`/`height` to stop layout shift, and about 107 KB of page weight before images.
+  `width`/`height` to stop layout shift, and 144 KB of page weight before product photos —
+  measured in a browser, cumulative layout shift 0.000, one render-blocking file.
+- **One canonical per address, including the four interactive pages.** See above.
+- **`<lastmod>` that means something.** Each page's HTML is hashed as it is written and
+  compared with `data/lastmod.json` from the last build, so a page that did not change
+  keeps the date it had. Stamping today's date on all 483 URLs every build is the usual way
+  to make Google stop reading the field. `data/lastmod.json` is committed; deleting it only
+  costs the history, not correctness.
+- **An image sitemap.** All 339 product photographs are named, including the ones sitting
+  behind the gallery that a crawler would otherwise have to render the page to find.
+- **Delivery and return terms in the Product markup** — 30 days for a refund, 200 lei by
+  courier in Chișinău — taken from what `/returns/` and `/delivery/` already say. Delivery
+  time and out-of-city rates are quoted per order, so neither is asserted.
+- **`search.html` and `cart.html` say `noindex,follow`** and are deliberately left
+  crawlable in `robots.txt`: a page a crawler may not fetch is a page whose `noindex` it
+  never reads. The filtered catalogue URLs are handled by their canonical for the same
+  reason, and by `Clean-param` for Yandex, which does read it.
+- **The photograph the page is about is preloaded** and marked `fetchpriority="high"`; it
+  is the LCP element on every product page. Its `alt` is the product's name in the page's
+  own language, which is also what Google Images matches a Romanian or Russian query on.
+- **A logo the size it is drawn at.** `logo.png` is 1620×395 and 30 KB and was being shown
+  at 123×30 in the header, above the fold, on all 489 pages. The header and footer use
+  `logo-400.png` — 4 KB, still better than 3× on a phone, written by `scripts/build_logo.py`
+  and regenerated only when the artwork changes. `logo.png` stays for the Organization
+  markup and the preview cards, which both want the large one. That is 25 KB off every page.
+- **Two phone numbers, one order.** `_contact.phone` is the landline and `_contact.phone2`
+  the mobile sales line. The landline leads everywhere — footer, contact page, sidecards,
+  `telephone` in the Organization markup — because it is the number on the Google listing
+  and in the trade directories, and a visitor comparing the two has to see them agree.
+  Clearing `phone2` removes the second number from every one of those places, including
+  the call-us band and both forms, with no other edit.
+- **Which vehicles a part fits, on the page.** `data/fitment.json` records exact-fit OE
+  numbers per vehicle. It was written for the vehicle finder and read by nothing else, so
+  none of it reached the HTML: "Mercedes-Benz" appeared nowhere on the Sprinter page — only
+  "Sprinter" — and three of the nine KAMAZ models it covers (53212, 65115, 43118) appeared
+  nowhere on the site at all; the other six were there only by accident, because an OE code
+  like `53205-1170245` happens to contain the model number. Product pages with fitment now
+  carry a "Fits" section with the make, every model, and the OE cross-references, plus
+  `isAccessoryOrSparePartFor` in the Product markup. Someone searching a make and model is
+  the readiest-to-buy visitor this shop gets.
+- **The plain spelling of the city.** Google ranks the home page for "furtun chisinau" and
+  prints "Missing: chisinau" under it, because everything on the site said "Chișinău" and
+  nobody in Moldova types the diacritics. The English pages now say "Chisinau", which is
+  the ordinary English spelling anyway, and `areaServed` names the city under both. The
+  Romanian and Russian prose keeps its proper spelling — the answer to a cosmetic SERP
+  label is not to misspell the language.
+- **Addresses in the language of the page.** Every competitor ranking above us for
+  "furtun chisinau" does it with a Romanian URL — `supraten.md/furtunuri-…`,
+  `volta.md/irigare/furtune`, `profmet.md/272-furtunuri` — while ours said
+  `/c/silicone-hose/`. Categories and groups are now named in the page's own language:
+  `/c/furtun-din-silicon/`, `/g/furtunuri/`, `/ru/c/khomuty/`, and so are products:
+  `/p/reductie-camlock-tip-aa/`, `/ru/p/silikonovyye-patrubki-dlya-kamaz-maz/`. Russian
+  slugs are transliterated BGN/PCGN, not left in Cyrillic — same table
+  `build_catalogue.py` uses on the handles, and for the same reason: a Cyrillic address
+  percent-encodes into something unreadable the moment it is pasted, and Vercel matches
+  redirects against that encoded form, so a rule written in Cyrillic never fires.
+  The four interactive pages draw their own tiles, so the build inlines the slug map for
+  whichever language the page is (`window.__PSLUG`, about 4 KB).
+- **Slugs are permanent.** `data/slugs.json` records the assignment. The build hands out a
+  slug the first time it sees a key and never changes it again, even if the label it came
+  from is reworded, because a URL that moves on its own breaks other people's links. To
+  rename one deliberately, edit `now` and push the old value onto `was`; the next build
+  writes the 301. `_redirects` is generated from that history — 570 rules today, covering
+  every address the site published before the migration. A slug is refused if another page
+  lives there *or ever did*: an old address has to stay a redirect source, and a slug that
+  is both source and target makes a chain. Two products hit exactly that, their English
+  names landing on another hose's old handle.
+- **No broken internal links**, checked across all 489 pages.
+- **The build inputs are not pages.** `publish = "."` ships the whole folder, so
+  `/templates/*.html` (body fragments with no `<head>`) and `/scripts/*` are served to
+  anything that asks for them. Nothing links to either, but `netlify.toml` now sends
+  `X-Robots-Tag: noindex` for both, and for `/data` and `/i18n` — those must keep returning
+  200 because the site fetches them, but a JSON blob in the index helps nobody and competes
+  with the page that presents the same catalogue as HTML.
 
 What this cannot do, and it is worth being straight about it: ranking first for "rubber
 products in Moldova" is not something a website alone decides. The technical side is now as
@@ -114,17 +187,31 @@ good as it reasonably gets. The rest is off-page and needs you:
 
 1. **Google Business Profile** — free, and for local trade searches it usually outranks
    everything else on the page. It needs the street address.
-2. **The address.** `data/pages.json` → `_contact.address` is still empty because nothing
-   on stefsotra.md publishes one. Consistent name/address/phone across the site, Google,
-   and directories is a large part of local ranking.
-3. **Search Console and Yandex Webmaster** — submit `sitemap.xml` to both. Yandex is a
+2. **Reviews, and the only lawful way to get them.** `data/reviews.json` and the star
+   ratings stay empty until real customers write something. The lever that matters is the
+   Business Profile: the shop holding the top of "furtun chisinau" does it from a listing
+   with thousands of reviews, which is the box Google draws *above* the organic results —
+   no amount of HTML competes with it. So paste the profile's own "write a review" short
+   link into `_contact.review_url` and the ask appears in the three places a happy
+   customer actually is: the contact page, beside the on-site review form, and on the
+   screen confirming an order was sent. Nothing renders until that link is set.
+3. **Map coordinates.** The address and the opening hours are both in `data/pages.json`
+   now and both reach the `HardwareStore` markup; the hours also print in the footer of
+   every page and on the contact page, in each language. Still empty: `_contact.geo`,
+   `_contact.same_as` (the Google Business, Facebook and Instagram addresses),
+   `_contact.review_url` and `_contact.price_range`. Each goes straight into the markup
+   the moment it is filled in — see `org_ld()`. They stay empty rather than guessed:
+   wrong coordinates put the pin in the wrong street. `geo` is `[lat, lon]`; hours are
+   `[[days], opens, closes]` per row, with both times equal meaning closed that day.
+4. **Search Console and Yandex Webmaster** — submit `sitemap.xml` to both. Yandex is a
    significant share of Russian-language search here.
-4. **Which domain.** `SITE` at the top of `build_static.py` says `https://stefsotra.md`. If
+5. **Which domain.** `SITE` at the top of `build_static.py` says `https://stefsotra.md`. If
    this site goes live somewhere else, change it and rebuild, or every canonical tag will
    point at the old store.
-5. **Links from real Moldovan sites** — suppliers, trade directories, customers. This is
+6. **Links from real Moldovan sites** — suppliers, trade directories, customers. This is
    the slowest part and the one competitors cannot copy.
-6. **Descriptions in Romanian and Russian.** See below.
+7. **Descriptions in Romanian and Russian.** See below. The product *names* are done
+   in all three languages, the five the feed titles in Russian included.
 
 ## Prices
 
@@ -136,19 +223,61 @@ prices change, re-derive it the same way rather than adjusting it by feel.
 
 ## Deploying
 
-Drop the folder on Netlify. `netlify.toml` is already set up. Three things then work that
-cannot work locally:
+The site runs on **Vercel**. `scripts/build_static.py` writes `vercel.json` — 570 redirects
+and the header rules — so deploying is a matter of pushing the built folder; there is
+nothing to configure by hand. `SITE` names **www**: the apex 308s to www at the platform,
+so a canonical naming the apex would declare an address that redirects.
+
+Two settings in there are load-bearing and should not be flipped casually:
+
+- `trailingSlash: true`. Every canonical, `hreflang` and sitemap entry this build writes
+  ends in a slash. Vercel's default strips it, which would point all 483 canonicals at
+  addresses that redirect.
+- No host redirect is emitted. The apex already 308s to www at the platform; a rule the
+  other way would fight it and loop.
+- `cleanUrls: false`. The four tool pages are canonicalised as `/catalog.html`, not
+  `/catalog`.
+
+`netlify.toml` is gone — it was never read on this host, which is why the old Shopify
+addresses were 404ing and `/scripts` and `/data` stayed crawlable. `_redirects` remains as
+the portable form of the same generated list, read by Netlify and Cloudflare Pages if the
+site ever moves.
+
+Both serverless functions live in `/api`, where Vercel looks for them.
+
+Three things work only once deployed:
 
 **Orders, messages and reviews.** The basket, the contact form and the review form post to
-Netlify Forms. Each submission is emailed and kept in Netlify → Forms. No backend, no
-payment: a customer sends a request, you contact them about fulfilment.
+`/api/submit`. It was Netlify Forms before, which Vercel does not implement, so every
+submission had been falling through to the page's mail-client fallback — which works, but
+only for a customer who has a mail client configured and presses send in it.
 
-**The AI assistant.** Set `ANTHROPIC_API_KEY` in Site settings → Environment variables.
+`api/submit.js` has no dependencies, because this repo has no `npm install`. It delivers
+through whichever of these is set in Vercel → Project Settings → Environment Variables:
+
+```
+RESEND_API_KEY + FORM_TO     email each submission (resend.com, free tier)
+FORM_WEBHOOK_URL             POST the JSON somewhere — a sheet, Zapier, your own box
+```
+
+With neither set it answers **501**, and with delivery configured but broken, **502** —
+and on any non-2xx the page hands the message to the mail client exactly as it does now.
+So nothing is worse while it is unconfigured, and a submission is never lost to a
+misconfiguration nobody can see. It drops bot submissions that fill the honeypot, rejects
+a form missing its required fields, and reads a urlencoded or a JSON body without trusting
+the runtime to have guessed the content type.
+
+**The AI assistant.** `api/assistant.js`. Set `ANTHROPIC_API_KEY` in Vercel → Project
+Settings → Environment Variables. Until you do it returns 501 and the site says plainly
+that the assistant is not switched on. Search keeps working regardless — it also has a
+rule-based reader that handles sizes, angles, materials and product words in Romanian,
+Russian and English. `vercel.json` names `data/index.txt` under `functions.includeFiles`
+because the function opens it with `fs`, and Vercel bundles only what a function requires.
 Until you do, the endpoint returns 501 and the site says plainly that the assistant is not
 switched on. Search keeps working regardless — it also has a rule-based reader that handles
 sizes, angles, materials and product words in Romanian, Russian and English.
 
-The key stays server-side in `netlify/functions/assistant.js`. The assistant is given
+The key stays server-side in `api/assistant.js`. The assistant is given
 `data/index.txt` and told to recommend only what is in it, and the products it names are
 rendered from our own catalogue rather than from its text, so it cannot show an invented
 price.

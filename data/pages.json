@@ -3,14 +3,50 @@
   "_contact": {
     "phone": "+373 (22) 55-39-54",
     "phone_href": "+37322553954",
+    "phone2": "+373 69 12 72 12",
+    "phone2_href": "+37369127212",
     "email": "stefsotra@mail.ru",
+    "legal_name": "Stefsotra S.R.L",
+    "gbp_name": "FURTUNE.MD - Stefsotra S.R.L",
+    "gbp_category": "Rubber products supplier",
+    "review_url": "",
     "address": "Șoseaua Muncești 271, MD-2002, Chișinău, Moldova",
     "hours": "",
     "street": "Șoseaua Muncești 271",
     "postal_code": "MD-2002",
     "locality": "Chișinău",
     "country": "MD",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Soseaua+Muncesti+271,+MD-2002,+Chisinau,+Moldova"
+    "maps": "https://www.google.com/maps/search/?api=1&query=Soseaua+Muncesti+271,+MD-2002,+Chisinau,+Moldova",
+    "opening_hours": [
+      [
+        [
+          "Mo",
+          "Tu",
+          "We",
+          "Th",
+          "Fr"
+        ],
+        "09:00",
+        "18:00"
+      ],
+      [
+        [
+          "Sa"
+        ],
+        "09:00",
+        "14:00"
+      ],
+      [
+        [
+          "Su"
+        ],
+        "00:00",
+        "00:00"
+      ]
+    ],
+    "geo": [],
+    "same_as": [],
+    "price_range": ""
   },
   "about": {
     "ro": {

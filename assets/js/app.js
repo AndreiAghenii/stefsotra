@@ -37,8 +37,28 @@
 
   // The same page in another language: strip any prefix, then add the new one.
   S.langUrl = function (lang) {
+    // A pre-rendered page's address in another language cannot be derived from this
+    // one's: the slug is the page's own name, so /c/coliere/ is /ru/c/хомуты/, not
+    // /ru/c/coliere/. The header already carries the real address for each language,
+    // written by the build; read it rather than guess. The JS-rendered tool pages have
+    // no per-language slug, so swapping the prefix is still right for them.
+    var a = document.querySelector('header.site .langs [data-lang="' + lang + '"]');
+    var href = a && a.getAttribute('href');
+    if (href) return href + location.search;
     var p = location.pathname.replace(/^\/(ru|en)(?=\/|$)/, '') || '/';
     return (lang === 'ro' ? '' : '/' + lang) + p + location.search;
+  };
+
+  // Group addresses are the group's own name in the page's language now, so a key is no
+  // longer a path. build_static.py inlines the map for whichever language this page is.
+  S.productUrl = function (handle) {
+    var m = window.__PSLUG || {};
+    return S.url('/p/' + encodeURIComponent(m[handle] || handle) + '/');
+  };
+
+  S.groupUrl = function (key) {
+    var m = window.__GSLUG || {};
+    return S.url('/g/' + encodeURIComponent(m[key] || key) + '/');
   };
 
   // Every internal link goes through here so the language prefix is never dropped.
@@ -60,6 +80,38 @@
       s = s.replace('{' + k + '}', vars[k]);
     });
     return s;
+  };
+
+  /* "17 produse", "1 produs", "54 de produse", and the Russian three-way split.
+     Romanian and Russian do not pluralise the way English does, and this used to be a
+     plain "{n} produse", so a category with one product read "1 produse" and the
+     Russian "1 товаров". Mirrors count() in scripts/build_static.py -- the forms are
+     the same i18n strings, so the static page and the filtered count agree. */
+  /* Romanian counts "19 dimensiuni" but "20 de dimensiuni". The noun lives in the i18n
+     string, so the particle travels with the number. Mirrors nd() in build_static.py. */
+  S.nd = function (n) {
+    n = Number(n) || 0;
+    if (S.lang === 'ro' && n !== 1 && !(n === 0 || (n % 100 >= 1 && n % 100 <= 19))) {
+      return n + ' de';
+    }
+    return String(n);
+  };
+
+  S.count = function (n, kind) {
+    var forms = S.t('plur.' + (kind || 'product')).split('|');
+    n = Number(n) || 0;
+    if (S.lang === 'ru') {
+      var last = n % 10, tens = n % 100;
+      return n + ' ' + forms[(last === 1 && tens !== 11) ? 0
+        : (last >= 2 && last <= 4 && !(tens >= 12 && tens <= 14)) ? 1 : 2];
+    }
+    if (S.lang === 'ro') {
+      if (n === 1) return '1 ' + forms[0];
+      // Romanian inserts "de" from twenty up: 19 produse, but 20 de produse.
+      var de = (n === 0 || (n % 100 >= 1 && n % 100 <= 19)) ? '' : 'de ';
+      return n + ' ' + de + forms[1];
+    }
+    return n + ' ' + forms[n === 1 ? 0 : 1];
   };
 
   S.applyStatic = function (root) {
@@ -131,7 +183,8 @@
   // literal is only a last resort so a form can never lose its destination.
   S.contact = function () {
     return (window.__CONTACT) || S.pagesContact ||
-           { email: 'stefsotra@mail.ru', phone: '+373 (22) 55-39-54', phone_href: '+37322553954' };
+           { email: 'stefsotra@mail.ru', phone: '+373 (22) 55-39-54', phone_href: '+37322553954',
+             phone2: '+373 69 12 72 12', phone2_href: '+37369127212' };
   };
 
   // A mailto with the whole request already written out. This is the fallback when
@@ -283,7 +336,7 @@
     var img = S.img(p);
     var one = p.variants.length === 1;
     return '<article class="tile" data-h="' + S.esc(p.handle) + '">' +
-      '<a class="tile-link" href="' + S.url('/p/' + encodeURIComponent(p.handle) + '/') + '">' +
+      '<a class="tile-link" href="' + S.productUrl(p.handle) + '">' +
         (img ? '<div class="ph"><img loading="lazy" src="' + S.esc(img) + '" alt="' + S.esc(S.name(p)) + '"></div>'
              : S.placeholder(p)) +
         '<div class="meta">' +
@@ -382,7 +435,7 @@
     return '<div class="announce"><div class="wrap">' + bar + '</div></div>' +
       '<header class="site">' +
       '<div class="wrap bar">' +
-        '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo.png" alt="STEFSOTRA"></a>' +
+        '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" width="400" height="98"></a>' +
         '<nav class="main" id="mainnav">' +
           '<button type="button" class="menu-trigger" id="prodBtn" aria-expanded="false"' +
             (onCat ? ' aria-current="page"' : '') + '>' +
@@ -424,9 +477,10 @@
 
     return '<footer class="site"><div class="wrap foot">' +
       '<div class="foot-brand">' +
-        '<img src="/assets/img/logo.png" alt="STEFSOTRA" class="foot-logo">' +
+        '<img src="/assets/img/logo-400.png" alt="STEFSOTRA" class="foot-logo" width="400" height="98" loading="lazy" decoding="async">' +
         '<p class="small">' + S.esc(S.t('site.tagline')) + '</p>' +
         (c.phone ? '<p class="small"><a href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a></p>' : '') +
+        (c.phone2 ? '<p class="small"><a href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a></p>' : '') +
         (c.email ? '<p class="small"><a href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a></p>' : '') +
         (c.address ? '<p class="small"><a href="' + S.esc(c.maps || '#') +
           '" target="_blank" rel="noopener">' + S.esc(c.address) + '</a></p>' : '') +
@@ -437,6 +491,52 @@
       '<span class="madeby"><a href="https://aggento.com" target="_blank" rel="noopener">' +
       S.esc(S.t('foot.by')) + '</a></span></div></footer>';
   };
+
+  /* ------------------------------------------------------- assistant loading
+     assistant.js is 16 KB and most visits never open it, so the page ships the button
+     and fetches the script on the first click. The floating button and the in-page
+     "ask" buttons are wired here, where they cost nothing; everything behind them --
+     the panel, the chat, and the query parser search.html uses -- arrives on demand.
+
+     S.aiReady() resolves once S.assistant exists and is mounted, so any caller can
+     simply wait for it:  S.aiReady().then(function () { S.assistant.send(q); }). */
+
+  var aiPending = null;
+
+  S.aiReady = function () {
+    // search.html ships the script eagerly because it needs the query parser, so the
+    // object can already be here unmounted. mount() is a no-op once the panel exists.
+    if (S.assistant) { S.assistant.mount(); return Promise.resolve(S.assistant); }
+    if (!aiPending) {
+      aiPending = new Promise(function (resolve, reject) {
+        var el = document.createElement('script');
+        el.src = '/assets/js/assistant.js';
+        el.onload = function () {
+          if (!S.assistant) { aiPending = null; reject(new Error('assistant.js loaded but empty')); return; }
+          S.assistant.mount();
+          resolve(S.assistant);
+        };
+        // Let a failed fetch be retried on the next click rather than wedging for good.
+        el.onerror = function () { aiPending = null; reject(new Error('assistant.js unreachable')); };
+        document.head.appendChild(el);
+      });
+    }
+    return aiPending;
+  };
+
+  // One delegated handler covers the floating button, the buttons the builder writes
+  // into the home and company pages, and anything rendered after load.
+  function wireAssistant() {
+    if (document.querySelector('.ai-fab')) return;
+    document.body.insertAdjacentHTML('beforeend',
+      '<button type="button" class="ai-fab" data-ai-open aria-label="' +
+      S.esc(S.t('ai.open')) + '">\u2726</button>');
+    document.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('[data-ai-open]');
+      if (!b) return;
+      S.aiReady().then(function (a) { a.open(); }).catch(function () {});
+    });
+  }
 
   S.chrome = function (current) {
     if (S.pages && S.pages._contact) S.pagesContact = S.pages._contact;
@@ -483,96 +583,9 @@
 
     S.cart.paint();
     S.wireTiles(document);
-    if (S.assistant) S.assistant.mount();
+    wireAssistant();
   };
 
-  /* ------------------------------------------------------- static content pages
-     About, delivery, partners and the two policies all share one renderer; the
-     copy lives in data/pages.json so it can be edited without touching HTML. */
-
-  var PAGE_LINKS = [
-    ['/about/', 'nav.about'], ['/delivery/', 'nav.delivery'],
-    ['/partners/', 'nav.partners'], ['/returns/', 'nav.returns'],
-    ['/warranty/', 'nav.warranty'], ['/contact/', 'nav.contact']
-  ];
-
-  // A heading and three paragraphs on a white page reads as an unfinished site, so a
-  // content page gets the same furniture a product page has: a titled band, the copy,
-  // whatever structured blocks it defines in pages.json, a help sidebar, and a way back
-  // into the catalogue. Every block is optional -- a page renders whatever it has.
-  S.renderPage = function (slug, currentFile) {
-    var d = (S.pages[slug] || {})[S.lang] || (S.pages[slug] || {}).ro;
-    if (!d) { location.replace(S.url('/')); return; }
-    document.title = d.title + ' — Stefsotra';
-
-    var c = S.pagesContact || {};
-    var variants = S.catalogue
-      ? S.catalogue.products.reduce(function (a, p) { return a + p.variants.length; }, 0) : 0;
-
-    var body =
-      (d.lead ? '<p class="lead">' + S.esc(d.lead) + '</p>' : '') +
-      (d.stats ? '<div class="statrow">' + d.stats.map(function (s) {
-        return '<div class="stat"><b>' + S.esc(s.v) + '</b><span>' + S.esc(s.l) + '</span></div>';
-      }).join('') + '</div>' : '') +
-      (d.body || []).map(function (p) { return '<p>' + S.esc(p) + '</p>'; }).join('') +
-
-      (d.cards ? (d.cardsTitle ? '<h2>' + S.esc(d.cardsTitle) + '</h2>' : '') +
-        '<div class="infocards">' + d.cards.map(function (x) {
-          return '<div class="infocard"><h3>' + S.esc(x.t) + '</h3><p>' + S.esc(x.p) + '</p></div>';
-        }).join('') + '</div>' : '') +
-
-      (d.steps ? (d.stepsTitle ? '<h2>' + S.esc(d.stepsTitle) + '</h2>' : '') +
-        '<ol class="flowsteps">' + d.steps.map(function (x) {
-          return '<li><b></b><div><h3>' + S.esc(x.t) + '</h3><p>' + S.esc(x.p) + '</p></div></li>';
-        }).join('') + '</ol>' : '') +
-
-      (d.listTitle ? '<h2>' + S.esc(d.listTitle) + '</h2>' : '') +
-      (d.list ? '<ul class="ticks">' + d.list.map(function (li) {
-        return '<li>' + S.esc(li) + '</li>';
-      }).join('') + '</ul>' : '') +
-
-      (d.faq ? (d.faqTitle ? '<h2>' + S.esc(d.faqTitle) + '</h2>' : '') +
-        '<div class="faq">' + d.faq.map(function (x) {
-          return '<details><summary>' + S.esc(x.q) + '</summary><p>' + S.esc(x.a) + '</p></details>';
-        }).join('') + '</div>' : '') +
-
-      (d.cta ? '<p class="lead" style="margin-top:26px">' + S.esc(d.cta) +
-        ' <a href="' + S.url('/contact/') + '">' + S.esc(S.t('nav.contact')) + ' →</a></p>' : '');
-
-    var side =
-      '<div class="sidecard">' +
-        '<h3>' + S.esc(S.t('pg.help')) + '</h3>' +
-        '<p class="small">' + S.esc(S.t('pg.helpText')) + '</p>' +
-        (c.phone ? '<a class="bigphone" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' : '') +
-        (c.email ? '<a class="small" href="mailto:' + S.esc(c.email) + '">' + S.esc(c.email) + '</a>' : '') +
-        '<button type="button" class="btn ghost small-btn" data-ai-open>' +
-          S.esc(S.t('nav.assistant')) + ' ✦</button>' +
-      '</div>' +
-      '<div class="sidecard"><h3>' + S.esc(S.t('pg.more')) + '</h3><ul class="sidelinks">' +
-        PAGE_LINKS.filter(function (l) { return l[0] !== currentFile; }).map(function (l) {
-          return '<li><a href="' + S.url(l[0]) + '">' + S.esc(S.t(l[1])) + '</a></li>';
-        }).join('') + '</ul></div>';
-
-    document.getElementById('root').innerHTML =
-      '<div class="pagehead"><div class="wrap">' +
-        '<p class="small crumb"><a href="' + S.url('/') + '">' + S.esc(S.t('nav.home')) + '</a> › ' +
-          S.esc(d.title) + '</p>' +
-        '<h1>' + S.esc(d.title) + '</h1>' +
-      '</div></div>' +
-      '<div class="wrap pagebody">' +
-        '<article class="prose">' + body + '</article>' +
-        '<aside class="pageside">' + side + '</aside>' +
-      '</div>' +
-      '<div class="wrap"><section class="home-sec ask">' +
-        '<div><h2>' + S.esc(S.t('pg.ctaH')) + '</h2>' +
-        '<p class="muted">' + S.esc(S.t('pg.ctaP', { n: S.catalogue ? S.catalogue.count : '', v: variants })) + '</p></div>' +
-        '<a class="btn" href="' + S.url('/catalog.html') + '">' + S.esc(S.t('nav.catalog')) + '</a>' +
-      '</section></div>';
-
-    document.querySelectorAll('.pageside [data-ai-open]').forEach(function (b) {
-      b.addEventListener('click', function () { if (S.assistant) S.assistant.open(); });
-    });
-  };
 
   /* --------------------------------------------------------------- mobile menu
      On a phone the old menu was the desktop bar stacked vertically: two items, one of
@@ -624,7 +637,7 @@
       '<div class="drawer-back" id="drawerBack" hidden></div>' +
       '<aside class="drawer" id="drawer" hidden aria-label="' + S.esc(S.t('nav.menu')) + '">' +
         '<header>' +
-          '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo.png" alt="STEFSOTRA"></a>' +
+          '<a class="logo" href="' + S.url('/') + '"><img src="/assets/img/logo-400.png" alt="STEFSOTRA" width="400" height="98"></a>' +
           '<button type="button" class="ai-x" id="drawerClose" aria-label="' + S.esc(S.t('nav.close')) + '">✕</button>' +
         '</header>' +
         '<form class="drawer-search" action="' + S.url('/search.html') + '" method="get" role="search">' +
@@ -641,6 +654,7 @@
             '" target="_blank" rel="noopener">' + S.esc(c.address) + '</a>' : '') +
           '<div class="drrow">' +
             '<a class="btn" href="tel:' + S.esc(c.phone_href) + '">' + S.esc(c.phone) + '</a>' +
+            (c.phone2 ? '<a class="btn" href="tel:' + S.esc(c.phone2_href) + '">' + S.esc(c.phone2) + '</a>' : '') +
             '<div class="langs">' + langs + '</div>' +
           '</div>' +
         '</footer>' +
