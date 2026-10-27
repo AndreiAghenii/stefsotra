@@ -19,12 +19,13 @@ mistranslated technical term is worse than an English one.
 Titles that are already Cyrillic keep their Russian form and get a Romanian translation.
 
     python3 scripts/translate_titles.py          # report only
-    python3 scripts/translate_titles.py --write  # write titles into data/products.json
+    python3 scripts/translate_titles.py --write  # save to data/translations.json
 """
 import json
 import os
 import re
 import sys
+import translations
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -293,9 +294,20 @@ def main():
         print(f'   EN {p["title"][:48]:<48}\n   RO {p["title_ro"][:48]:<48}\n   RU {p["title_ru"][:48]}')
 
     if write:
+        # The durable copy first. data/products.json is rebuilt from the Shopify feed by
+        # build_catalogue.py, which would otherwise drop these again -- see
+        # scripts/translations.py. The catalogue is written too so the site can be built
+        # straight away without another fetch.
+        store = translations.load()
+        for q in cat['products']:
+            for lang in ('ro', 'ru', 'en'):
+                translations.record(store, q['handle'], 'title', lang,
+                                    q['title'], q['title_' + lang])
+        translations.save(store)
+        print(f'\n{len(cat["products"]) * 3} fields written to {translations.PATH}')
         json.dump(cat, open(path, 'w', encoding='utf-8'),
                   ensure_ascii=False, separators=(',', ':'))
-        print(f'\nwritten to {path}')
+        print(f'and applied to {path}')
     else:
         print('\n(dry run -- pass --write to save)')
 

@@ -50,19 +50,32 @@ and 483 indexable URLs.
 ```
 python3 scripts/build_catalogue.py --offline   # data/products.json from the cached feed
 python3 scripts/build_catalogue.py             # ...or refetch from the live store
-python3 scripts/translate_titles.py --write    # ALWAYS after either of those two
+python3 scripts/translate_titles.py --write    # only when a product name is new or changed
 python3 scripts/build_vehicles.py              # vehicle tree (slow, ~10 min)
 python3 scripts/build_static.py                # THE SITE — run this after any of the above
 python3 scripts/audit_seo.py                   # ...then check it: exits non-zero on a fault
 python3 scripts/build_logo.py                  # only after replacing assets/img/logo.png
 ```
 
-**`translate_titles.py` is not optional and `build_catalogue.py` does not call it.**
-`build_catalogue.py` rewrites `data/products.json` from the feed, and the feed carries no
-`title_ro`, `title_ru` or `title_en` — so skipping this step silently drops every
-translated product name and puts the site back to English titles, which is the one thing
-the Romanian and Russian pages cannot rank without. Run it with `--write`, and read what
-it prints: it reports any term it did not recognise rather than guessing at it.
+**The translations survive a catalogue rebuild; they did not always.**
+`build_catalogue.py` rewrites `data/products.json` from the Shopify feed, and the feed
+carries no `title_ro`, `title_ru`, `title_en`, `body_ro`, `body_ru` or `img_sig`. The
+rebuild never read the file it was replacing, so a routine refresh for new stock or a
+price change dropped all 390 translated product names and all 130 image signatures, and
+nothing failed — the Romanian and Russian pages just went back to English titles, which
+is the one thing they cannot rank without. Running `translate_titles.py` afterwards was
+the documented workaround, and it did not cover the signatures or the descriptions.
+
+Those fields now live in **`data/translations.json`**, outside the generated catalogue,
+and `build_catalogue.py` merges them back in and prints how many it restored. Each entry
+records a hash of the English text it was translated from: if Shopify has since changed
+that text, the stored translation is **withheld** and reported as stale, because a
+confident Romanian sentence describing the previous revision of a spec is worse than the
+English — somebody orders a part from it. Re-run the translate script to redo those.
+
+So `translate_titles.py --write` is now only needed when a product name is new or has
+changed in Shopify; the rebuild no longer loses anything on its own. Read what it prints
+either way: it reports any term it did not recognise rather than guessing at it.
 
 `audit_seo.py` reads the built site the way a crawler would and fails on the things that
 cost rankings quietly: a missing or wrong canonical, two pages claiming the same one, an

@@ -35,6 +35,8 @@ import time
 import urllib.error
 import urllib.request
 
+import translations
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, 'data')
@@ -179,9 +181,20 @@ def main():
         print('Those products keep their original description until someone checks them.')
 
     if write and done:
+        # The durable copy first -- build_catalogue.py rebuilds data/products.json from
+        # the Shopify feed and would drop these otherwise. See scripts/translations.py.
+        store = translations.load()
+        kept = 0
+        for q in cat['products']:
+            v = q.get('body_' + lang)
+            if v:
+                translations.record(store, q['handle'], 'body', lang, q['body_html'], v)
+                kept += 1
+        translations.save(store)
+        print(f'\n{kept} {lang} description(s) written to {translations.PATH}')
         json.dump(cat, open(path, 'w', encoding='utf-8'),
                   ensure_ascii=False, separators=(',', ':'))
-        print(f'\nwritten to {path}')
+        print(f'and applied to {path}')
         print('Now run: python3 scripts/build_static.py')
     elif done:
         print('\n(dry run — pass --write to save)')

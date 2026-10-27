@@ -11,6 +11,8 @@ wrong parts -- so anything unrecognised is flagged `unparsed` rather than guesse
 """
 import json, os, re, sys, urllib.request
 
+import translations            # the authored RO/RU text, kept out of the generated file
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, 'data')
@@ -374,6 +376,34 @@ def main():
             'price_max': max(prices) if prices else 0,
             'variants': variants,
         })
+
+    # Everything the Shopify feed does not carry has to be put back, because the
+    # catalogue has just been rebuilt from scratch. Before translations.py existed that
+    # was not done at all, so a refresh for new stock or a price change silently
+    # replaced the translated Romanian and Russian titles with the English ones.
+    carried, stale, orphans = translations.merge_into(products)
+    print(f'translations merged back           : {carried} fields')
+    if stale:
+        print(f'  HELD BACK (English changed since): {stale} fields')
+        for handle, kind in translations.stale_report(products):
+            print(f'    {handle}  [{kind}]')
+        print('  Those keep the English text. Re-run the translate scripts to redo them.')
+    if orphans:
+        print(f'  {orphans} handle(s) in translations.json are no longer in the catalogue')
+
+    # img_sig is derived from the images rather than authored, so it is carried over
+    # only where the images are unchanged; image_signatures.py can always recompute it.
+    prev_path = os.path.join(DATA, 'products.json')
+    if os.path.exists(prev_path):
+        prev = {q['handle']: q for q in
+                json.load(open(prev_path, encoding='utf-8')).get('products', [])}
+        kept = 0
+        for q in products:
+            was = prev.get(q['handle'])
+            if was and was.get('img_sig') and was.get('images') == q.get('images'):
+                q['img_sig'] = was['img_sig']
+                kept += 1
+        print(f'image signatures carried over      : {kept}')
 
     import collections
     cats = collections.Counter(p['category'] for p in products)
