@@ -1,6 +1,6 @@
 /* The AI layer: a query understander used by search.html, and a chat assistant.
 
-   Both talk to /.netlify/functions/assistant, which holds the API key server-side --
+   Both talk to /api/assistant, which holds the API key server-side --
    a key shipped in a static page would be public the moment the site went live.
 
    Everything degrades. If the function is missing (running locally, or the key is not
@@ -10,7 +10,7 @@
   'use strict';
 
   var S = window.S;
-  var ENDPOINT = '/.netlify/functions/assistant';
+  var ENDPOINT = '/api/assistant';
   var available = null;          // null = untested, true/false once we know
 
   function call(payload) {
@@ -238,10 +238,12 @@
   var busy = false;
 
   var A = S.assistant = {
+    // The button lives in app.js, which is on every page, and this script is fetched
+    // only when someone presses it -- so mount() builds the panel and leaves the
+    // button and its click handling alone.
     mount: function () {
       if (document.getElementById('aiPanel')) return;
       document.body.insertAdjacentHTML('beforeend',
-        '<button type="button" class="ai-fab" data-ai-open aria-label="' + S.esc(S.t('ai.open')) + '">✦</button>' +
         '<section class="ai-panel" id="aiPanel" hidden aria-label="' + S.esc(S.t('ai.title')) + '">' +
           '<header><strong>' + S.esc(S.t('ai.title')) + '</strong>' +
             '<button type="button" class="linkish" id="aiClear">' + S.esc(S.t('ai.clear')) + '</button>' +
@@ -255,9 +257,6 @@
           '<p class="ai-note small">' + S.esc(S.t('ai.note')) + '</p>' +
         '</section>');
 
-      document.querySelectorAll('[data-ai-open]').forEach(function (b) {
-        b.addEventListener('click', function () { A.open(); });
-      });
       document.getElementById('aiClose').addEventListener('click', function () { A.open(false); });
       document.getElementById('aiClear').addEventListener('click', function () {
         history = []; A.reset();
