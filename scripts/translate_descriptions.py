@@ -66,15 +66,34 @@ Write the way a Moldovan trade catalogue writes: plain, direct, no marketing fil
 
 # What must survive translation untouched.
 NUM = re.compile(r'-?\d+(?:[.,]\d+)?')
-UNIT = re.compile(r'\b(?:mm|cm|m|MPa|bar|kg|g|DN\s*\d+|°\s*C|°|'
-                  r'DIN\s*\d+|NF\s*E\s*[\d-]+|UL\s*94|EPDM|NBR|PA6|PVC|ABS)\b', re.I)
+# The degree alternatives come first and carry no \b: ° is not a word character, so a
+# \b next to it can never match, and wrapping the whole group in \b -- as this did --
+# meant "°C" was silently never checked at all despite the docstring above promising it.
+# Russian writes unit abbreviations in Cyrillic, including a Cyrillic С in °С.
+UNIT = re.compile(r'°\s*[CС]|°'
+                  r'|\b(?:mm|cm|m|MPa|bar|kg|g|DN\s*\d+|'
+                  r'DIN\s*\d+|NF\s*E\s*[\d-]+|UL\s*94|EPDM|NBR|PA6|PVC|ABS|'
+                  r'мм|см|м|МПа|бар|кг|г|ДУ\s*\d+)\b', re.I)
+
+# Both spellings of the same unit have to compare equal.
+UNIT_FOLD = {'ММ': 'MM', 'СМ': 'CM', 'М': 'M', 'МПА': 'MPA', 'БАР': 'BAR',
+             'КГ': 'KG', 'Г': 'G', '°С': '°C'}
+
+
+def fold_unit(u):
+    u = u.upper().replace(' ', '')
+    if u in UNIT_FOLD:
+        return UNIT_FOLD[u]
+    if u.startswith('ДУ'):
+        return 'DN' + u[2:]
+    return u
 
 
 def signature(html):
     """The facts that must be identical before and after translation."""
     text = re.sub(r'<[^>]+>', ' ', html or '')
     nums = sorted(n.replace(',', '.') for n in NUM.findall(text))
-    units = sorted(u.upper().replace(' ', '') for u in UNIT.findall(text))
+    units = sorted(fold_unit(u) for u in UNIT.findall(text))
     tags = re.findall(r'</?([a-zA-Z0-9]+)', html or '')
     return nums, units, tags
 

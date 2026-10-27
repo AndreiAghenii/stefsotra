@@ -56,6 +56,11 @@
   "title_src": "4cbb7eeee532c87de8b559836fc8ca8825bbcb81"
  },
  "bauer-coupling": {
+  "body": {
+   "ro": "<p><strong>Cuplaj Bauer de la Stefsotra</strong> – cuplaj cu bilă și cupă, blocare cu pârghie, pentru linii de irigare și dejecții. Aluminiu turnat, se cuplează și etanșează cu un sfert de tură a pârghiilor. Dimensiuni 50–150 mm.</p>",
+   "ru": "<p><strong>Соединение Bauer от Stefsotra</strong> – шаровое соединение с рычажным замком для линий орошения и навозной жижи. Литой алюминий, соединяется и уплотняется поворотом рычагов на четверть. Размеры 50–150 мм.</p>"
+  },
+  "body_src": "3b8a67919701fe1828f7d094c0186a78c08ab758",
   "title": {
    "en": "Bauer Coupling – Aluminum",
    "ro": "Cuplaj Bauer – aluminiu",
@@ -64,6 +69,11 @@
   "title_src": "d41a86c40dfd50523db5de56081f8a3a7e108499"
  },
  "bauer-coupling-2": {
+  "body": {
+   "ro": "<p>Componentă pentru cuplaje industriale.</p>",
+   "ru": "<p>Компонент промышленного соединения.</p>"
+  },
+  "body_src": "5425c5768e0f19c1784e14f83d1461e883fd1894",
   "title": {
    "en": "Bauer Coupling Alt",
    "ro": "Cuplaj Bauer Alt",
@@ -72,6 +82,11 @@
   "title_src": "45a7128bfc18fdf7c6e725a65a9a2991f1523e33"
  },
  "bauer-gasket": {
+  "body": {
+   "ro": "<p><strong>Garnitură Bauer de la Stefsotra</strong> – inel de etanșare de schimb din cauciuc pentru cuplaje Bauer cu bilă și cupă. Dimensiuni 50–150 mm.</p>",
+   "ru": "<p><strong>Прокладка Bauer от Stefsotra</strong> – резиновое уплотнительное кольцо на замену для шаровых соединений Bauer. Размеры 50–150 мм.</p>"
+  },
+  "body_src": "1077d534d22ffe8c692822d81409dab7096d9456",
   "title": {
    "en": "Bauer Gasket",
    "ro": "Garnitură Bauer",
@@ -96,6 +111,11 @@
   "title_src": "535938b696325d27c5d1d7698d2aab2a88ef4ad7"
  },
  "camlock-gasket": {
+  "body": {
+   "ro": "<p>Componentă pentru cuplaje industriale.</p>",
+   "ru": "<p>Компонент промышленного соединения.</p>"
+  },
+  "body_src": "5425c5768e0f19c1784e14f83d1461e883fd1894",
   "title": {
    "en": "Camlock Gasket",
    "ro": "Garnitură Camlock",
@@ -104,6 +124,11 @@
   "title_src": "46060016e6b834cafafcb96ada75f2e4ac647a2d"
  },
  "camlock-handle": {
+  "body": {
+   "ro": "<p>Componentă pentru cuplaje industriale.</p>",
+   "ru": "<p>Компонент промышленного соединения.</p>"
+  },
+  "body_src": "5425c5768e0f19c1784e14f83d1461e883fd1894",
   "title": {
    "en": "Camlock Handle",
    "ro": "Mâner Camlock",
@@ -112,6 +137,11 @@
   "title_src": "b4b552f530dd87af90593f38e42b7cbf16712efe"
  },
  "camlock-reducing-type-a": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip A de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип A от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "f4dc5329319d3207460dbaf29b7733008685a84a",
   "title": {
    "en": "Camlock Reducer Type A",
    "ro": "Reducție Camlock tip A",
@@ -120,6 +150,11 @@
   "title_src": "ecfcd469cbace6326b6fd42ec92e39b494d52cf7"
  },
  "camlock-reducing-type-aa": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip AA de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип AA от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "add03f46d0452d533ea9fba6b2c4a93ed346bcbd",
   "title": {
    "en": "Camlock Reducer Type AA",
    "ro": "Reducție Camlock tip AA",
@@ -128,6 +163,11 @@
   "title_src": "37c935535a516b5e7847d2916c039a5f85cad4b0"
  },
  "camlock-reducing-type-b": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip B de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип B от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "b0e86f0823de16f34022e581b9ac3c5f53a4c140",
   "title": {
    "en": "Camlock Reducer Type B",
    "ro": "Reducție Camlock tip B",
@@ -136,6 +176,11 @@
   "title_src": "6d2fc1d689b3ed688954ab5e207485cefdc989f9"
  },
  "camlock-reducing-type-c": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip C de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип C от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "5ba56baca89bb249679642c3415ea311b4061029",
   "title": {
    "en": "Camlock Reducer Type C",
    "ro": "Reducție Camlock tip C",
@@ -144,6 +189,11 @@
   "title_src": "a71a0b6b2e70144fdbacb8ab39bb8bf7aa3dc247"
  },
  "camlock-reducing-type-d": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip D de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип D от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "998d371df32fe6fffb444b363b4fbe27a451db6f",
   "title": {
    "en": "Camlock Reducer Type D",
    "ro": "Reducție Camlock tip D",
@@ -152,6 +202,11 @@
   "title_src": "6e245df743c5390a7814bf82b14770c3ea2786ae"
  },
  "camlock-reducing-type-da": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip DA de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип DA от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "ef6aaee9d45479864ebf6779fa0c9b46c564726a",
   "title": {
    "en": "Camlock Reducer Type DA",
    "ro": "Reducție Camlock tip DA",
@@ -160,6 +215,11 @@
   "title_src": "b98867592df5b7576f10c80be34c52826b610fa6"
  },
  "camlock-reducing-type-dd": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip DD de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип DD от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "70c0d345506fb68659ca89170aa5d837522e5c02",
   "title": {
    "en": "Camlock Reducer Type DD",
    "ro": "Reducție Camlock tip DD",
@@ -168,6 +228,11 @@
   "title_src": "c9667080cf5434c789fb281cd57e0fc044e77c33"
  },
  "camlock-reducing-type-e": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip E de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип E от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "601ce2e724b14b204e8149c39df78a6bfef86ac3",
   "title": {
    "en": "Camlock Reducer Type E",
    "ro": "Reducție Camlock tip E",
@@ -176,6 +241,11 @@
   "title_src": "bc7f154d7157b55fe54ea3c3b0f8831a2d035a06"
  },
  "camlock-reducing-type-f": {
+  "body": {
+   "ro": "<p><strong>Reducție Camlock tip F de la Stefsotra</strong> – reducție din aluminiu cu came și canal, pentru unirea a două diametre diferite de furtun sau țeavă într-o singură îmbinare. Blocare cu came, fără scule.</p>",
+   "ru": "<p><strong>Переходник Камлок тип F от Stefsotra</strong> – алюминиевый переходник кулачкового типа для соединения двух разных диаметров рукава или трубы в одном стыке. Фиксация кулачками, без инструмента.</p>"
+  },
+  "body_src": "0366b382a09527caed07abdd0727fba66999ad26",
   "title": {
    "en": "Camlock Reducer Type F",
    "ro": "Reducție Camlock tip F",
@@ -184,6 +254,11 @@
   "title_src": "52343ec40565531a4a6c2c215dfd757deceaa366"
  },
  "camlock-type-a": {
+  "body": {
+   "en": "<p><span data-mce-fragment=\"1\">Camlock is a system of universal self-locking quick-release cam-type couplings that lets several hoses be joined to one another instantly. The design of the cams holds the connection to the adapter against vibration without an additional locking pin or any other fitting.</span></p>\n<p><strong>Camlock type А</strong><span> </span>- adapter with female thread.</p>\n<p> </p>\n<b>Material:</b>\n<ul>\n<li>Aluminium - AL</li>\n<li>Polypropylene - PP</li>\n</ul>",
+   "ro": "<p><span data-mce-fragment=\"1\">Camlock este un sistem de cuplaje rapide universale, autoblocante, cu came, care permite unirea instantanee a mai multor furtunuri între ele. Construcția camelor muftei asigură o îmbinare rezistentă la vibrații cu adaptorul, fără șplint de fixare suplimentar sau alte accesorii.</span></p>\n<p><strong>Camlock tip А</strong><span> </span>- parte tată cu filet interior.</p>\n<p> </p>\n<b>Material:</b>\n<ul>\n<li>Aluminiu - AL</li>\n<li>Polipropilenă - PP</li>\n</ul>"
+  },
+  "body_src": "142f075e36185d1e75e68d608312322ab6667f47",
   "title": {
    "en": "CAMLOCK TYPE A",
    "ro": "Camlock tip A",
@@ -192,6 +267,11 @@
   "title_src": "219d839eddc9a07194b7d92ffdb5a7fa029e3f32"
  },
  "camlock-type-b": {
+  "body": {
+   "en": "<p><span data-mce-fragment=\"1\">Camlock is a system of universal self-locking quick-release cam-type couplings that lets several hoses be joined to one another instantly. The design of the cams holds the connection to the adapter against vibration without an additional locking pin or any other fitting.</span></p>\n<h1 align=\"center\">Camlock type B</h1>\n<p><strong>Camlock type B</strong><span> </span>- coupler with male thread.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminium - AL</li>\n<li>Polypropylene - PP</li>\n</ul>",
+   "ro": "<p><span data-mce-fragment=\"1\">Camlock este un sistem de cuplaje rapide universale, autoblocante, cu came, care permite unirea instantanee a mai multor furtunuri între ele. Construcția camelor muftei asigură o îmbinare rezistentă la vibrații cu adaptorul, fără șplint de fixare suplimentar sau alte accesorii.</span></p>\n<h1 align=\"center\">Camlock tip B</h1>\n<p><strong>Camlock tip B</strong><span> </span>- parte mamă cu filet exterior.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminiu - AL</li>\n<li>Polipropilenă - PP</li>\n</ul>"
+  },
+  "body_src": "d5b8c2738ced0c07bcf2094c9bf70ce2067d6bbd",
   "title": {
    "en": "CAMLOCK TYPE B",
    "ro": "Camlock tip B",
@@ -200,6 +280,11 @@
   "title_src": "c228ca6ad38e3c1f471f4fd1f47596bb27ca45ae"
  },
  "camlock-type-c": {
+  "body": {
+   "en": "<p><span data-mce-fragment=\"1\">Camlock is a system of universal self-locking quick-release cam-type couplings that lets several hoses be joined to one another instantly. The design of the cams holds the connection to the adapter against vibration without an additional locking pin or any other fitting.</span></p>\n<h1 align=\"center\">Camlock type C</h1>\n<p><strong>Camlock type C</strong><span> </span>- coupler with hose shank.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminium - AL</li>\n<li>Polypropylene - PP</li>\n</ul>",
+   "ro": "<p><span data-mce-fragment=\"1\">Camlock este un sistem de cuplaje rapide universale, autoblocante, cu came, care permite unirea instantanee a mai multor furtunuri între ele. Construcția camelor muftei asigură o îmbinare rezistentă la vibrații cu adaptorul, fără șplint de fixare suplimentar sau alte accesorii.</span></p>\n<h1 align=\"center\">Camlock tip C</h1>\n<p><strong>Camlock tip C</strong><span> </span>- parte mamă cu coadă pentru furtun.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminiu - AL</li>\n<li>Polipropilenă - PP</li>\n</ul>"
+  },
+  "body_src": "fe2249ddd2ccdc1a36b543337e5de98befe97798",
   "title": {
    "en": "CAMLOCK TYPE C",
    "ro": "Camlock tip C",
@@ -208,6 +293,11 @@
   "title_src": "f544ef3055a6b2b486081eedfa2c763fadd4d1a3"
  },
  "camlock-type-d": {
+  "body": {
+   "en": "<p><span data-mce-fragment=\"1\">Camlock is a system of universal self-locking quick-release cam-type couplings that lets several hoses be joined to one another instantly. The design of the cams holds the connection to the adapter against vibration without an additional locking pin or any other fitting.</span></p>\n<h1 align=\"center\">Camlock type D</h1>\n<p><strong>Camlock type D</strong><span> </span>- coupler with female thread.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminium - AL</li>\n<li>Polypropylene - PP</li>\n</ul>",
+   "ro": "<p><span data-mce-fragment=\"1\">Camlock este un sistem de cuplaje rapide universale, autoblocante, cu came, care permite unirea instantanee a mai multor furtunuri între ele. Construcția camelor muftei asigură o îmbinare rezistentă la vibrații cu adaptorul, fără șplint de fixare suplimentar sau alte accesorii.</span></p>\n<h1 align=\"center\">Camlock tip D</h1>\n<p><strong>Camlock tip D</strong><span> </span>- parte mamă cu filet interior.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminiu - AL</li>\n<li>Polipropilenă - PP</li>\n</ul>"
+  },
+  "body_src": "eee681430bf98c063aa0711d828155396392026c",
   "title": {
    "en": "CAMLOCK TYPE D",
    "ro": "Camlock tip D",
@@ -216,6 +306,11 @@
   "title_src": "2a98c0aa20b8ca9eb91a945b843fa5bcde3eb0c8"
  },
  "camlock-type-dc": {
+  "body": {
+   "en": "<p><span data-mce-fragment=\"1\">Camlock is a system of universal self-locking quick-release cam-type couplings that lets several hoses be joined to one another instantly. The design of the cams holds the connection to the adapter against vibration without an additional locking pin or any other fitting.</span></p>\n<h1 align=\"center\">Camlock type DC</h1>\n<p><strong>Camlock type DC</strong><span> </span>- blanking cap.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminium - AL</li>\n<li>Polypropylene - PP</li>\n</ul>",
+   "ro": "<p><span data-mce-fragment=\"1\">Camlock este un sistem de cuplaje rapide universale, autoblocante, cu came, care permite unirea instantanee a mai multor furtunuri între ele. Construcția camelor muftei asigură o îmbinare rezistentă la vibrații cu adaptorul, fără șplint de fixare suplimentar sau alte accesorii.</span></p>\n<h1 align=\"center\">Camlock tip DC</h1>\n<p><strong>Camlock tip DC</strong><span> </span>- capac orb.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminiu - AL</li>\n<li>Polipropilenă - PP</li>\n</ul>"
+  },
+  "body_src": "0881b84f2d6d1eaa7f03818e0d7926831147cdbf",
   "title": {
    "en": "CAMLOCK TYPE DC",
    "ro": "Camlock tip DC",
@@ -224,6 +319,11 @@
   "title_src": "3d414734e7e63cb354def2e91ec8dcfcad40b1c3"
  },
  "camlock-type-dp": {
+  "body": {
+   "en": "<p><span data-mce-fragment=\"1\">Camlock is a system of universal self-locking quick-release cam-type couplings that lets several hoses be joined to one another instantly. The design of the cams holds the connection to the adapter against vibration without an additional locking pin or any other fitting.</span></p>\n<h1 align=\"center\">Camlock type DP</h1>\n<p><strong>Camlock type DP</strong><span> </span>- blanking cap.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminium - AL</li>\n<li>Polypropylene - PP</li>\n</ul>",
+   "ro": "<p><span data-mce-fragment=\"1\">Camlock este un sistem de cuplaje rapide universale, autoblocante, cu came, care permite unirea instantanee a mai multor furtunuri între ele. Construcția camelor muftei asigură o îmbinare rezistentă la vibrații cu adaptorul, fără șplint de fixare suplimentar sau alte accesorii.</span></p>\n<h1 align=\"center\">Camlock tip DP</h1>\n<p><strong>Camlock tip DP</strong><span> </span>- capac orb.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminiu - AL</li>\n<li>Polipropilenă - PP</li>\n</ul>"
+  },
+  "body_src": "8a6672eaa48adbe29cd23a5828d46fbfdf221fb3",
   "title": {
    "en": "CAMLOCK TYPE DP",
    "ro": "Camlock tip DP",
@@ -232,6 +332,11 @@
   "title_src": "6ed5c9b441b1b576ddf7f88f8d97e85a48d6a8bd"
  },
  "camlock-type-e": {
+  "body": {
+   "en": "<p><span data-mce-fragment=\"1\">Camlock is a system of universal self-locking quick-release cam-type couplings that lets several hoses be joined to one another instantly. The design of the cams holds the connection to the adapter against vibration without an additional locking pin or any other fitting.</span></p>\n<h1 align=\"center\">Camlock type E</h1>\n<p><strong>Camlock type E</strong><span> </span>- adapter with hose shank.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminium - AL</li>\n<li>Polypropylene - PP</li>\n</ul>",
+   "ro": "<p><span data-mce-fragment=\"1\">Camlock este un sistem de cuplaje rapide universale, autoblocante, cu came, care permite unirea instantanee a mai multor furtunuri între ele. Construcția camelor muftei asigură o îmbinare rezistentă la vibrații cu adaptorul, fără șplint de fixare suplimentar sau alte accesorii.</span></p>\n<h1 align=\"center\">Camlock tip E</h1>\n<p><strong>Camlock tip E</strong><span> </span>- parte tată cu coadă pentru furtun.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminiu - AL</li>\n<li>Polipropilenă - PP</li>\n</ul>"
+  },
+  "body_src": "47499b6691337b7cb2ba8835512c02c1084c88e9",
   "title": {
    "en": "CAMLOCK TYPE E",
    "ro": "Camlock tip E",
@@ -240,6 +345,11 @@
   "title_src": "b9c7bfa2cbaccd03a063489343f9dd73a9dbd0c7"
  },
  "camlock-type-f": {
+  "body": {
+   "en": "<p><span data-mce-fragment=\"1\">Camlock is a system of universal self-locking quick-release cam-type couplings that lets several hoses be joined to one another instantly. The design of the cams holds the connection to the adapter against vibration without an additional locking pin or any other fitting.</span></p>\n<h1 align=\"center\">Camlock type F</h1>\n<p><strong>Camlock type F</strong><span> </span>- adapter with hose shank.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminium - AL</li>\n<li>Polypropylene - PP</li>\n</ul>",
+   "ro": "<p><span data-mce-fragment=\"1\">Camlock este un sistem de cuplaje rapide universale, autoblocante, cu came, care permite unirea instantanee a mai multor furtunuri între ele. Construcția camelor muftei asigură o îmbinare rezistentă la vibrații cu adaptorul, fără șplint de fixare suplimentar sau alte accesorii.</span></p>\n<h1 align=\"center\">Camlock tip F</h1>\n<p><strong>Camlock tip F</strong><span> </span>- parte tată cu coadă pentru furtun.</p>\n<b>Material:</b>\n<ul>\n<li>Aluminiu - AL</li>\n<li>Polipropilenă - PP</li>\n</ul>"
+  },
+  "body_src": "61805160d80b67b04959ca55690898a54b3351c6",
   "title": {
    "en": "CAMLOCK TYPE F",
    "ro": "Camlock tip F",
@@ -352,6 +462,11 @@
   "title_src": "4ec3609e2798d1958ea333d30d112cff2a1f45e5"
  },
  "guillemin-blind-cap": {
+  "body": {
+   "ro": "<p>Capac orb Guillemin cu inel de blocare de la Stefsotra – închide un cuplaj Guillemin de aceeași dimensiune conform NF E 29-573, păstrând curate fețele cu gheare și linia închisă când nu este conectată.</p>",
+   "ru": "<p>Глухая заглушка Guillemin с запорным кольцом от Stefsotra – закрывает соединение Guillemin того же размера по NF E 29-573, сохраняя зубчатые торцы чистыми и линию закрытой, когда она не подсоединена.</p>"
+  },
+  "body_src": "8cd1e772f4ebbae072b07825fef44d88a6da84a9",
   "title": {
    "en": "Guillemin Blind Cap with Latch",
    "ro": "Capac orb Guillemin cu clichet",
@@ -360,6 +475,11 @@
   "title_src": "005dcd1d66f8953dbff807c2163db964ffa181b1"
  },
  "guillemin-female": {
+  "body": {
+   "ro": "<p><strong>Guillemin mamă fără clichet de la Stefsotra</strong> – cuplaj simetric Guillemin, jumătatea mamă fără clichet de siguranță. Aluminiu turnat, NF E 29-573.</p>",
+   "ru": "<p><strong>Guillemin охватывающая без защёлки от Stefsotra</strong> – симметричное соединение Guillemin, охватывающая половина без предохранительной защёлки. Литой алюминий, NF E 29-573.</p>"
+  },
+  "body_src": "0be0c76af7aa27e3ac8d10054a5c0509da821875",
   "title": {
    "en": "Guillemin Female without Latch",
    "ro": "Guillemin mamă fără clichet",
@@ -368,6 +488,11 @@
   "title_src": "109dca67465b0efee625f2bf540332a929c53fb2"
  },
  "guillemin-female-with-latch": {
+  "body": {
+   "ro": "<p>Cuplaj Guillemin de la Stefsotra, filet mamă, cu inel de blocare – cuplaj simetric cu gheare conform NF E 29-573, pentru apă, irigare și serviciul de pompieri. Inelul de blocare ține îmbinarea închisă sub presiune și este ceea ce deosebește această piesă de varianta simplă.</p><p>Jumătățile Guillemin sunt identice, așa că oricare două de aceeași dimensiune se conectează între ele.</p>",
+   "ru": "<p>Соединение Guillemin от Stefsotra, внутренняя резьба, с запорным кольцом – симметричное зубчатое соединение по NF E 29-573 для воды, орошения и пожарной службы. Запорное кольцо держит стык закрытым под давлением, и именно этим деталь отличается от простого варианта.</p><p>Половины Guillemin одинаковы, поэтому любые две одного размера соединяются друг с другом.</p>"
+  },
+  "body_src": "6708f1080ba4db81db18ac3694fe394174c7076e",
   "title": {
    "en": "Guillemin Female with Latch",
    "ro": "Guillemin mamă cu clichet",
@@ -376,6 +501,11 @@
   "title_src": "831cdc6f29148ff10fdac5a4e8199024d8e2cb3e"
  },
  "guillemin-gasket": {
+  "body": {
+   "ro": "<p>Componentă pentru cuplaje industriale.</p>",
+   "ru": "<p>Компонент промышленного соединения.</p>"
+  },
+  "body_src": "5425c5768e0f19c1784e14f83d1461e883fd1894",
   "title": {
    "en": "Guillemin Gasket",
    "ro": "Garnitură Guillemin",
@@ -384,6 +514,11 @@
   "title_src": "74dbba51ad81ce8036cdeb2c6d201eebacb3d288"
  },
  "guillemin-hose": {
+  "body": {
+   "ro": "<p><strong>Racord Guillemin cu coadă pentru furtun de la Stefsotra</strong> – cuplaj Guillemin cu coadă pentru fixarea cu colier pe furtun de aspirație sau refulare. Aluminiu turnat.</p>",
+   "ru": "<p><strong>Соединение Guillemin с хвостовиком под рукав от Stefsotra</strong> – соединение Guillemin с хвостовиком для крепления хомутом на всасывающий или напорный рукав. Литой алюминий.</p>"
+  },
+  "body_src": "e3fd837e70fa57d5af0220fabeaff1b490e8bff0",
   "title": {
    "en": "Guillemin Hose End",
    "ro": "Racord Guillemin pentru furtun",
@@ -392,6 +527,11 @@
   "title_src": "66b83965fbcca81695260f84b37ae8ca553f76ac"
  },
  "guillemin-hose-end-with-latch": {
+  "body": {
+   "ro": "<p>Coadă de furtun Guillemin cu inel de blocare de la Stefsotra – cuplaj simetric cu gheare conform NF E 29-573, fixat cu colier pe furtun. Inelul de blocare ține îmbinarea închisă sub presiune.</p><p>Montați cu două coliere și verificați diametrul cozii față de diametrul interior al furtunului, nu față de cel exterior.</p>",
+   "ru": "<p>Хвостовик под рукав Guillemin с запорным кольцом от Stefsotra – симметричное зубчатое соединение по NF E 29-573, крепится хомутом на рукав. Запорное кольцо держит стык закрытым под давлением.</p><p>Ставьте на два хомута и сверяйте диаметр хвостовика с внутренним диаметром рукава, а не с наружным.</p>"
+  },
+  "body_src": "4900058a56c4025ebf3011b10860821a49e374ad",
   "title": {
    "en": "Guillemin Hose End with Latch",
    "ro": "Racord Guillemin pentru furtun cu clichet",
@@ -400,6 +540,11 @@
   "title_src": "721462fb8e5825bec6083c2712a653830081aa1d"
  },
  "guillemin-male": {
+  "body": {
+   "ro": "<p><strong>Guillemin tată cu clichet de la Stefsotra</strong> – cuplaj simetric Guillemin, jumătatea tată cu clichet de siguranță. Aluminiu turnat, NF E 29-573.</p>",
+   "ru": "<p><strong>Guillemin охватываемая с защёлкой от Stefsotra</strong> – симметричное соединение Guillemin, охватываемая половина с предохранительной защёлкой. Литой алюминий, NF E 29-573.</p>"
+  },
+  "body_src": "72db64efa90e817bbb0b315ef22bc37a206105a9",
   "title": {
    "en": "Guillemin Male with Latch",
    "ro": "Guillemin tată cu clichet",
@@ -408,6 +553,11 @@
   "title_src": "545061d41a6e023bf2414b2bc12b8dbb56ec0596"
  },
  "guillemin-male-without-latch": {
+  "body": {
+   "ro": "<p>Cuplaj Guillemin de la Stefsotra, filet tată, fără inel de blocare – cuplaj simetric cu gheare conform NF E 29-573. Se folosește acolo unde jumătatea pereche poartă inelul, deci doar una dintre cele două are nevoie de el.</p>",
+   "ru": "<p>Соединение Guillemin от Stefsotra, наружная резьба, без запорного кольца – симметричное зубчатое соединение по NF E 29-573. Применяется там, где кольцо несёт ответная половина, поэтому оно нужно только одной из пары.</p>"
+  },
+  "body_src": "ff8bb2829608921ce74c87a722821a4eccd96564",
   "title": {
    "en": "Guillemin Male without Latch",
    "ro": "Guillemin tată fără clichet",
@@ -416,6 +566,11 @@
   "title_src": "45a315aaa6e1ead42b090eed4b8fea30ca724726"
  },
  "guillemin-reducer": {
+  "body": {
+   "ro": "<p>Adaptor de reducție Guillemin de la Stefsotra – unește două cuplaje Guillemin de dimensiuni diferite conform NF E 29-573, astfel încât o linie să poată trece la o dimensiune mai mică fără schimbarea furtunului.</p><p>Precizați ambele dimensiuni la comandă: adaptorul se face pentru o singură pereche.</p>",
+   "ru": "<p>Переходник-редуктор Guillemin от Stefsotra – соединяет два соединения Guillemin разных размеров по NF E 29-573, чтобы линия могла перейти на меньший размер без замены рукава.</p><p>При заказе укажите оба размера: переходник делается под одну пару.</p>"
+  },
+  "body_src": "01ebfc7ceaf30885655d4be9961c6e021d4f152f",
   "title": {
    "en": "Guillemin Reducing Adapter",
    "ro": "Adaptor de reducție Guillemin",
@@ -496,6 +651,11 @@
   "title_src": "8e2e3788ec24268029b8c9671a6c7dba8e77a33a"
  },
  "mb": {
+  "body": {
+   "ro": "<p><strong>Cuplaj MB de la Stefsotra</strong> – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Cuplaj TW/MB – jumătatea tată cu coadă pentru furtun, se împerechează cu jumătatea mamă VB. Disponibil în 50, 75 și 100 mm.</p>",
+   "ru": "<p><strong>Соединение MB от Stefsotra</strong> – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Соединение TW/MB – охватываемая половина с хвостовиком под рукав, стыкуется с охватывающей половиной VB. Доступно в 50, 75 и 100 мм.</p>"
+  },
+  "body_src": "24aea6ab2f4a79ca4852c2cd3dd928e56a63047b",
   "title": {
    "en": "MB Coupling",
    "ro": "Cuplaj MB",
@@ -512,6 +672,11 @@
   "title_src": "626971858f54787e09f810ecf4685ab0bb8c15b6"
  },
  "mk": {
+  "body": {
+   "ro": "<p><strong>Cuplaj MK de la Stefsotra</strong> – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Cuplaj TW/MK – jumătatea tată cu pârghii de blocare, se împerechează cu jumătatea mamă VK. Disponibil în 50, 75 și 100 mm.</p>",
+   "ru": "<p><strong>Соединение MK от Stefsotra</strong> – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Соединение TW/MK – охватываемая половина с запорными рычагами, стыкуется с охватывающей половиной VK. Доступно в 50, 75 и 100 мм.</p>"
+  },
+  "body_src": "b4e16e27c8a0041dfeb6c3e9e114179a5802940c",
   "title": {
    "en": "MK Coupling",
    "ro": "Cuplaj MK",
@@ -792,6 +957,11 @@
   "title_src": "9dff59004793ea6aa90361b84777e05dadc88fcd"
  },
  "storz-cap": {
+  "body": {
+   "ro": "<p><strong>Capac Storz – aluminiu, de la Stefsotra</strong> – capac orb Storz, aluminiu turnat. Etanșează un cuplaj Storz deschis împotriva murdăriei și umezelii când linia nu este în uz.</p>",
+   "ru": "<p><strong>Заглушка Storz – алюминий, от Stefsotra</strong> – глухая заглушка Storz, литой алюминий. Закрывает открытое соединение Storz от грязи и влаги, когда линия не используется.</p>"
+  },
+  "body_src": "f267bb145a47c8cf4366b22158ae280ad7c821be",
   "title": {
    "en": "Storz Cap – Aluminum",
    "ro": "Capac Storz – aluminiu",
@@ -800,6 +970,11 @@
   "title_src": "4d1d24377cd5b939fd5eb36dabccef8fbd113f12"
  },
  "storz-coupling-female": {
+  "body": {
+   "ro": "<p><strong>Cuplaj Storz – mamă – aluminiu, de la Stefsotra</strong> – cuplaj de pompieri Storz, jumătatea mamă, aluminiu turnat. Îmbinare simetrică cu gheare conform DIN 14301 – se cuplează fără scule, cu un sfert de tură.</p>",
+   "ru": "<p><strong>Соединение Storz – охватывающее – алюминий, от Stefsotra</strong> – пожарное соединение Storz, охватывающая половина, литой алюминий. Симметричный зубчатый стык по DIN 14301 – соединяется без инструмента, поворотом на четверть.</p>"
+  },
+  "body_src": "dfe6c9a1743cc382cc57c6ac6b3c10e5c600e023",
   "title": {
    "en": "Storz Coupling – Female – Aluminum",
    "ro": "Cuplaj Storz – mamă – aluminiu",
@@ -824,6 +999,11 @@
   "title_src": "b28cb734ba3a453073d9ca51cadeecc12894e267"
  },
  "storz-gasket": {
+  "body": {
+   "ro": "<p><strong>Garnitură Storz de la Stefsotra</strong> – inel de etanșare de schimb din cauciuc pentru cuplaje de pompieri Storz. EPDM rezistent la intemperii și la ozon.</p>",
+   "ru": "<p><strong>Прокладка Storz от Stefsotra</strong> – резиновое уплотнительное кольцо на замену для пожарных соединений Storz. EPDM, стойкий к погоде и озону.</p>"
+  },
+  "body_src": "0e9ea31441b69f27a493de22861f8e09b93571ec",
   "title": {
    "en": "Storz Gasket",
    "ro": "Garnitură Storz",
@@ -832,6 +1012,11 @@
   "title_src": "fad5e91b48467e8d7b37e13842f23b9b4bf127f2"
  },
  "storz-hose-end": {
+  "body": {
+   "ro": "<p><strong>Racord Storz cu coadă pentru furtun de la Stefsotra</strong> – cuplaj Storz cu coadă pentru fixarea cu colier pe furtun plat de pompieri. Aluminiu turnat, profil cu gheare conform DIN 14301.</p>",
+   "ru": "<p><strong>Соединение Storz с хвостовиком под рукав от Stefsotra</strong> – соединение Storz с хвостовиком для крепления хомутом на плоскосворачиваемый пожарный рукав. Литой алюминий, зубчатый профиль по DIN 14301.</p>"
+  },
+  "body_src": "0d661ec4c0898acef25b9a0ad85d15ba57da8609",
   "title": {
    "en": "Storz Hose End – Aluminum",
    "ro": "Racord Storz pentru furtun – aluminiu",
@@ -840,6 +1025,11 @@
   "title_src": "05bad06a5cfac4b31ba5c60dd15a8b450e674a4a"
  },
  "storz-latch": {
+  "body": {
+   "ro": "<p><strong>Zăvor Storz de la Stefsotra</strong> – zăvor de blocare de schimb pentru cuplaje de pompieri Storz. Aluminiu turnat, dimensiuni 50–100 mm.</p>",
+   "ru": "<p><strong>Защёлка Storz от Stefsotra</strong> – запорная защёлка на замену для пожарных соединений Storz. Литой алюминий, размеры 50–100 мм.</p>"
+  },
+  "body_src": "023184adf95c5acf39658dd75a3d69624948b736",
   "title": {
    "en": "Storz Latch – Aluminum",
    "ro": "Clichet Storz – aluminiu",
@@ -848,6 +1038,11 @@
   "title_src": "8a94348822afd6dfda0c0a550518b456255153c9"
  },
  "storz-reducer": {
+  "body": {
+   "ro": "<p>Componentă pentru cuplaje industriale.</p>",
+   "ru": "<p>Компонент промышленного соединения.</p>"
+  },
+  "body_src": "5425c5768e0f19c1784e14f83d1461e883fd1894",
   "title": {
    "en": "Storz Reducer – Aluminum",
    "ro": "Reducție Storz – aluminiu",
@@ -856,6 +1051,11 @@
   "title_src": "ae1a3081229654c99fc4ff2c290c4fb700aab5b2"
  },
  "storz-reducer-2": {
+  "body": {
+   "ro": "<p>Componentă pentru cuplaje industriale.</p>",
+   "ru": "<p>Компонент промышленного соединения.</p>"
+  },
+  "body_src": "5425c5768e0f19c1784e14f83d1461e883fd1894",
   "title": {
    "en": "Storz Reducer Alt",
    "ro": "Reducție Storz Alt",
@@ -904,6 +1104,11 @@
   "title_src": "334faef4f5852e6da7deee2ccc59f2d2facef64d"
  },
  "tw-blind-adapter-bv": {
+  "body": {
+   "ro": "<p>Adaptor orb BV de la Stefsotra – jumătatea-cep a unui set TW (Tankwagen) conform DIN 28450. Închide un cuplaj MK sau MB când linia nu este conectată, protejând suprafața de etanșare în timpul transportului.</p>",
+   "ru": "<p>Глухой переходник BV от Stefsotra – пробковая половина комплекта TW (Tankwagen) по DIN 28450. Закрывает соединение MK или MB, когда линия не подсоединена, защищая уплотнительную поверхность при перевозке.</p>"
+  },
+  "body_src": "cea9a0b8dcd60bda3e15c35f8f16c4d4b9242382",
   "title": {
    "en": "BV Blind Adapter for TW Coupling",
    "ro": "BV Adaptor orb pentru cuplaj TW",
@@ -912,6 +1117,11 @@
   "title_src": "4d70e3792cd346d9f6a9183eb6cb262b553f3fa1"
  },
  "tw-blind-cap-bk": {
+  "body": {
+   "ro": "<p>Capac orb BK de la Stefsotra – jumătatea de închidere a unui set TW (Tankwagen) conform DIN 28450. Închide un adaptor VB sau VK când linia nu este conectată, păstrând curată fața cuplajului și reținând restul de conținut.</p>",
+   "ru": "<p>Глухая заглушка BK от Stefsotra – закрывающая половина комплекта TW (Tankwagen) по DIN 28450. Закрывает переходник VB или VK, когда линия не подсоединена, сохраняя торец соединения чистым и удерживая остаток содержимого.</p>"
+  },
+  "body_src": "b379b3a06135aaee9a077dfefd78f644100e7c96",
   "title": {
    "en": "BK Blind Cap for TW Coupling",
    "ro": "BK Capac orb pentru cuplaj TW",
@@ -920,6 +1130,11 @@
   "title_src": "59c617d6ef28e81e74acac2ab8a52a3c4f9df491"
  },
  "tw-coupling-gasket": {
+  "body": {
+   "ro": "<p>Garnitură de cuplaj TW de la Stefsotra – inelul de etanșare care stă în jumătatea MK sau MB a unui cuplaj TW (Tankwagen) conform DIN 28450. Este piesa de uzură a setului și se înlocuiește de câte ori îmbinarea începe să picure.</p><p>Precizați mediul la comandă: materialul se alege după ce trece prin linie.</p>",
+   "ru": "<p>Прокладка соединения TW от Stefsotra – уплотнительное кольцо, которое стоит в половине MK или MB соединения TW (Tankwagen) по DIN 28450. Это изнашиваемая деталь комплекта, её меняют всякий раз, когда стык начинает подтекать.</p><p>При заказе укажите среду: материал подбирают под то, что идёт по линии.</p>"
+  },
+  "body_src": "f56ec7096f8e2eee5d0718f7471ecacf69e6fbdd",
   "title": {
    "en": "TW Coupling Gasket",
    "ro": "Garnitură pentru cuplaj TW",
@@ -928,6 +1143,11 @@
   "title_src": "4f7a7da1b8ee7d7eecfb9bf3023f2436d3556692"
  },
  "tw-coupling-mb-brass": {
+  "body": {
+   "ro": "<p>Cuplaj MB din alamă de la Stefsotra – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Partea MB este cuplajul mamă cu filet interior, care se închide pe un adaptor VB sau VK de aceeași dimensiune.</p><p>Alama nu produce scântei la lovire, de aceea este prevăzută pentru transferul de combustibil, solvenți și alte substanțe inflamabile, unde un cuplaj din aluminiu sau din oțel nu este permis.</p>",
+   "ru": "<p>Соединение MB из латуни от Stefsotra – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Часть MB – это охватывающее соединение с внутренней резьбой, закрывается на переходнике VB или VK того же размера.</p><p>Латунь не даёт искры при удар, поэтому её назначают для перекачки топлива, растворителей и других горючих веществ, где соединение из алюминия или стали не допускается.</p>"
+  },
+  "body_src": "1a51f6067c3183cbf564ff755c1e8c3844f0021b",
   "title": {
    "en": "MB Coupling – Brass",
    "ro": "Cuplaj MB – alamă",
@@ -936,6 +1156,11 @@
   "title_src": "1aa49849f9f57a862a1709cd7abc3b9b14169600"
  },
  "tw-coupling-mb-stainless": {
+  "body": {
+   "ro": "<p>Cuplaj MB din oțel inoxidabil de la Stefsotra – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Partea MB este cuplajul mamă cu filet interior, care se închide pe un adaptor VB sau VK de aceeași dimensiune.</p><p>Oțelul inoxidabil se alege în locul aluminiului acolo unde mediul este agresiv sau unde cuplajul trebuie să rămână utilizabil în aer liber timp de ani: acizi, solvenți, îngrășăminte, transfer alimentar și aer salin.</p>",
+   "ru": "<p>Соединение MB из нержавеющей стали от Stefsotra – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Часть MB – это охватывающее соединение с внутренней резьбой, закрывается на переходнике VB или VK того же размера.</p><p>Нержавеющую сталь выбирают вместо алюминия там, где среда агрессивна или где соединение должно годами оставаться работоспособным на открытом воздухе: кислоты, растворители, удобрения, пищевые продукты и солёный воздух.</p>"
+  },
+  "body_src": "924ea77257cca44989194f2002504a0375faf5ce",
   "title": {
    "en": "MB Coupling – Stainless Steel",
    "ro": "Cuplaj MB – oțel inoxidabil",
@@ -944,6 +1169,11 @@
   "title_src": "be1a0e8d82f1370258171ba70c30a5159b8089a6"
  },
  "tw-coupling-mk-brass": {
+  "body": {
+   "ro": "<p>Cuplaj MK din alamă de la Stefsotra – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Partea MK este cuplajul mamă cu coadă pentru furtun, fixat cu colier pe furtun și închis pe un adaptor VB sau VK de aceeași dimensiune.</p><p>Alama nu produce scântei la lovire, de aceea este prevăzută pentru transferul de combustibil, solvenți și alte substanțe inflamabile, unde un cuplaj din aluminiu sau din oțel nu este permis.</p>",
+   "ru": "<p>Соединение MK из латуни от Stefsotra – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Часть MK – это охватывающее соединение с хвостовиком под рукав, крепится хомутом на рукав и закрывается на переходнике VB или VK того же размера.</p><p>Латунь не даёт искры при удар, поэтому её назначают для перекачки топлива, растворителей и других горючих веществ, где соединение из алюминия или стали не допускается.</p>"
+  },
+  "body_src": "4515e58c7658ea7155913f497912ca166d88cd31",
   "title": {
    "en": "MK Coupling – Brass",
    "ro": "Cuplaj MK – alamă",
@@ -952,6 +1182,11 @@
   "title_src": "a69b4d8b32647ff789fc12a71c115d04cbed4886"
  },
  "tw-coupling-mk-stainless": {
+  "body": {
+   "ro": "<p>Cuplaj MK din oțel inoxidabil de la Stefsotra – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Partea MK este cuplajul mamă cu coadă pentru furtun, fixat cu colier pe furtun și închis pe un adaptor VB sau VK de aceeași dimensiune.</p><p>Oțelul inoxidabil se alege în locul aluminiului acolo unde mediul este agresiv sau unde cuplajul trebuie să rămână utilizabil în aer liber timp de ani: acizi, solvenți, îngrășăminte, transfer alimentar și aer salin.</p>",
+   "ru": "<p>Соединение MK из нержавеющей стали от Stefsotra – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Часть MK – это охватывающее соединение с хвостовиком под рукав, крепится хомутом на рукав и закрывается на переходнике VB или VK того же размера.</p><p>Нержавеющую сталь выбирают вместо алюминия там, где среда агрессивна или где соединение должно годами оставаться работоспособным на открытом воздухе: кислоты, растворители, удобрения, пищевые продукты и солёный воздух.</p>"
+  },
+  "body_src": "0c86256188a074010148683fcc40132262e3a698",
   "title": {
    "en": "MK Coupling – Stainless Steel",
    "ro": "Cuplaj MK – oțel inoxidabil",
@@ -960,6 +1195,11 @@
   "title_src": "f593888b63b742aa5a432e2dd629e5a00eea1b98"
  },
  "tw-coupling-vb-brass": {
+  "body": {
+   "ro": "<p>Cuplaj VB din alamă de la Stefsotra – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Partea VB este adaptorul tată cu filet exterior și se împerechează cu jumătatea MK sau MB de aceeași dimensiune.</p><p>Alama nu produce scântei la lovire, de aceea este prevăzută pentru transferul de combustibil, solvenți și alte substanțe inflamabile, unde un cuplaj din aluminiu sau din oțel nu este permis.</p>",
+   "ru": "<p>Соединение VB из латуни от Stefsotra – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Часть VB – это охватываемый переходник с наружной резьбой, стыкуется с половиной MK или MB того же размера.</p><p>Латунь не даёт искры при удар, поэтому её назначают для перекачки топлива, растворителей и других горючих веществ, где соединение из алюминия или стали не допускается.</p>"
+  },
+  "body_src": "e5b061e30b4ef45152c71f56ed573f7e2dc4a5f0",
   "title": {
    "en": "VB Coupling – Brass",
    "ro": "Cuplaj VB – alamă",
@@ -968,6 +1208,11 @@
   "title_src": "0486cd36d134ed3e502237bd6a703b1361df6bdb"
  },
  "tw-coupling-vb-stainless": {
+  "body": {
+   "ro": "<p>Cuplaj VB din oțel inoxidabil de la Stefsotra – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Partea VB este adaptorul tată cu filet exterior și se împerechează cu jumătatea MK sau MB de aceeași dimensiune.</p><p>Oțelul inoxidabil se alege în locul aluminiului acolo unde mediul este agresiv sau unde cuplajul trebuie să rămână utilizabil în aer liber timp de ani: acizi, solvenți, îngrășăminte, transfer alimentar și aer salin.</p>",
+   "ru": "<p>Соединение VB из нержавеющей стали от Stefsotra – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Часть VB – это охватываемый переходник с наружной резьбой, стыкуется с половиной MK или MB того же размера.</p><p>Нержавеющую сталь выбирают вместо алюминия там, где среда агрессивна или где соединение должно годами оставаться работоспособным на открытом воздухе: кислоты, растворители, удобрения, пищевые продукты и солёный воздух.</p>"
+  },
+  "body_src": "62155af84e11d4a2e666b3e7220c3667cb598c58",
   "title": {
    "en": "VB Coupling – Stainless Steel",
    "ro": "Cuplaj VB – oțel inoxidabil",
@@ -976,6 +1221,11 @@
   "title_src": "4926ab40686b15932f4542ee6d70771936ea4dd1"
  },
  "tw-coupling-vk-brass": {
+  "body": {
+   "ro": "<p>Cuplaj VK din alamă de la Stefsotra – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Partea VK este adaptorul tată cu coadă pentru furtun, fixat cu colier pe furtun și împerecheat cu jumătatea MK sau MB de aceeași dimensiune.</p><p>Alama nu produce scântei la lovire, de aceea este prevăzută pentru transferul de combustibil, solvenți și alte substanțe inflamabile, unde un cuplaj din aluminiu sau din oțel nu este permis.</p>",
+   "ru": "<p>Соединение VK из латуни от Stefsotra – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Часть VK – это охватываемый переходник с хвостовиком под рукав, крепится хомутом на рукав и стыкуется с половиной MK или MB того же размера.</p><p>Латунь не даёт искры при удар, поэтому её назначают для перекачки топлива, растворителей и других горючих веществ, где соединение из алюминия или стали не допускается.</p>"
+  },
+  "body_src": "0a922b93aa64f9f852acfae1e64e39b9a82ad8d5",
   "title": {
    "en": "VK Coupling – Brass",
    "ro": "Cuplaj VK – alamă",
@@ -984,6 +1234,11 @@
   "title_src": "dd5a9a781dc6656bc438e385e43bc9cdffbc9842"
  },
  "tw-coupling-vk-stainless": {
+  "body": {
+   "ro": "<p>Cuplaj VK din oțel inoxidabil de la Stefsotra – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Partea VK este adaptorul tată cu coadă pentru furtun, fixat cu colier pe furtun și împerecheat cu jumătatea MK sau MB de aceeași dimensiune.</p><p>Oțelul inoxidabil se alege în locul aluminiului acolo unde mediul este agresiv sau unde cuplajul trebuie să rămână utilizabil în aer liber timp de ani: acizi, solvenți, îngrășăminte, transfer alimentar și aer salin.</p>",
+   "ru": "<p>Соединение VK из нержавеющей стали от Stefsotra – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Часть VK – это охватываемый переходник с хвостовиком под рукав, крепится хомутом на рукав и стыкуется с половиной MK или MB того же размера.</p><p>Нержавеющую сталь выбирают вместо алюминия там, где среда агрессивна или где соединение должно годами оставаться работоспособным на открытом воздухе: кислоты, растворители, удобрения, пищевые продукты и солёный воздух.</p>"
+  },
+  "body_src": "fba98b14a3b6dfd58227eed245e7d42f92dde45e",
   "title": {
    "en": "VK Coupling – Stainless Steel",
    "ro": "Cuplaj VK – oțel inoxidabil",
@@ -992,6 +1247,11 @@
   "title_src": "495c9ba9f75ccbe4f7a49b2400ea9251b5c28129"
  },
  "universal-gasket": {
+  "body": {
+   "ro": "<p><strong>Garnitură universală de cuplaj de la Stefsotra</strong> – inel de etanșare de schimb din cauciuc pentru cuplaje de cisternă TW/MB și TW/VK. Amestec NBR rezistent la uleiuri și combustibili.</p>",
+   "ru": "<p><strong>Универсальная прокладка соединения от Stefsotra</strong> – резиновое уплотнительное кольцо на замену для соединений цистерн TW/MB и TW/VK. Состав NBR, стойкий к маслам и топливу.</p>"
+  },
+  "body_src": "52e29f2d416d41cd0b99b2755d84a7492aa00e7f",
   "title": {
    "en": "Universal Coupling Gasket",
    "ro": "Garnitură universală pentru cuplaj",
@@ -1000,6 +1260,11 @@
   "title_src": "9e2118c4f063cdb96d0c2b1acef6ba5839ca7237"
  },
  "vb": {
+  "body": {
+   "ro": "<p><strong>Cuplaj VB de la Stefsotra</strong> – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Cuplaj TW/VB – jumătatea mamă cu coadă pentru furtun, pentru furtunuri de descărcare a cisternei. Disponibil în 50, 75 și 100 mm.</p>",
+   "ru": "<p><strong>Соединение VB от Stefsotra</strong> – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Соединение TW/VB – охватывающая половина с хвостовиком под рукав для рукавов разгрузки цистерны. Доступно в 50, 75 и 100 мм.</p>"
+  },
+  "body_src": "002ea7252bba649536cdb20a11dcf1476fb81510",
   "title": {
    "en": "VB Coupling",
    "ro": "Cuplaj VB",
@@ -1016,6 +1281,11 @@
   "title_src": "504e1dc37254fa9e7bdb8827abca72857423afd8"
  },
  "vk": {
+  "body": {
+   "ro": "<p><strong>Cuplaj VK de la Stefsotra</strong> – cuplaj TW (Tankwagen) conform DIN 28450, pentru autocisterne și transfer de lichide în vrac. Cuplaj TW/VK – jumătatea mamă cu pârghii de blocare, pentru linii de cisternă și transfer în vrac. Disponibil în 50, 75 și 100 mm.</p>",
+   "ru": "<p><strong>Соединение VK от Stefsotra</strong> – соединение TW (Tankwagen) по DIN 28450 для автоцистерн и перекачки жидкостей навалом. Соединение TW/VK – охватывающая половина с запорными рычагами для линий цистерн и перекачки навалом. Доступно в 50, 75 и 100 мм.</p>"
+  },
+  "body_src": "f3d8ff4df697604ae2f50cee5abe0abfb324f65f",
   "title": {
    "en": "VK Coupling",
    "ro": "Cuplaj VK",

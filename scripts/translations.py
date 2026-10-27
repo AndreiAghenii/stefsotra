@@ -31,7 +31,9 @@ PATH = os.path.join(DATA, 'translations.json')
 
 # The fields the Shopify feed does not provide, by the source field they translate.
 KINDS = {'title': 'title', 'body': 'body_html'}
-LANGS = {'title': ('ro', 'ru', 'en'), 'body': ('ro', 'ru')}
+# Descriptions need an English slot too: the camlock copy arrived from Shopify in
+# Russian, so without body_en the English pages fall back to Russian prose.
+LANGS = {'title': ('ro', 'ru', 'en'), 'body': ('ro', 'ru', 'en')}
 
 
 def src_hash(text):
