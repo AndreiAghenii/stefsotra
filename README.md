@@ -77,6 +77,29 @@ So `translate_titles.py --write` is now only needed when a product name is new o
 changed in Shopify; the rebuild no longer loses anything on its own. Read what it prints
 either way: it reports any term it did not recognise rather than guessing at it.
 
+### Engines other than Google
+
+`robots.txt` grants Yandex its own section with `Clean-param` for the filter query
+strings, and names the sitemap. Beyond that there are two levers:
+
+**Ownership verification.** Fill `data/pages.json` → `_contact.verify` with the tokens
+from each console and the build emits the matching meta tag — `google-site-verification`,
+`msvalidate.01` (Bing) and `yandex-verification`. Nothing is emitted while a token is
+blank. Bing Webmaster Tools is the Yahoo lever: Yahoo's results are served from Bing, so
+there is no separate Yahoo console to submit to.
+
+**IndexNow** (`scripts/indexnow.py`) pushes changed URLs to Bing, Yandex, Seznam and
+Naver instead of waiting for a crawl. Google does not participate, and the old
+sitemap-ping endpoints were withdrawn in 2023, so for Google the sitemap plus a crawl is
+still the route. Set up once with `--new-key`, then build and deploy so `/<key>.txt` is
+live — the engines fetch that file and refuse the submission with 403 if it does not
+match. After that, `python3 scripts/indexnow.py` submits whatever the last build changed,
+or `--all` submits every indexable URL.
+
+Worth being precise about what this buys: faster *indexing*, not better ranking. A page
+crawled tomorrow rather than in three weeks starts earning sooner; it does not rank above
+what it deserves.
+
 `audit_seo.py` reads the built site the way a crawler would and fails on the things that
 cost rankings quietly: a missing or wrong canonical, two pages claiming the same one, an
 incomplete `hreflang` set, a title over 70 characters or a description outside 60–165, a

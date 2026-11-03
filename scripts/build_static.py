@@ -1935,6 +1935,25 @@ def build_tool(lang, filename):
     return url
 
 
+def write_indexnow_key():
+    """Publish /<key>.txt so Bing and Yandex will accept an IndexNow submission.
+
+    The engines fetch this file and compare its contents with the key in the payload;
+    without it every submission is refused with 403. Nothing is written until a key
+    exists -- see scripts/indexnow.py --new-key.
+    """
+    path = os.path.join(DATA, 'indexnow.json')
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding='utf-8') as f:
+        key = (json.load(f).get('key') or '').strip()
+    if not key:
+        return None
+    with open(os.path.join(ROOT, key + '.txt'), 'w', encoding='utf-8') as f:
+        f.write(key + '\n')
+    return key
+
+
 def build_404():
     lang = 'ro'
     body = ('<div class="wrap" style="padding:60px 20px;text-align:center">'
@@ -2177,6 +2196,10 @@ def main():
                 'Allow: /\n'
                 'Clean-param: q&cat&group&sort&dia&clamp&angle&material&type\n\n'
                 'Sitemap: %s/sitemap.xml\n' % SITE)
+
+    key = write_indexnow_key()
+    if key:
+        print('IndexNow key published at /%s.txt' % key)
 
     print('%d pages, %d URLs in the sitemap' % (len(urls), len(entries)))
     print('  %d products x %d languages' % (CAT['count'], len(LANGS)))
