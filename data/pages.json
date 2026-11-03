@@ -46,7 +46,12 @@
     ],
     "geo": [],
     "same_as": [],
-    "price_range": ""
+    "price_range": "",
+    "verify": {
+      "google": "",
+      "bing": "",
+      "yandex": ""
+    }
   },
   "about": {
     "ro": {

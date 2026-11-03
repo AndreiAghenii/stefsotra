@@ -113,6 +113,7 @@ if PREVIEW:
     except (OSError, ValueError) as _e:
         print('preview mode, but data/reviews.staging.json could not be read: %s' % _e)
 CONTACT = PAGES['_contact']
+VERIFY = CONTACT.get('verify', {}) or {}
 
 BY_HANDLE = {p['handle']: p for p in CAT['products']}
 
@@ -426,6 +427,14 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
         '<meta name="description" content="%s">\n' % e(desc) +
         ('<meta name="robots" content="noindex,follow">\n' if noindex else
          '<meta name="robots" content="index,follow,max-image-preview:large">\n') +
+        # Ownership proof for the webmaster consoles. Each is emitted only once a token
+        # is filled in data/pages.json -> _contact.verify, so an unconfigured site does
+        # not ship an empty meta. Bing's console is what Yahoo results are served from.
+        ''.join('<meta name="%s" content="%s">\n' % (nm, e(VERIFY[k]))
+                for k, nm in (('google', 'google-site-verification'),
+                              ('bing', 'msvalidate.01'),
+                              ('yandex', 'yandex-verification'))
+                if VERIFY.get(k)) +
         ('' if noindex else '<link rel="canonical" href="%s">\n' % e(canonical)) +
         alts + '\n'
         '<meta property="og:type" content="%s">\n' % og_type +
@@ -889,6 +898,21 @@ _ALIGN = re.compile(r'\s+align="[^"]*"', re.I)
 
 def _demote(m):
     return '<%sh%d%s>' % (m.group(1), min(int(m.group(2)) + 2, 6), _ALIGN.sub('', m.group(3)))
+
+
+def body_lang(p):
+    """Which language the manufacturer's description is actually written in.
+
+    The Shopify copy arrived in English for most products and Russian for the camlocks,
+    and nothing recorded which. Without that, the "not yet translated" notice below was
+    shown on every page lacking a translation -- including the English page of an English
+    description, where it told the reader that English text was untranslated. 130 pages
+    were claiming it.
+    """
+    txt = re.sub(r'<[^>]+>', ' ', p.get('body_html') or '')
+    cyr = len(re.findall(r'[\u0410-\u044f\u0401\u0451]', txt))
+    lat = len(re.findall(r'[A-Za-z]', txt))
+    return 'ru' if cyr > lat else 'en'
 
 
 def desc_html(lang, p):
@@ -1526,8 +1550,10 @@ def build_product(lang, p):
         # leads with the specification a customer came for.
         ('<details class="desc orig"><summary>%s</summary>%s%s</details>'
          % (e(t(lang, 'prod.origDesc')),
+            # Only a genuine mismatch is worth flagging: no translation AND the
+            # source is in some other language than this page.
             ('<p class="small muted">%s</p>' % e(t(lang, 'prod.origNote')))
-            if not p.get('body_' + lang) else '',
+            if not p.get('body_' + lang) and body_lang(p) != lang else '',
             desc_html(lang, p)) if p['body_html'] else '') +
         review_block(lang, p) +
         ('<section style="margin-top:40px"><h2>%s</h2><div class="grid">%s</div></section>'
