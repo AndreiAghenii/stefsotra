@@ -1935,6 +1935,31 @@ def build_tool(lang, filename):
     return url
 
 
+def write_browser_catalogue():
+    """The catalogue as the browser needs it, without the prose.
+
+    data/products.json is the build's source of truth and carries every description in
+    up to four languages -- 350 KB of the 595 KB. The browser never shows any of it: the
+    product pages are pre-rendered with their description already in the HTML, and the
+    only client-side reader was S.body(), which nothing ever called. But the catalogue,
+    search, basket and vehicle pages all fetch the file to filter and price products, so
+    every one of those visits was pulling the prose down for nothing -- and translating
+    the descriptions made it 2.4x worse, from 436 KB to 595 KB.
+
+    So the pages fetch this instead. Dropped: the four body fields and img_sig, which is
+    build tooling. Everything the client reads is kept, including the per-language titles,
+    which it looks up dynamically as title_<lang>.
+    """
+    drop = ('body_html', 'body_ro', 'body_ru', 'body_en', 'img_sig')
+    slim = dict(CAT)
+    slim['products'] = [{k: v for k, v in p.items() if k not in drop}
+                        for p in CAT['products']]
+    out = os.path.join(DATA, 'catalogue.json')
+    with open(out, 'w', encoding='utf-8') as f:
+        json.dump(slim, f, ensure_ascii=False, separators=(',', ':'))
+    return os.path.getsize(out)
+
+
 def write_indexnow_key():
     """Publish /<key>.txt so Bing and Yandex will accept an IndexNow submission.
 
@@ -2196,6 +2221,10 @@ def main():
                 'Allow: /\n'
                 'Clean-param: q&cat&group&sort&dia&clamp&angle&material&type\n\n'
                 'Sitemap: %s/sitemap.xml\n' % SITE)
+
+    slim = write_browser_catalogue()
+    full = os.path.getsize(os.path.join(DATA, 'products.json'))
+    print('browser catalogue %d KB (from %d KB of source)' % (slim // 1024, full // 1024))
 
     key = write_indexnow_key()
     if key:

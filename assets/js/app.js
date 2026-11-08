@@ -155,7 +155,7 @@
       if (what.indexOf(k) < 0) what = what.concat([k]);
     });
     if (what.indexOf('catalogue') >= 0)
-      jobs.push(json('/data/products.json').then(function (d) { S.catalogue = d; }));
+      jobs.push(json('/data/catalogue.json').then(function (d) { S.catalogue = d; }));
     if (what.indexOf('reviews') >= 0)
       jobs.push(json('/data/reviews.json').then(function (d) { S.reviews = d; })
                 .catch(function () { S.reviews = { products: {} }; }));
@@ -172,7 +172,7 @@
   var catPromise = null;
   S.ensureCatalogue = function () {
     if (S.catalogue) return Promise.resolve(S.catalogue);
-    if (!catPromise) catPromise = json('/data/products.json').then(function (d) {
+    if (!catPromise) catPromise = json('/data/catalogue.json').then(function (d) {
       S.catalogue = d; return d;
     });
     return catPromise;
@@ -310,11 +310,10 @@
     return p['title_' + S.lang] || p.title;
   };
 
-  // Description likewise. A missing translation means the verifier in
-  // translate_descriptions.py held it back, so the original is shown instead.
-  S.body = function (p) {
-    return p['body_' + S.lang] || p.body_html;
-  };
+  // There is deliberately no S.body(): the descriptions are not in the catalogue the
+  // browser fetches. Product pages are pre-rendered with their description already in
+  // the HTML, and shipping four languages of prose to the catalogue page cost 350 KB
+  // that nothing read. See write_browser_catalogue() in scripts/build_static.py.
 
   S.img = function (p) {
     return p.images && p.images.length ? p.images[0] : null;
