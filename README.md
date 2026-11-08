@@ -77,6 +77,45 @@ So `translate_titles.py --write` is now only needed when a product name is new o
 changed in Shopify; the rebuild no longer loses anything on its own. Read what it prints
 either way: it reports any term it did not recognise rather than guessing at it.
 
+### Photographs
+
+Every photograph used to be served at its original size, mostly 1200x1200, whatever slot
+it went into: a catalogue tile about 300 px wide, a 62 px gallery thumbnail and a 92 px
+group card all fetched the same file, and the largest was 439 KB. Every container these
+sit in is square with `object-fit: contain`, so a smaller copy loses nothing.
+
+`scripts/build_images.py` writes two WebP copies beside each JPEG, 400 px and 800 px on
+the long side, and a manifest at `data/images.json` holding each copy's true pixel width.
+It never upscales, so a 577 px original stays 577 px and the manifest says so — srcset
+has to describe what a candidate is, or a wide screen fetches a blurry file. The builder
+reads the manifest rather than the images, so the site still builds without Pillow, and
+falls back to the plain `<img>` for any photograph with no copies yet.
+
+    python3 scripts/build_images.py          # only what is missing or out of date
+    python3 scripts/build_static.py          # then rebuild
+
+Run it after `scripts/add_photos.py`. What a page now costs, measured in Chromium at
+390 px wide with everything scrolled into view:
+
+| page                | before  | after  |
+|---------------------|---------|--------|
+| home                | 589 KB  | 115 KB |
+| a category          | 676 KB  | 89 KB  |
+| the catalogue       | 1238 KB | 120 KB |
+| a product (desktop) | 516 KB  | 115 KB |
+
+The catalogue, search, vehicle and basket pages draw their tiles in JavaScript, so the
+server-side `<picture>` never reaches them; the first photograph's srcset travels in
+`data/catalogue.json` as `img_srcset` and `S.photo()` emits the same markup. That page was
+the last one still pulling full-size JPEGs.
+
+The gallery's main photograph is wrapped in a `<picture>` and swapped by `static.js` when
+a thumbnail is pressed. A matching `<source>` always beats the `<img>` it wraps, so each
+thumbnail carries its own srcset and the swap copies it across; without that the gallery
+would keep showing the first photograph whatever was pressed.
+
+The cost is disk: `assets/products` goes from 16 MB to 26 MB, 486 extra files committed.
+
 ### Engines other than Google
 
 `robots.txt` grants Yandex its own section with `Clean-param` for the filter query

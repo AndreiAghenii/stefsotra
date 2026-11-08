@@ -331,12 +331,23 @@
      size is added straight away, several sizes open a picker on the card itself so
      the customer never has to leave the listing. */
 
+  /* One tile photograph, preferring the resized WebP written by scripts/build_images.py.
+     Mirrors photo() in scripts/build_static.py. The original JPEG stays in the <img>, so
+     a browser without WebP support, and a photograph with no variants, both still work.
+     The sizes value is the one the pre-rendered tiles use, so the two agree. */
+  S.photo = function (src, alt, srcset) {
+    var img = '<img loading="lazy" src="' + S.esc(src) + '" alt="' + S.esc(alt) + '">';
+    if (!srcset) return img;
+    return '<picture><source type="image/webp" srcset="' + S.esc(srcset) +
+      '" sizes="(max-width: 640px) 45vw, 300px">' + img + '</picture>';
+  };
+
   S.tile = function (p) {
     var img = S.img(p);
     var one = p.variants.length === 1;
     return '<article class="tile" data-h="' + S.esc(p.handle) + '">' +
       '<a class="tile-link" href="' + S.productUrl(p.handle) + '">' +
-        (img ? '<div class="ph"><img loading="lazy" src="' + S.esc(img) + '" alt="' + S.esc(S.name(p)) + '"></div>'
+        (img ? '<div class="ph">' + S.photo(img, S.name(p), p.img_srcset) + '</div>'
              : S.placeholder(p)) +
         '<div class="meta">' +
           '<div class="name">' + S.esc(S.name(p)) + '</div>' +

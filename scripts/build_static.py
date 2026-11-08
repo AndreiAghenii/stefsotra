@@ -975,6 +975,50 @@ def name(lang, p):
     return p.get('title_' + lang) or p['title']
 
 
+# Resized WebP copies written by scripts/build_images.py, with each variant's true pixel
+# width. Absent until that has been run, and the markup below then degrades to the plain
+# <img> it emitted before, so the site still builds on a clean checkout.
+try:
+    with open(os.path.join(DATA, 'images.json'), encoding='utf-8') as _f:
+        IMG_VARIANTS = json.load(_f)
+except (IOError, ValueError):
+    IMG_VARIANTS = {}
+
+
+def srcset_for(src):
+    """"x-400.webp 400w, x-800.webp 800w" for one photograph, or '' if it has no copies."""
+    return ', '.join('%s %dw' % (v['src'], v['w']) for v in IMG_VARIANTS.get(src) or [])
+
+
+def photo(src, alt, sizes, lazy=True, priority=False, extra=''):
+    """One photograph, preferring a resized WebP.
+
+    The original JPEG stays in the <img>, so a browser without WebP support and a
+    photograph with no variants yet both still work. width/height are left at the
+    1200x1200 the markup has always declared: every container these sit in is square with
+    object-fit: contain, so the attributes only matter before the stylesheet lands, and
+    changing them would be a layout change for no byte saving.
+    """
+    img = ('<img src="%s" alt="%s" width="1200" height="1200"%s%s%s>'
+           % (e(src), e(alt),
+              ' loading="lazy"' if lazy else '',
+              ' fetchpriority="high" decoding="async"' if priority else '',
+              extra))
+    ss = srcset_for(src)
+    if not ss:
+        return img
+    return ('<picture><source type="image/webp" srcset="%s" sizes="%s">%s</picture>'
+            % (e(ss), e(sizes), img))
+
+
+# What each slot is actually rendered at, so the browser picks the right copy.
+SZ_TILE = '(max-width: 640px) 45vw, 300px'
+SZ_CARD = '200px'
+SZ_HERO = '(max-width: 900px) 40vw, 300px'
+SZ_MAIN = '(max-width: 900px) 92vw, 520px'
+SZ_THUMB = '62px'
+
+
 def tile(lang, p):
     px = PREFIX[lang]
     img = p['images'][0] if p['images'] else None
@@ -995,8 +1039,8 @@ def tile(lang, p):
         '<div class="price">%s</div></div></a>'
         '<div class="tile-add">%s<button type="button" class="btn tile-btn"%s>%s</button></div></article>'
         % (e(p['handle']), px, ppath(lang, p),
-           ('<div class="ph"><img loading="lazy" src="%s" alt="%s" width="1200" height="1200"></div>'
-            % (e(img), e(name(lang, p)))) if img else
+           ('<div class="ph">%s</div>'
+            % photo(img, name(lang, p), SZ_TILE)) if img else
            placeholder(lang, p),
            e(name(lang, p)), e(range_label(p)), price, sizes,
            (' data-v="%s"' % e(p['variants'][0]['title'])) if one else '',
@@ -1061,10 +1105,10 @@ def build_home(lang):
         if len(picks) == 4:
             break
     art = ''.join(
-        '<a class="hero-tile t%d" href="%s%s" title="%s"><img src="%s" alt="%s" '
-        'width="1200" height="1200"%s></a>'
-        % (i, px, ppath(lang, p), e(p['title']), e(p['images'][0]), e(p['title']),
-           '' if i == 0 else ' loading="lazy"')
+        '<a class="hero-tile t%d" href="%s%s" title="%s">%s</a>'
+        % (i, px, ppath(lang, p), e(p['title']),
+           photo(p['images'][0], p['title'], SZ_HERO,
+                 lazy=(i != 0), priority=(i == 0)))
         for i, p in enumerate(picks))
 
     gcards = ''
@@ -1075,8 +1119,7 @@ def build_home(lang):
             '<a class="gcard" href="%s%s">%s<span class="gcard-t">%s<i>%s</i></span>'
             '<span class="gcard-list small muted">%s</span></a>'
             % (px, gpath(lang, g['key']),
-               ('<img loading="lazy" src="%s" alt="" width="1200" height="1200">' % e(img))
-               if img else '<span class="gcard-ph"></span>',
+               photo(img, '', SZ_CARD) if img else '<span class="gcard-ph"></span>',
                e(group_label(lang, g['key'])), e(count(lang, g['count'])),
                ' · '.join(e(cat_label(lang, c['key'])) for c in g['categories'][:4])))
 
@@ -1379,9 +1422,8 @@ def build_group(lang, g):
     cards = ''.join(
         '<a class="gcard" href="%s%s">%s<span class="gcard-t">%s<i>%s</i></span></a>'
         % (px, cpath(lang, c['key']),
-           ('<img loading="lazy" src="%s" alt="" width="1200" height="1200">'
-            % e(next((p['images'][0] for p in CAT['products']
-                      if p['category'] == c['key'] and p['images']), '')))
+           photo(next((p['images'][0] for p in CAT['products']
+                       if p['category'] == c['key'] and p['images']), ''), '', SZ_CARD)
            if any(p['images'] for p in CAT['products'] if p['category'] == c['key'])
            else '<span class="gcard-ph"></span>',
            e(cat_label(lang, c['key'])), e(count(lang, c['count'])))
@@ -1447,14 +1489,18 @@ def build_product(lang, p):
     size_only = ' · '.join(x for x in (rng or '').split(' · ') if not x.endswith('×'))
     alt_txt = '%s — %s' % (nm, size_only) if size_only else nm
     gallery = (
-        '<div class="main"><img id="mainImg" src="%s" alt="%s" width="1200" height="1200" '
-        'fetchpriority="high" decoding="async"></div>'
-        % (e(imgs[0]), e(alt_txt)) +
+        # The main photograph is the page's LCP. It is also swapped by static.js when a
+        # thumbnail is pressed, and a <source> wins over the <img> it wraps -- so each
+        # thumbnail carries its own srcset and the swap copies it across. Without that the
+        # gallery would keep showing the first photograph's WebP whatever was pressed.
+        '<div class="main"><picture><source id="mainSrc" type="image/webp" '
+        'srcset="%s" sizes="%s"><img id="mainImg" src="%s" alt="%s" width="1200" '
+        'height="1200" fetchpriority="high" decoding="async"></picture></div>'
+        % (e(srcset_for(imgs[0])), e(SZ_MAIN), e(imgs[0]), e(alt_txt)) +
         ('<div class="thumbs">%s</div>' % ''.join(
-            '<button type="button" data-i="%d" aria-pressed="%s"><img src="%s" alt="%s" '
-            'loading="lazy" decoding="async" width="1200" height="1200"></button>'
-            % (i, 'true' if i == 0 else 'false', e(u),
-               e('%s %d' % (nm, i + 1)) if i else e(alt_txt))
+            '<button type="button" data-i="%d" aria-pressed="%s" data-srcset="%s">%s</button>'
+            % (i, 'true' if i == 0 else 'false', e(srcset_for(u)),
+               photo(u, ('%s %d' % (nm, i + 1)) if i else alt_txt, SZ_THUMB))
             for i, u in enumerate(imgs))
          if len(imgs) > 1 else '')
     ) if imgs else ('<div class="main ph none">%s</div>'
@@ -1952,8 +1998,19 @@ def write_browser_catalogue():
     """
     drop = ('body_html', 'body_ro', 'body_ru', 'body_en', 'img_sig')
     slim = dict(CAT)
-    slim['products'] = [{k: v for k, v in p.items() if k not in drop}
-                        for p in CAT['products']]
+    out = []
+    for p in CAT['products']:
+        q = {k: v for k, v in p.items() if k not in drop}
+        # The catalogue, search, vehicle and basket pages draw their own tiles in
+        # JavaScript, so the server-side <picture> never reaches them. Carrying the first
+        # photograph's srcset here lets S.tile() emit the same thing without fetching the
+        # whole image manifest: the catalogue page was still pulling 1.2 MB of full-size
+        # JPEGs while every pre-rendered page had dropped to a tenth of that.
+        ss = srcset_for(p['images'][0]) if p.get('images') else ''
+        if ss:
+            q['img_srcset'] = ss
+        out.append(q)
+    slim['products'] = out
     out = os.path.join(DATA, 'catalogue.json')
     with open(out, 'w', encoding='utf-8') as f:
         json.dump(slim, f, ensure_ascii=False, separators=(',', ':'))

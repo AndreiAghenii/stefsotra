@@ -115,6 +115,11 @@
     document.querySelectorAll('.thumbs button').forEach(function (b) {
       b.addEventListener('click', function () {
         document.getElementById('mainImg').src = P.images[Number(b.dataset.i)];
+        // The <source> beside it would otherwise keep serving the first photograph's
+        // WebP: a matching <source> always wins over the <img> it wraps. An empty
+        // srcset matches nothing, so the JPEG is used when a copy is missing.
+        var src = document.getElementById('mainSrc');
+        if (src) src.srcset = b.dataset.srcset || '';
         document.querySelectorAll('.thumbs button').forEach(function (x) {
           x.setAttribute('aria-pressed', x === b);
         });
