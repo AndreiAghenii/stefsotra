@@ -15,7 +15,9 @@ What it checks, and why each one is here rather than in a list of general advice
     because that is what a result actually shows
   * exactly one h1 per page, counting the markup and not the scripts -- seven Camlock
     descriptions arrived from Shopify with an h1 of their own inside the manufacturer copy
-  * every JSON-LD block parses
+  * every JSON-LD block parses, and carries no relative URL -- structured data is read
+    away from its page, so a path a crawler cannot resolve is a dropped value
+  * every <image:loc> in the sitemap is absolute, for the same reason
   * the header and footer are in the HTML, not assembled by JavaScript afterwards
   * the sitemap points only at files that exist, and every indexable page is in it
 """
@@ -36,6 +38,23 @@ SITE = re.search(r"^SITE = '([^']+)'",
 SKIP_DIRS = ('assets/', 'templates/', 'netlify/', 'photos_in/', 'node_modules/')
 TITLE_MAX, DESC_MAX = 70, 165
 DESC_MIN = 60
+
+
+def relative_urls(node, path=''):
+    """Every root-relative string inside a structured-data document, with its key path.
+
+    A protocol-relative "//host/x" is a URL and is left alone; "/assets/x.jpg" is not.
+    """
+    out = []
+    if isinstance(node, dict):
+        for k, v in node.items():
+            out += relative_urls(v, '%s.%s' % (path, k) if path else k)
+    elif isinstance(node, list):
+        for v in node:
+            out += relative_urls(v, path + '[]')
+    elif isinstance(node, str) and node.startswith('/') and not node.startswith('//'):
+        out.append((path, node))
+    return out
 
 
 def find(s, pat):
@@ -90,9 +109,16 @@ def main():
 
         for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', s, re.S):
             try:
-                json.loads(blk)
+                doc = json.loads(blk)
             except ValueError as ex:
                 bad['JSON-LD does not parse'].append('%s: %s' % (f, ex))
+                continue
+            # Structured data is read away from the page that carried it, so a crawler
+            # has no base to resolve a path against and the value is simply dropped.
+            # Product.image was relative on all 390 product pages -- the one field a
+            # product result needs -- so this is checked rather than trusted.
+            for where, val in relative_urls(doc):
+                bad['relative URL in JSON-LD'].append('%s: %s = %s' % (f, where, val))
 
         # count headings in the markup only: the pages that draw themselves carry '<h1>'
         # inside a JavaScript string, and that is not a heading on the page.
@@ -108,6 +134,11 @@ def main():
 
     sitemap = open('sitemap.xml', encoding='utf-8').read()
     locs = re.findall(r'<loc>(.*?)</loc>', sitemap)
+    # Same rule, same reason: the sitemaps protocol has no base either, so a relative
+    # <image:loc> makes the entry invalid. All 684 were relative once.
+    for u in re.findall(r'<image:loc>(.*?)</image:loc>', sitemap):
+        if not u.startswith('http'):
+            bad['relative <image:loc> in the sitemap'].append(u)
     if len(locs) != len(set(locs)):
         bad['the same URL twice in the sitemap'].append('yes')
     listed = set()

@@ -804,7 +804,11 @@ def product_ld(lang, p):
         'url': SITE + PREFIX[lang] + ppath(lang, p),
     }
     if p['images']:
-        d['image'] = p['images'][:4]
+        # Absolute, because structured data is read away from the page that carried it:
+        # a crawler has no base to resolve "/assets/..." against, and an image it cannot
+        # fetch is the one field Google needs for a product result. These were relative
+        # on all 390 product pages.
+        d['image'] = [SITE + u for u in p['images'][:4]]
     skus = [v['sku'] for v in p['variants'] if v.get('sku')]
     if skus:
         d['sku'] = skus[0]
@@ -2181,7 +2185,11 @@ def main():
         # searches an image of a Camlock type and lands on the page that sells it. Naming
         # them here means Google Images does not have to render the page to find them, and
         # that the ones sitting behind the gallery are seen at all.
-        imgs = ''.join('<image:image><image:loc>%s</image:loc></image:image>' % e(u)
+        # Absolute: the sitemaps protocol has no base to resolve a path against, so a
+        # relative <image:loc> is simply invalid and the entry is discarded. All 684 of
+        # them were relative, which meant the image sitemap had never done anything.
+        imgs = ''.join('<image:image><image:loc>%s</image:loc></image:image>'
+                       % e(u if u.startswith('http') else SITE + u)
                        for u in PAGE_IMAGES.get(path, []))
         for lang, loc in locs.items():
             alts = ''.join('<xhtml:link rel="alternate" hreflang="%s" href="%s"/>' % (l, u)
