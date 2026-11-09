@@ -469,7 +469,7 @@ table.spec th { color: var(--ink-2); font-weight: 500; width: 42%; }
 footer.site { border-top: 1px solid var(--line); background: var(--bg-2); margin-top: 50px; }
 .foot { display: grid; gap: 28px; grid-template-columns: 1.4fr repeat(3, 1fr); padding: 34px 20px 26px; }
 @media (max-width: 760px) { .foot { grid-template-columns: 1fr 1fr; } .foot-brand { grid-column: 1 / -1; } }
-.foot h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); margin-bottom: 10px; }
+.foot h2, .foot h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); margin-bottom: 10px; }
 .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
 .foot a { color: var(--ink-2); font-size: .89rem; }
 .foot a:hover { color: var(--brand); }
@@ -774,3 +774,11 @@ details.desc.orig > *:not(summary) { margin-bottom: 14px; }
 .drrow .btn { flex: 1; }
 .foot-brand a[target] { color: var(--ink-2); }
 .foot-brand a[target]:hover { color: var(--brand); }
+
+/* Skip link: off-screen until focused, then pinned to the top-left. */
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 200;
+  background: var(--brand); color: #fff; padding: 10px 16px;
+  border-radius: 0 0 var(--radius) 0; font-weight: 600; text-decoration: none;
+}
+.skip:focus { left: 0; }

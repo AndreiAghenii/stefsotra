@@ -454,7 +454,7 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
         '<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">\n'
         '<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">\n'
         '<link rel="manifest" href="/site.webmanifest">\n'
-        '<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>\n'
+
         '<link rel="stylesheet" href="/assets/css/app.css">\n' +
         blocks +
         '\n</head>\n<body>\n')
@@ -467,6 +467,16 @@ def preview_banner():
     return ('<div style="background:#b00;color:#fff;font:700 13px/1.5 system-ui;'
             'padding:8px 16px;text-align:center">PREVIEW BUILD — contains synthetic '
             'reviews for layout testing. Not for deployment.</div>')
+
+
+def skip_link(lang):
+    """The first focusable thing on the page.
+
+    It has to come before the announce strip, not just before the header: that strip
+    carries two links of its own, so a skip link inside the header was the third stop and
+    a keyboard user tabbed through the banner before reaching it.
+    """
+    return '<a class="skip" href="#main">%s</a>' % e(t(lang, 'nav.skip'))
 
 
 def announce_html(lang):
@@ -550,7 +560,10 @@ def footer_html(lang, path):
                        ('/warranty/', 'nav.warranty')]),
     ]
     colhtml = ''.join(
-        '<div><h3>%s</h3><ul>%s</ul></div>' %
+        # h2, not h3: these are the footer's own sections, and on a sparse page -- the
+        # search page, the vehicle finder, the 404 -- an h3 here followed an h1 with
+        # nothing between, which is a skipped level on every one of them.
+        '<div><h2>%s</h2><ul>%s</ul></div>' %
         (e(t(lang, title)), ''.join('<li><a href="%s%s">%s</a></li>' % (px, u, e(t(lang, k)))
                                     for u, k in links))
         for title, links in cols)
@@ -623,10 +636,10 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
     own = paths[lang]
     doc = (head(lang, title, desc, paths, image, jsonld, noindex or PREVIEW,
                 og_type, extra_meta) +
-           preview_banner() + announce_html(lang) +
+           skip_link(lang) + preview_banner() + announce_html(lang) +
            # the language switcher must point at the other language's slug, not this one's
            header_html(lang, current).replace('{PATH}', '{LANGPATH}') +
-           '<main>' + body + '</main>' +
+           '<main id="main">' + body + '</main>' +
            footer_html(lang, own) +
            contact_js() + gslug_js(lang) +
            # assistant.js is not here on purpose: app.js draws the button and fetches
@@ -896,12 +909,31 @@ def placeholder(lang, prod):
 # inside the description is pushed two levels down so the product name stays the only h1,
 # and align="..." is dropped with it -- it is a presentational attribute the stylesheet
 # already overrides, and it was the only thing forcing centred text into a left-aligned page.
-_H_IN_DESC = re.compile(r'<(/?)h([1-4])\b([^>]*)>', re.I)
+_H_IN_DESC = re.compile(r'<(/?)h([1-6])\b([^>]*)>', re.I)
 _ALIGN = re.compile(r'\s+align="[^"]*"', re.I)
 
 
-def _demote(m):
-    return '<%sh%d%s>' % (m.group(1), min(int(m.group(2)) + 2, 6), _ALIGN.sub('', m.group(3)))
+def _reheading(body):
+    """Push the description's headings under the page's, without skipping a level.
+
+    This used to add two to every level, which keeps the product name the only h1 but
+    breaks the order whenever the Shopify copy does not start at h1: a description whose
+    first heading is an h3 became an h5 directly under the page's h2, and 87 pages
+    skipped two levels. Shifting by the shallowest heading present puts that one at h3 --
+    the first level free below the h2 this block sits under -- and keeps the rest at their
+    relative depth.
+
+    align="..." goes with it: a presentational attribute the stylesheet already overrides,
+    and the only thing forcing centred text into a left-aligned page.
+    """
+    levels = [int(m.group(2)) for m in _H_IN_DESC.finditer(body or '')]
+    shift = (3 - min(levels)) if levels else 0
+
+    def one(m):
+        return '<%sh%d%s>' % (m.group(1),
+                              min(max(int(m.group(2)) + shift, 3), 6),
+                              _ALIGN.sub('', m.group(3)))
+    return _H_IN_DESC.sub(one, body or '')
 
 
 def body_lang(p):
@@ -923,7 +955,7 @@ def desc_html(lang, p):
     """Description in the page's language. Falls back to the original whenever a
     translation is absent or was held back by the verifier in
     translate_descriptions.py -- an English description beats a wrong number."""
-    return _H_IN_DESC.sub(_demote, p.get('body_' + lang) or p['body_html'])
+    return _reheading(p.get('body_' + lang) or p['body_html'])
 
 
 def summary(lang, p):
@@ -1598,8 +1630,13 @@ def build_product(lang, p):
         # another language than the rest of the page. It stays in the HTML so search
         # engines still read it, but it is folded away behind a summary so the page
         # leads with the specification a customer came for.
-        ('<details class="desc orig"><summary>%s</summary>%s%s</details>'
-         % (e(t(lang, 'prod.origDesc')),
+        ('<details class="desc orig"%s><summary>%s</summary>%s%s</details>'
+         # The prose inside is often not this page's language. Saying so lets a screen
+         # reader switch voice instead of reading English with Romanian phonetics, and
+         # stops the block arguing with the page's own lang attribute.
+         % ((' lang="%s"' % body_lang(p)) if not p.get('body_' + lang)
+            and body_lang(p) != lang else '',
+            e(t(lang, 'prod.origDesc')),
             # Only a genuine mismatch is worth flagging: no translation AND the
             # source is in some other language than this page.
             ('<p class="small muted">%s</p>' % e(t(lang, 'prod.origNote')))
@@ -1627,8 +1664,18 @@ def build_product(lang, p):
     # A preload for the photograph the page is about. The browser finds it in <head>
     # instead of waiting for the stylesheet and the gallery markup below it.
     if imgs:
-        og_extra += ('<link rel="preload" as="image" href="%s" fetchpriority="high">\n'
-                     % e(imgs[0]))
+        # It has to name the file the page will actually use. Once the gallery became a
+        # <picture>, this was preloading the JPEG and then the browser fetched the WebP as
+        # well: two downloads, and the LCP later than before the preload existed.
+        # imagesrcset/imagesizes must match the <source> exactly or the same thing happens.
+        ss = srcset_for(imgs[0])
+        if ss:
+            og_extra += ('<link rel="preload" as="image" type="image/webp" '
+                         'imagesrcset="%s" imagesizes="%s" fetchpriority="high">\n'
+                         % (e(ss), e(SZ_MAIN)))
+        else:
+            og_extra += ('<link rel="preload" as="image" href="%s" fetchpriority="high">\n'
+                         % e(imgs[0]))
 
     return page(lang, ppaths(p), title, desc, body,
                 image=SITE + '/assets/og/%s.png' % p['handle'],
@@ -1967,7 +2014,7 @@ def build_tool(lang, filename):
     jsonld = [crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (title.split(' — ')[0].split(' | ')[0], path)])] \
         if spec['index'] else None
     doc = (head(lang, title, desc, path, None, jsonld, noindex=not spec['index']) +
-           preview_banner() + announce_html(lang) +
+           skip_link(lang) + preview_banner() + announce_html(lang) +
            header_html(lang, spec['current']).replace('{PATH}', path) +
            markup +
            footer_html(lang, path) +
@@ -2047,8 +2094,8 @@ def build_404():
             '<a class="btn" href="/catalog.html">%s</a></div>'
             % (e(t(lang, 'nf.h')), e(t(lang, 'nf.p')), e(t(lang, 'nf.cta'))))
     doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404.html', noindex=True) +
-           announce_html(lang) +
-           header_html(lang).replace('{PATH}', '/') + '<main>' + body + '</main>' +
+           skip_link(lang) + announce_html(lang) +
+           header_html(lang).replace('{PATH}', '/') + '<main id="main">' + body + '</main>' +
            footer_html(lang, '/') +
            '<script>window.__CONTACT=%s;</script>' % json.dumps(
                {k: CONTACT.get(k, '') for k in
