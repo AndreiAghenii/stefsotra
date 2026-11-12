@@ -394,6 +394,46 @@ def range_label(p):
 
 # ---------------------------------------------------------------- page shell
 
+# ---------------------------------------------------------------- asset fingerprints
+# The scripts and the stylesheet were served from fixed names -- /assets/js/app.js --
+# with Cache-Control: max-age=86400. The file behind that name changed on nearly every
+# deploy, so for a day afterwards a returning visitor ran the previous build's JavaScript
+# against the current build's pages and data. That is how a site that is correct in the
+# repository breaks for a real person, and no amount of checking the repository finds it.
+#
+# Each file is therefore published under a name containing a hash of its contents, in
+# assets/build/, where it can be cached for a year because that name only ever means that
+# one file. The originals stay where they are, still served and still editable by hand,
+# so a page from before this change keeps working.
+ASSET_URLS = {}
+
+
+def asset_url(rel):
+    """Publish assets/<rel> under a content-addressed name and return its URL."""
+    if rel in ASSET_URLS:
+        return ASSET_URLS[rel]
+    src = os.path.join(ROOT, 'assets', rel)
+    with open(src, 'rb') as f:
+        raw = f.read()
+    # app.js names assistant.js itself, to fetch it on first use. That reference has to
+    # become the fingerprinted one before app.js is hashed, or app.js would point at the
+    # mutable name and the whole point would be lost.
+    if rel.endswith('.js'):
+        text = raw.decode('utf-8')
+        if '/assets/js/assistant.js' in text:
+            text = text.replace('/assets/js/assistant.js', asset_url('js/assistant.js'))
+            raw = text.encode('utf-8')
+    digest = hashlib.sha1(raw).hexdigest()[:10]
+    stem, ext = os.path.splitext(os.path.basename(rel))
+    name = '%s.%s%s' % (stem, digest, ext)
+    out_dir = os.path.join(ROOT, 'assets', 'build')
+    os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, name), 'wb') as f:
+        f.write(raw)
+    ASSET_URLS[rel] = '/assets/build/' + name
+    return ASSET_URLS[rel]
+
+
 def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
          og_type='website', extra_meta=''):
     """<head> for one page, including the hreflang set and structured data."""
@@ -455,7 +495,7 @@ def head(lang, title, desc, path, image=None, jsonld=None, noindex=False,
         '<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">\n'
         '<link rel="manifest" href="/site.webmanifest">\n'
 
-        '<link rel="stylesheet" href="/assets/css/app.css">\n' +
+        '<link rel="stylesheet" href="%s">\n' % asset_url('css/app.css') +
         blocks +
         '\n</head>\n<body>\n')
 
@@ -645,8 +685,8 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
            # assistant.js is not here on purpose: app.js draws the button and fetches
            # the script on the first press, so the 16 KB is not on the path of a visit
            # that never opens it -- which is nearly all of them.
-           '<script src="/assets/js/app.js"></script>'
-           '<script src="/assets/js/static.js"></script>' + scripts +
+           '<script src="%s"></script>' % asset_url('js/app.js') +
+           '<script src="%s"></script>' % asset_url('js/static.js') + scripts +
            '\n</body>\n</html>\n')
     # {LANGPATH} is per-language: the "ru" button on a Romanian page has to carry the
     # Russian slug for the same page, which is no longer the Romanian one.
@@ -2019,8 +2059,9 @@ def build_tool(lang, filename):
            markup +
            footer_html(lang, path) +
            contact_js() + gslug_js(lang) + pslug_js(lang) +
-           '<script src="/assets/js/app.js"></script>' +
-           ('<script src="/assets/js/assistant.js"></script>' if spec.get('ai') else '') +
+           '<script src="%s"></script>' % asset_url('js/app.js') +
+           ('<script src="%s"></script>' % asset_url('js/assistant.js')
+            if spec.get('ai') else '') +
            '\n' + inline +
            '\n</body>\n</html>\n')
     out = os.path.join(ROOT, PREFIX[lang].lstrip('/'), filename)
@@ -2088,11 +2129,32 @@ def write_indexnow_key():
 
 
 def build_404():
+    """One 404 page that speaks whichever language the address was in.
+
+    Vercel serves a single /404.html for every unmatched path, and this was built in
+    Romanian only -- so a Russian visitor following a dead link was told "Pagina nu
+    există" in a language they may not read. The page is still Romanian in the HTML, so
+    it is right without JavaScript and for the crawler, and the three translations travel
+    with it: the prefix of the address that missed says which to show, and that is known
+    before anything is fetched.
+    """
     lang = 'ro'
+    alt = {l: {'h': t(l, 'nf.h'), 'p': t(l, 'nf.p'), 'cta': t(l, 'nf.cta'),
+               'href': PREFIX[l] + '/catalog.html'} for l in LANGS}
     body = ('<div class="wrap" style="padding:60px 20px;text-align:center">'
-            '<h1>%s</h1><p class="lead" style="margin:0 auto 22px">%s</p>'
-            '<a class="btn" href="/catalog.html">%s</a></div>'
-            % (e(t(lang, 'nf.h')), e(t(lang, 'nf.p')), e(t(lang, 'nf.cta'))))
+            '<h1 id="nfH">%s</h1><p class="lead" id="nfP" style="margin:0 auto 22px">%s</p>'
+            '<a class="btn" id="nfCta" href="/catalog.html">%s</a></div>'
+            '<script>(function(){var A=%s;'
+            'var m=location.pathname.match(/^\\/(ru|en)(\\/|$)/);var l=m?m[1]:"ro";'
+            'if(l==="ro")return;var a=A[l];if(!a)return;'
+            'document.documentElement.lang=l;'
+            'document.getElementById("nfH").textContent=a.h;'
+            'document.title=a.h+" | Stefsotra";'
+            'document.getElementById("nfP").textContent=a.p;'
+            'var c=document.getElementById("nfCta");c.textContent=a.cta;c.href=a.href;'
+            '})();</script>'
+            % (e(t(lang, 'nf.h')), e(t(lang, 'nf.p')), e(t(lang, 'nf.cta')),
+               json.dumps(alt, ensure_ascii=False, separators=(',', ':'))))
     doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404.html', noindex=True) +
            skip_link(lang) + announce_html(lang) +
            header_html(lang).replace('{PATH}', '/') + '<main id="main">' + body + '</main>' +
@@ -2102,8 +2164,8 @@ def build_404():
                 ('email', 'phone', 'phone_href', 'phone2', 'phone2_href',
                  'address', 'maps')},
                ensure_ascii=False, separators=(',', ':')) +
-           '<script src="/assets/js/app.js"></script>'
-           '<script src="/assets/js/static.js"></script></body></html>')
+           '<script src="%s"></script>' % asset_url('js/app.js') +
+           '<script src="%s"></script></body></html>' % asset_url('js/static.js'))
     with open(os.path.join(ROOT, '404.html'), 'w', encoding='utf-8') as f:
         f.write(doc)
 
@@ -2148,6 +2210,11 @@ def write_vercel_json(rules):
                 Cache_Control='public, max-age=3600'),
             hdr('/data/(.*)', X_Robots_Tag='noindex',
                 Cache_Control='public, max-age=3600'),
+            # A fingerprinted name means exactly one file for ever, so it can be
+            # held for a year. Listed before the general rule, which stays at a day
+            # for the photographs, whose names are not content-addressed.
+            hdr('/assets/build/(.*)',
+                Cache_Control='public, max-age=31536000, immutable'),
             hdr('/assets/(.*)', Cache_Control='public, max-age=86400'),
             hdr('/(.*)', X_Content_Type_Options='nosniff',
                 Referrer_Policy='strict-origin-when-cross-origin'),
