@@ -1461,7 +1461,11 @@ def build_category(lang, key):
 
     lst = {'@context': 'https://schema.org', '@type': 'ItemList',
            'name': label, 'numberOfItems': len(prods),
-           'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': p['title'],
+           # name(), not p['title']: the raw title is the English one from Shopify, so the
+           # Romanian page was listing "Silicone Hoses for KAMAZ / MAZ" in its structured
+           # data while the page itself said something else.
+           'itemListElement': [{'@type': 'ListItem', 'position': i + 1,
+                                'name': name(lang, p),
                                 'url': SITE + PREFIX[lang] + ppath(lang, p)}
                                for i, p in enumerate(prods)]}
     crumb = crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
@@ -1526,13 +1530,23 @@ def build_group(lang, g):
         '<a class="chip" href="#c-%s">%s <span>%d</span></a>' % (c['key'], e(cat_label(lang, c['key'])), c['count'])
         for c in g['categories'] if any(p['category'] == c['key'] for p in prods)) + '</nav>'
 
+    # The group page is the one that answers "furtunuri Chișinău" -- the whole category,
+    # not one kind of hose -- and it is what the competitors rank with. It had no prose
+    # of its own and no ItemList; both were on the narrower category pages only.
     body = ('<div class="pagehead"><div class="wrap">%s<h1>%s</h1><p class="lead">%s</p></div></div>'
-            '<div class="wrap">%s<p class="muted small">%s</p><div class="cards">%s</div>%s</div>'
+            '<div class="wrap">%s<p class="muted small">%s</p><div class="cards">%s</div>%s%s</div>'
             % (crumb_html(lang, [(t(lang, 'nav.home'), '/'), (label, '')]),
-               e(label), e(desc), jump, e(count(lang, len(prods))), cards, sections))
+               e(label), e(desc), jump, e(count(lang, len(prods))), cards, sections,
+               cat_faq_html(lang, label, prods)))
+    lst = {'@context': 'https://schema.org', '@type': 'ItemList',
+           'name': label, 'numberOfItems': len(prods),
+           'itemListElement': [{'@type': 'ListItem', 'position': i + 1,
+                                'name': name(lang, q),
+                                'url': SITE + PREFIX[lang] + ppath(lang, q)}
+                               for i, q in enumerate(prods)]}
     return page(lang, gpaths(g['key']), title, desc, body,
-                jsonld=[crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
-                                         (label, gpath(lang, g['key']))])])
+                jsonld=[lst, crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
+                                              (label, gpath(lang, g['key']))])])
 
 
 def build_product(lang, p):
