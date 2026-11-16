@@ -19,7 +19,10 @@
   S.lang = m ? m[1] : 'ro';
   S.prerendered = true;
 
-  fetch('/i18n/' + S.lang + '.json')
+  // The fingerprinted bundle the page names, same as app.js -- the pre-rendered pages
+  // load their strings here, not through S.load(), so patching app.js alone left
+  // every one of them still asking for the mutable path.
+  fetch((window.__I18N && window.__I18N[S.lang]) || ('/i18n/' + S.lang + '.json'))
     .then(function (r) { return r.json(); })
     .then(function (d) {
       S.strings = d;

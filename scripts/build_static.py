@@ -640,12 +640,43 @@ def footer_html(lang, path):
            colhtml, catlinks, e(t(lang, 'foot.by'))))
 
 
+def i18n_urls():
+    """The translation bundles, fingerprinted like the scripts.
+
+    app.js fetches one of these on every page -- 12 to 18 KB -- and the name was fixed
+    with a one-hour cache, so it was the last asset that could go stale against freshly
+    fingerprinted code, and the last one a repeat visitor had to revalidate. Published
+    under a content-addressed name and cached for a year like the rest; the map below
+    tells app.js which name to ask for, and it falls back to /i18n/<lang>.json if the map
+    is not there.
+    """
+    if not I18N_URLS:
+        for l in LANGS:
+            src = os.path.join(ROOT, 'i18n', l + '.json')
+            with open(src, 'rb') as f:
+                raw = f.read()
+            digest = hashlib.sha1(raw).hexdigest()[:10]
+            name = 'i18n-%s.%s.json' % (l, digest)
+            out_dir = os.path.join(ROOT, 'assets', 'build')
+            os.makedirs(out_dir, exist_ok=True)
+            with open(os.path.join(out_dir, name), 'wb') as f:
+                f.write(raw)
+            I18N_URLS[l] = '/assets/build/' + name
+    return I18N_URLS
+
+
+I18N_URLS = {}
+
+
 def contact_js():
-    return '<script>window.__CONTACT=%s;</script>' % json.dumps(
-        {k: CONTACT.get(k, '') for k in
-         ('email', 'phone', 'phone_href', 'phone2', 'phone2_href', 'address', 'maps',
-          'review_url')},
-        ensure_ascii=False, separators=(',', ':'))
+    return ('<script>window.__I18N=%s;window.__CONTACT=%s;</script>'
+            % (json.dumps(i18n_urls(), ensure_ascii=False, separators=(',', ':')),
+               json.dumps(
+                   {k: CONTACT.get(k, '') for k in
+                    ('email', 'phone', 'phone_href', 'phone2', 'phone2_href', 'address',
+                     'maps', 'review_url')},
+                   ensure_ascii=False, separators=(',', ':'))))
+
 
 
 def pslug_js(lang):
@@ -2123,6 +2154,26 @@ def write_browser_catalogue():
     return os.path.getsize(out)
 
 
+def prune_build_assets(keep):
+    """Drop fingerprinted files this build did not produce.
+
+    Every change to app.js leaves the previous hash behind, so without this the directory
+    grows by a copy of the whole front end on each edit. The deploy is atomic -- the new
+    HTML and the new assets go live together -- and the HTML is not cached long, so there
+    is no window where a served page still asks for a name that has just gone.
+    """
+    out_dir = os.path.join(ROOT, 'assets', 'build')
+    if not os.path.isdir(out_dir):
+        return 0
+    wanted = {os.path.basename(u) for u in keep}
+    gone = 0
+    for name in os.listdir(out_dir):
+        if name not in wanted:
+            os.remove(os.path.join(out_dir, name))
+            gone += 1
+    return gone
+
+
 def write_indexnow_key():
     """Publish /<key>.txt so Bing and Yandex will accept an IndexNow submission.
 
@@ -2173,11 +2224,7 @@ def build_404():
            skip_link(lang) + announce_html(lang) +
            header_html(lang).replace('{PATH}', '/') + '<main id="main">' + body + '</main>' +
            footer_html(lang, '/') +
-           '<script>window.__CONTACT=%s;</script>' % json.dumps(
-               {k: CONTACT.get(k, '') for k in
-                ('email', 'phone', 'phone_href', 'phone2', 'phone2_href',
-                 'address', 'maps')},
-               ensure_ascii=False, separators=(',', ':')) +
+           contact_js() +
            '<script src="%s"></script>' % asset_url('js/app.js') +
            '<script src="%s"></script></body></html>' % asset_url('js/static.js'))
     with open(os.path.join(ROOT, '404.html'), 'w', encoding='utf-8') as f:
@@ -2230,8 +2277,16 @@ def write_vercel_json(rules):
             hdr('/assets/build/(.*)',
                 Cache_Control='public, max-age=31536000, immutable'),
             hdr('/assets/(.*)', Cache_Control='public, max-age=86400'),
+            # One rule for everything, rather than two that both match /(.*).
+            # No Content-Security-Policy: the pages carry inline scripts (the contact
+            # block, the slug maps, each tool page's own script), and a policy strict
+            # enough to be worth having needs per-page hashes -- a bigger change than it
+            # looks, and one that breaks the site if it is got wrong.
             hdr('/(.*)', X_Content_Type_Options='nosniff',
-                Referrer_Policy='strict-origin-when-cross-origin'),
+                Referrer_Policy='strict-origin-when-cross-origin',
+                Strict_Transport_Security='max-age=63072000; includeSubDomains; preload',
+                X_Frame_Options='SAMEORIGIN',
+                Permissions_Policy='camera=(), microphone=(), geolocation=(), payment=()'),
         ],
     }
     # Vercel caps vercel.json at 1024 redirects. Fail loudly rather than deploy a file
@@ -2414,6 +2469,10 @@ def main():
                 'Allow: /\n'
                 'Clean-param: q&cat&group&sort&dia&clamp&angle&material&type\n\n'
                 'Sitemap: %s/sitemap.xml\n' % SITE)
+
+    dropped = prune_build_assets(list(ASSET_URLS.values()) + list(i18n_urls().values()))
+    if dropped:
+        print('pruned %d stale fingerprinted asset(s)' % dropped)
 
     slim = write_browser_catalogue()
     full = os.path.getsize(os.path.join(DATA, 'products.json'))

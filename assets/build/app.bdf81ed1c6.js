@@ -147,7 +147,10 @@
   S.load = function (what) {
     S.lang = S.detectLang();
     document.documentElement.lang = S.lang;
-    var jobs = [json('/i18n/' + S.lang + '.json').then(function (d) { S.strings = d; })];
+    // The fingerprinted bundle when the page names one, so a repeat visit can take it
+    // from cache for a year instead of revalidating 12-18 KB on every page.
+    var i18n = (window.__I18N && window.__I18N[S.lang]) || ('/i18n/' + S.lang + '.json');
+    var jobs = [json(i18n).then(function (d) { S.strings = d; })];
     // The JS-rendered pages build their menu from the catalogue's group index and their
     // footer from the contact block, so they need both whatever else they asked for. The
     // pre-rendered pages already have menu and footer in their HTML and skip this.
