@@ -740,7 +740,7 @@ SCHEMA_DAY = {'Mo': 'Monday', 'Tu': 'Tuesday', 'We': 'Wednesday', 'Th': 'Thursda
               'Fr': 'Friday', 'Sa': 'Saturday', 'Su': 'Sunday'}
 
 
-def org_ld():
+def org_ld(lang='ro'):
     # HardwareStore rather than Organization: it is a LocalBusiness subtype, so the shop
     # is eligible for local results, which a bare Organization is not. Everything that
     # consumed this as an Organization still works -- HardwareStore inherits from it.
@@ -749,6 +749,20 @@ def org_ld():
     d = {
         '@context': 'https://schema.org', '@type': 'HardwareStore',
         'name': 'Stefsotra', 'url': SITE, 'logo': SITE + '/assets/img/logo.png',
+        # In the language of the page carrying it. No priceRange: the catalogue spans
+        # 5 to 53 907 lei, which is true and tells a reader nothing, and a narrower
+        # figure would be a guess dressed up as data.
+        'description': {
+            'ro': 'Furtun din silicon și PVC, cuplaje Camlock, Storz, Guillemin și Bauer, '
+                  'coliere, garnituri și materiale tehnice. Tăiem la dimensiune. Livrare '
+                  'în Chișinău și în toată Moldova.',
+            'ru': 'Силиконовые и ПВХ шланги, соединения Camlock, Storz, Guillemin и Bauer, '
+                  'хомуты, прокладки и технические материалы. Режем по размеру. Доставка '
+                  'по Кишинёву и всей Молдове.',
+            'en': 'Silicone and PVC hose, Camlock, Storz, Guillemin and Bauer couplings, '
+                  'clamps, gaskets and technical materials. Cut to size. Delivery in '
+                  'Chisinau and across Moldova.',
+        }[lang],
         'image': SITE + '/assets/img/logo.png',
         # Google matches a Business Profile to a website by the name, address and phone
         # agreeing on both. The listing is "FURTUNE.MD - Stefsotra S.R.L"; the site brands
@@ -1270,13 +1284,16 @@ def build_home(lang):
            e(t(lang, 'nav.assistant'))) +
         '</div>')
 
+    # No SearchAction. It only ever fed the sitelinks search box, which Google removed
+    # from results in November 2024; the markup is harmless but it has not done anything
+    # for two years, and shipping it on three pages implies otherwise. What WebSite is
+    # still read for is the site name, which is what alternateName is here to steer:
+    # the shop trades under FURTUNE.MD as well.
     site_ld = {'@context': 'https://schema.org', '@type': 'WebSite', 'url': SITE,
                'name': 'Stefsotra', 'inLanguage': lang,
-               'potentialAction': {'@type': 'SearchAction',
-                                   'target': SITE + PREFIX[lang] + '/search.html?q={search_term_string}',
-                                   'query-input': 'required name=search_term_string'}}
+               'alternateName': ['FURTUNE.MD', 'Stefsotra S.R.L']}
     return page(lang, '/', title, desc, body,
-                jsonld=[org_ld(), site_ld])
+                jsonld=[org_ld(lang), site_ld])
 
 
 # -------------------------------------------------------------- category Q&A
@@ -1935,7 +1952,7 @@ def build_content(lang, slug, url):
 
     title = '%s | Stefsotra %s' % (d['title'], GEO[lang])
     desc = strip_tags(d.get('lead', '') + ' ' + (d.get('body') or [''])[0], 158)
-    ld = [org_ld(), crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (d['title'], url)])]
+    ld = [org_ld(lang), crumbs_ld(lang, [(t(lang, 'nav.home'), '/'), (d['title'], url)])]
     if d.get('faq'):
         ld.append(faq_ld(d['faq']))
     return page(lang, url, title, desc, body, jsonld=ld, current=url)
@@ -2003,7 +2020,7 @@ def build_contact(lang):
                   'technical rubber goods in Chișinău and across Moldova.'}[lang] \
            % (CONTACT['phone'], CONTACT['email'])
     return page(lang, '/contact/', title, desc, body,
-                jsonld=[org_ld(), crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
+                jsonld=[org_ld(lang), crumbs_ld(lang, [(t(lang, 'nav.home'), '/'),
                                                    (t(lang, 'ct.h1'), '/contact/')])],
                 current='/contact/')
 
