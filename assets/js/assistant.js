@@ -19,7 +19,18 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     }).then(function (r) {
-      if (r.status === 404 || r.status === 501) { available = false; return null; }
+      if (r.status === 404 || r.status === 501) {
+        // Not configured on this deployment. The button is on every page, so without
+        // this a visitor is invited to open an assistant that can only tell them it is
+        // switched off -- once per page, for the whole visit. Remember the answer and
+        // stop offering it. sessionStorage, not localStorage: if the key is configured
+        // later, the next visit offers it again rather than staying hidden for good.
+        available = false;
+        try { sessionStorage.setItem('stefsotra.ai', 'off'); } catch (e) { /* private mode */ }
+        var fab = document.querySelector('.ai-fab');
+        if (fab) fab.hidden = true;
+        return null;
+      }
       if (!r.ok) throw new Error('assistant ' + r.status);
       available = true;
       return r.json();

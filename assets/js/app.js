@@ -541,6 +541,10 @@
   // into the home and company pages, and anything rendered after load.
   function wireAssistant() {
     if (document.querySelector('.ai-fab')) return;
+    // Established earlier in this visit that the endpoint is not configured.
+    try {
+      if (sessionStorage.getItem('stefsotra.ai') === 'off') return;
+    } catch (e) { /* private mode: just draw it */ }
     document.body.insertAdjacentHTML('beforeend',
       '<button type="button" class="ai-fab" data-ai-open aria-label="' +
       S.esc(S.t('ai.open')) + '">\u2726</button>');

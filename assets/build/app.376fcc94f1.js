@@ -523,7 +523,7 @@
     if (!aiPending) {
       aiPending = new Promise(function (resolve, reject) {
         var el = document.createElement('script');
-        el.src = '/assets/build/assistant.b7fc0dd4a4.js';
+        el.src = '/assets/build/assistant.d48e0ce372.js';
         el.onload = function () {
           if (!S.assistant) { aiPending = null; reject(new Error('assistant.js loaded but empty')); return; }
           S.assistant.mount();
@@ -541,6 +541,10 @@
   // into the home and company pages, and anything rendered after load.
   function wireAssistant() {
     if (document.querySelector('.ai-fab')) return;
+    // Established earlier in this visit that the endpoint is not configured.
+    try {
+      if (sessionStorage.getItem('stefsotra.ai') === 'off') return;
+    } catch (e) { /* private mode: just draw it */ }
     document.body.insertAdjacentHTML('beforeend',
       '<button type="button" class="ai-fab" data-ai-open aria-label="' +
       S.esc(S.t('ai.open')) + '">\u2726</button>');
