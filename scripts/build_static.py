@@ -544,6 +544,21 @@ def announce_html(lang):
     return '<div class="announce"><div class="wrap">%s</div></div>' % line
 
 
+def lang_links(lang, named=False):
+    """The language switch. {PATH} is replaced by the caller with this page's path in
+    each language -- a Romanian page's "ru" link has to carry the Russian slug.
+
+    hreflang and lang are both set: hreflang tells a crawler what it will find at the
+    other end, lang tells a screen reader to pronounce the Romanian name in Romanian rather
+    than reading it as English.
+    """
+    return ''.join(
+        '<a href="%s%s" data-lang="%s" hreflang="%s" lang="%s" aria-pressed="%s">%s</a>'
+        % (PREFIX[l], '{PATH}', l, l, l, 'true' if l == lang else 'false',
+           e(t(l, 'lang.name')) if named else l)
+        for l in LANGS)
+
+
 def header_html(lang, current=''):
     """The navigation, written out rather than injected, so a crawler can follow it.
 
@@ -574,10 +589,7 @@ def header_html(lang, current=''):
                                      e(t(lang, key)))
         for url, key in [('/vehicle.html', 'nav.vehicle')])
 
-    langs = ''.join(
-        '<a href="%s%s" data-lang="%s" aria-pressed="%s">%s</a>'
-        % (SITE if False else PREFIX[l], '{PATH}', l, 'true' if l == lang else 'false', l)
-        for l in LANGS)
+    langs = lang_links(lang)
 
     return (
         '<header class="site"><div class="wrap bar">'
@@ -635,6 +647,8 @@ def footer_html(lang, path):
         '%s'
         '<p class="small"><a href="mailto:%s">%s</a></p>%s%s</div>%s</div>'
         '<div class="wrap foot-cats small">%s</div>'
+        '<div class="wrap foot-langs small"><span>%s</span>'
+        '<div class="langs">%s</div></div>'
         '<div class="wrap foot-legal small"><span>© 2026 STEFSOTRA · '
         '<a href="https://www.stefsotra.md">stefsotra.md</a></span>'
         '<span class="madeby"><a href="https://aggento.com" target="_blank" '
@@ -649,7 +663,9 @@ def footer_html(lang, path):
            # is the question a visitor asks before the price, and Google reads it too.
            ('<p class="small hours">%s</p>' % hours_html(lang, ' · ')
             ) if c.get('opening_hours') else '',
-           colhtml, catlinks, e(t(lang, 'foot.by'))))
+           colhtml, catlinks,
+           e(t(lang, 'foot.lang')), lang_links(lang, named=True),
+           e(t(lang, 'foot.by'))))
 
 
 def i18n_urls():
@@ -723,7 +739,7 @@ def page(lang, path, title, desc, body, image=None, jsonld=None, noindex=False,
            # the language switcher must point at the other language's slug, not this one's
            header_html(lang, current).replace('{PATH}', '{LANGPATH}') +
            '<main id="main">' + body + '</main>' +
-           footer_html(lang, own) +
+           footer_html(lang, own).replace('{PATH}', '{LANGPATH}') +
            contact_js() + gslug_js(lang) +
            # assistant.js is not here on purpose: app.js draws the button and fetches
            # the script on the first press, so the 16 KB is not on the path of a visit
@@ -2131,7 +2147,7 @@ def build_tool(lang, filename):
            skip_link(lang) + preview_banner() + announce_html(lang) +
            header_html(lang, spec['current']).replace('{PATH}', path) +
            markup +
-           footer_html(lang, path) +
+           footer_html(lang, path).replace('{PATH}', path) +
            contact_js() + gslug_js(lang) + pslug_js(lang) +
            '<script src="%s"></script>' % asset_url('js/app.js') +
            ('<script src="%s"></script>' % asset_url('js/assistant.js')
@@ -2252,7 +2268,7 @@ def build_404():
     doc = (head(lang, t(lang, 'nf.h') + ' | Stefsotra', t(lang, 'nf.p'), '/404.html', noindex=True) +
            skip_link(lang) + announce_html(lang) +
            header_html(lang).replace('{PATH}', '/') + '<main id="main">' + body + '</main>' +
-           footer_html(lang, '/') +
+           footer_html(lang, '/').replace('{PATH}', '/') +
            contact_js() +
            '<script src="%s"></script>' % asset_url('js/app.js') +
            '<script src="%s"></script></body></html>' % asset_url('js/static.js'))
