@@ -59,6 +59,24 @@ img { max-width: 100%; display: block; }
 .announce a[href^="tel:"] { white-space: nowrap; }
 @media (max-width: 560px) { .announce { font-size: .8rem; } }
 
+/* On a phone the header wrapped to three rows and 163px: the logo took a row of its
+   own because the cart, the language switch and the menu together were 240px and would
+   not sit beside it. 134px of that was the switch -- three links at the 44px minimum
+   touch target, which is not something to shrink. It comes out of the bar instead: the
+   drawer has had a language switch in its footer all along, and the page footer now
+   carries one spelled out in full, so nothing is lost and the bar fits one row. */
+@media (max-width: 560px) {
+  .bar .langs { display: none; }
+  .bar { column-gap: 8px; }
+}
+
+/* the footer switch: spelled out, because here there is room for the word */
+.foot-langs {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 0 20px 14px; color: var(--ink-3);
+}
+.foot-langs .langs { margin-left: 0; }
+
 header.site {
   border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40;
   background: rgba(255, 255, 255, .92);
