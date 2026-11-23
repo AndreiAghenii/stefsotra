@@ -275,7 +275,7 @@
     if (dims.dn != null) bits.push('DN' + dims.dn);
     if (dims.thread) bits.push(dims.thread);
     if (dims.oe) bits.push('OE ' + dims.oe);
-    if (dims.material) bits.push(dims.material);
+    if (dims.material) bits.push(S.matLabel(dims.material));
     if (dims.group) bits.unshift(dims.group);
     if (dims.designation) bits.push(dims.designation);
     if (!bits.length && dims.raw && !dims.default) bits.push(dims.raw);
@@ -309,6 +309,16 @@
   };
 
   // Product name in the current language, falling back to the English original.
+  /* A material in the current language. The catalogue stores the English word the
+     Shopify feed used; i18n carries mat.silicone, mat.aluminium and mat.polypropylene.
+     Mirrors mat_label() in scripts/build_static.py. */
+  S.matLabel = function (m) {
+    if (!m) return m;
+    var k = 'mat.' + m;
+    var v = S.t(k);
+    return v === k ? m : v;
+  };
+
   S.name = function (p) {
     return p['title_' + S.lang] || p.title;
   };

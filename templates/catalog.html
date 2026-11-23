@@ -96,6 +96,10 @@ var FACETS = [
     } },
 
   { key: 'mat', label: 'cat.material', type: 'select',
+    // The option text is translated; the value stays the English word the catalogue
+    // stores, so match() below and a filter in the URL keep working. fmt is the hook
+    // the renderer already uses for option text -- no need for a second one.
+    fmt: function (v) { return S.matLabel(v); },
     values: function (ps) {
       return uniqVals(ps, function (p) {
         return [p.attrs.material].concat(p.variants.map(function (v) { return v.dims.material; }));

@@ -355,7 +355,19 @@ def clamp(text, limit):
     return cut.rstrip(' ,.;:-–—·') + '…'
 
 
-def dim_label(d):
+def mat_label(lang, m):
+    """A material in the page's language.
+
+    The catalogue stores these as the English words the Shopify feed used -- silicone,
+    aluminium, polypropylene -- and i18n has carried mat.* translations for all three
+    since the beginning, but only summary() ever used them. The specification table and
+    the size labels printed the raw value, so a Romanian product page read
+    "Material: silicone" under a Romanian heading.
+    """
+    return STR[lang].get('mat.' + m, m) if m else m
+
+
+def dim_label(d, lang='ro'):
     if d.get('default'):
         return ''          # Shopify's "Default Title" placeholder: not a size
     bits = []
@@ -369,7 +381,7 @@ def dim_label(d):
         bits.append('DN%s' % d['dn'])
     for k in ('thread', 'material', 'designation'):
         if d.get(k):
-            bits.append(d[k])
+            bits.append(mat_label(lang, d[k]) if k == 'material' else d[k])
     if d.get('oe'):
         bits.append('OE ' + d['oe'])
     if d.get('group'):
@@ -1149,8 +1161,8 @@ def tile(lang, p):
         % (e(t(lang, 'prod.variants')), e(t(lang, 'prod.choose')),
            ''.join('<option value="%s">%s</option>'
                    % (e(v['title']),
-                      e(('%s — %s' % (dim_label(v['dims']), money(v['price'], lang, p['unit'])))
-                        if dim_label(v['dims']) else money(v['price'], lang, p['unit'])))
+                      e(('%s — %s' % (dim_label(v['dims'], lang), money(v['price'], lang, p['unit'])))
+                        if dim_label(v['dims'], lang) else money(v['price'], lang, p['unit'])))
                    for v in p['variants'])))
     price = (money(p['price_min'], lang, p['unit']) if p['price_min'] == p['price_max']
              else '<small>%s</small> %s' % (e(t(lang, 'cat.from')), money(p['price_min'], lang, p['unit'])))
@@ -1650,7 +1662,7 @@ def build_product(lang, p):
         rows.append((t(lang, 'cat.diameter'),
                      '%g mm' % min(ids) if min(ids) == max(ids) else '%g–%g mm' % (min(ids), max(ids))))
     rows.append((t(lang, 'prod.category'), label))
-    for key, val in (('prod.material', p['attrs'].get('material')),
+    for key, val in (('prod.material', mat_label(lang, p['attrs'].get('material'))),
                      ('prod.angle', '%s°' % p['attrs']['angle'] if p['attrs'].get('angle') else None),
                      ('prod.length', '%s mm' % p['attrs']['length_mm'] if p['attrs'].get('length_mm') else None),
                      ('prod.wall', '%s mm' % p['spec']['wall_mm'] if p['spec'].get('wall_mm') else None),
@@ -1665,7 +1677,7 @@ def build_product(lang, p):
     one = len(p['variants']) == 1
     unnamed = one and p['variants'][0]['dims'].get('default')
     def vlabel(v):
-        lbl = dim_label(v['dims'])
+        lbl = dim_label(v['dims'], lang)
         if lbl:
             return '%s — %s' % (lbl, money(v['price'], lang, p['unit']))
         return money(v['price'], lang, p['unit'])
@@ -1681,7 +1693,7 @@ def build_product(lang, p):
         ' open' if len(p['variants']) <= 12 else '',
         e(t(lang, 'prod.variants')), len(p['variants']),
         ''.join('<li><span>%s</span><b>%s</b>%s</li>'
-                % (e(dim_label(v['dims'])), e(money(v['price'], lang, p['unit'])),
+                % (e(dim_label(v['dims'], lang)), e(money(v['price'], lang, p['unit'])),
                    ('<i>%s %s</i>' % (e(t(lang, 'prod.sku')), e(v['sku']))) if v.get('sku') else '')
                 for v in p['variants']))
 
